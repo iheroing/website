@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E类考前30分 - 西医临床岗岗位大题</title>
+    
+    <!-- TailwindCSS 3.0+ -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Font for better Chinese text display -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        // 配置Tailwind
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            800: '#9d174d',
+                            900: '#831843',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #444;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* 动画延迟类 */
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+        
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+        
+        .delay-400 {
+            animation-delay: 0.4s;
+        }
+        
+        /* 内容交互类 */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+        }
+        
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 菜单激活状态 */
+        .nav-item.active {
+            color: #0ea5e9;
+            border-left-width: 4px;
+        }
+        
+        .dark .nav-item.active {
+            color: #38bdf8;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen font-sans transition-colors duration-300">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-sm z-50 transition-colors duration-300">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="material-icons text-primary-600 dark:text-primary-400">school</span>
+                <h1 class="text-lg md:text-xl font-bold">E类考前30分</h1>
+                <span class="hidden md:inline-block bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 text-xs px-2 py-1 rounded-full">西医临床岗</span>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle" class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <span class="material-icons dark:hidden">dark_mode</span>
+                    <span class="material-icons hidden dark:block">light_mode</span>
+                </button>
+                
+                <button id="mobile-menu-button" class="md:hidden p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <span class="material-icons">menu</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 侧边导航 -->
+    <aside id="sidebar" class="fixed left-0 top-0 pt-16 w-64 h-full bg-white dark:bg-gray-800 shadow-md transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 overflow-y-auto">
+        <div class="py-6 px-4">
+            <h2 class="text-xl font-bold mb-6 text-primary-700 dark:text-primary-300">目录</h2>
+            
+            <ul class="space-y-1">
+                <li>
+                    <a href="#introduction" class="nav-item flex items-center space-x-2 py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 border-l-4 border-transparent transition-all">
+                        <span class="material-icons text-lg">info</span>
+                        <span>前言</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#section1" class="nav-item flex items-center space-x-2 py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 border-l-4 border-transparent transition-all">
+                        <span class="material-icons text-lg">edit</span>
+                        <span>一、岗位大题高分示例</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#section2" class="nav-item flex items-center space-x-2 py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 border-l-4 border-transparent transition-all">
+                        <span class="material-icons text-lg">medical_services</span>
+                        <span>二、常见疾病诊疗要点</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#section3" class="nav-item flex items-center space-x-2 py-2 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 border-l-4 border-transparent transition-all">
+                        <span class="material-icons text-lg">trending_up</span>
+                        <span>三、高频疾病预测</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+    
+    <!-- 移动端菜单蒙层 -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden" style="backdrop-filter: blur(2px);"></div>
+    
+    <!-- 主内容区 -->
+    <main class="pt-16 md:pl-64 min-h-screen transition-all duration-300">
+        <div class="container mx-auto px-4 py-8">
+            <!-- 标题区域 -->
+            <section id="introduction" class="mb-12 opacity-0 animate-fade-in">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-4 text-primary-700 dark:text-primary-300">E类考前30分</h1>
+                    <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-6">西医临床岗岗位大题</p>
+                    <div class="w-24 h-1 bg-primary-500 mx-auto rounded-full"></div>
+                </div>
+            </section>
+            
+            <!-- 第一部分：岗位大题高分示例 -->
+            <section id="section1" class="mb-16 opacity-0 animate-fade-in delay-100">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-6 pb-2 border-b-2 border-primary-200 dark:border-primary-800 text-primary-700 dark:text-primary-300 flex items-center">
+                        <span class="material-icons mr-2">edit</span>
+                        一、岗位大题高分示例
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- 答题结构 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover">
+                            <div class="flex items-center mb-4">
+                                <span class="material-icons text-primary-500 mr-2">format_list_numbered</span>
+                                <h3 class="text-xl font-bold">1. 答题结构</h3>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(1) 基本原则</h4>
+                                    <p class="text-gray-700 dark:text-gray-300">先总后分，分层清晰，要点突出</p>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(2) 具体方法</h4>
+                                    <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                                        <li>使用序号标识：①②③或1.2.3.</li>
+                                        <li>分段表达：每个要点单独成段</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 答题逻辑 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover">
+                            <div class="flex items-center mb-4">
+                                <span class="material-icons text-primary-500 mr-2">psychology</span>
+                                <h3 class="text-xl font-bold">2. 答题逻辑</h3>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(1) 基本原则</h4>
+                                    <p class="text-gray-700 dark:text-gray-300">层次分明，逻辑清晰，环环相扣</p>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(2) 逻辑框架</h4>
+                                    <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                                        <li>诊断题：由表及里，由主到副</li>
+                                        <li>治疗题：由急到缓</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(3) 诊断顺序</h4>
+                                    <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                                        <li>病史详询</li>
+                                        <li>体征检查</li>
+                                        <li>辅助检查</li>
+                                        <li>鉴别诊断</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 常见诊疗错误 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover">
+                            <div class="flex items-center mb-4">
+                                <span class="material-icons text-primary-500 mr-2">error</span>
+                                <h3 class="text-xl font-bold">3. 常见诊疗错误</h3>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
+                                    <li>病史采集不详：未询问关键病史，未追问症状变化，未核实重要信息</li>
+                                    <li>体格检查不全：仅查主诉部位，缺乏系统查体，忽略特殊检查</li>
+                                    <li>盲目止痛：未明确诊断用止痛药，高剂量掩盖症状，忽视监测</li>
+                                    <li>辅助检查不足：未安排必要检查，解读结果错误，忽视阳性发现</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 第二部分：常见疾病诊疗要点 -->
+            <section id="section2" class="mb-16 opacity-0 animate-fade-in delay-200">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-6 pb-2 border-b-2 border-primary-200 dark:border-primary-800 text-primary-700 dark:text-primary-300 flex items-center">
+                        <span class="material-icons mr-2">medical_services</span>
+                        二、常见疾病诊疗要点
+                    </h2>
+                    
+                    <!-- 疾病卡片容器 -->
+                    <div class="space-y-6">
+                        <!-- 急腹症 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden card-hover">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mr-4">
+                                        <span class="material-icons text-primary-600 dark:text-primary-400">sick</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold">1. 急腹症</h3>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <!-- 阑尾炎 -->
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(1) 阑尾炎</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            转移性右下腹痛＋麦氏点压痛＋WBC↑
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- 肠梗阻 -->
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(2) 肠梗阻</h4>
+                                        <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                            腹痛＋吐＋胀＋闭＋X线（液平）
+                                        </p>
+                                        <div class="pl-4 space-y-2">
+                                            <p class="text-gray-700 dark:text-gray-300">
+                                                <span class="font-medium">①病因：</span>机械性（器质性）和动力性（肠麻痹、痉挛）
+                                            </p>
+                                            <p class="text-gray-700 dark:text-gray-300">
+                                                <span class="font-medium">②血运：</span>单纯性和绞窄性（有无血运障碍、肠壁颜色）
+                                            </p>
+                                            <p class="text-gray-700 dark:text-gray-300">
+                                                <span class="font-medium">③程度：</span>完全性和不完全性
+                                            </p>
+                                            <p class="text-gray-700 dark:text-gray-300">
+                                                <span class="font-medium">④部位：</span>高位（空肠以上，吐胆汁）；低位（回肠末端和结肠，呕吐物有粪臭）
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 消化道穿孔 -->
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(3) 消化道穿孔</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            溃疡病史＋突发上腹剧痛＋腹膜刺激征＋膈下游离气体
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- 异位妊娠 -->
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(4) 异位妊娠</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            阴道出血＋停经史＋下腹剧痛（宫颈举痛）＋绒毛膜促性腺激素（＋）
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- 卵巢囊肿蒂扭转 -->
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(5) 卵巢囊肿蒂扭转</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            体位变化＋突发腹痛＋囊性肿物
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- 急性盆腔炎 -->
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(6) 急性盆腔炎</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            刮宫手术史＋白带异常＋下腹痛＋下腹剧痛（宫颈剧痛）＋脓性分泌物
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 肝硬化 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden card-hover">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mr-4">
+                                        <span class="material-icons text-primary-600 dark:text-primary-400">healing</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold">2. 肝硬化</h3>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(1) 诊断</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            病史（病毒性肝炎、长期饮酒、血吸虫病）+临床表现（乏力、食欲不振、出血倾向、慢性面容、蜘蛛痣、肝掌、腹水）+肝脏超声（门、脾静脉直径增宽）+上消化道X线（食管胃底静脉曲张）+肝脏穿刺活检（假小叶）+脾大
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(2) 鉴别</h4>
+                                        <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                            结核性/化脓性腹膜炎、肿瘤性腹水、原发性肝癌
+                                        </p>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            <span class="font-medium">进一步检查：</span>血尿常规+肝功能+HBV+腹水穿刺+肝脏超声+上消化道X线+内镜+肝脏穿刺活检+腹腔镜直视活检
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(3) 治疗原则</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            一般治疗（休息、饮食、药物）+腹水（利尿、放腹水、输注白蛋白）+手术（分流术、断流术、脾切除）+并发症治疗（上消化道出血、自发性腹膜炎、肝性脑病、肝肾综合征）+肝移植（晚期肝硬化）
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 心肌梗死 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden card-hover">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mr-4">
+                                        <span class="material-icons text-primary-600 dark:text-primary-400">favorite</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold">3. 心肌梗死</h3>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(1) 诊断</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            持续性胸痛+休息/舌下含服硝酸甘油不缓解+心电图ST段抬高+心律失常（室早室速）+心肌坏死标记物增高
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(2) 鉴别</h4>
+                                        <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                            心绞痛、主动脉夹层、急性肺动脉栓塞、急腹症、急性心包炎
+                                        </p>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            <span class="font-medium">进一步检查：</span>动态心电图+动态心肌坏死标记物+胸片CT排除肺梗死+超声心动图+冠脉造影
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(3) 治疗原则</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            一般治疗（卧床休息、吸氧、心电监护）+镇痛（吗啡、硝酸异山梨酯）抗凝抗血小板（阿司匹林、氯吡格雷、肝素）+再灌注心肌（介入、溶栓、冠脉搭桥）+消除心律失常（电除颤、利多卡因、人工心脏起搏）+抗休克+治疗心衰+心梗二级预防
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 急性左心衰 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden card-hover">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mr-4">
+                                        <span class="material-icons text-primary-600 dark:text-primary-400">monitor_heart</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold">4. 急性左心衰</h3>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(1) 诊断</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            表现（严重呼吸困难、端坐呼吸、恐惧大汗濒死感、面色灰白或发绀、粉红色泡沫样痰）+双肺满布湿性啰音和哮鸣音+心衰标志物（脑钠肽）
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(2) 鉴别</h4>
+                                        <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                            支气管哮喘、心包积液、肝硬化腹水、肺水肿
+                                        </p>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            <span class="font-medium">进一步检查：</span>胸片（弥漫满布大片阴影）+超声心动图+放射性核素+有创血流动力学
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(3) 治疗原则</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            一般治疗（休息、坐位双腿下垂，正压给氧）+镇静镇痛（吗啡）+利尿（呋塞米）+扩管（硝普钠）+正性肌力（多巴胺、多巴酚丁胺、磷酸二酯酶抑制剂）+强心（洋地黄）+辅助治疗
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 肋骨骨折 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden card-hover">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mr-4">
+                                        <span class="material-icons text-primary-600 dark:text-primary-400">orthopedics</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold">5. 肋骨骨折</h3>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(1) 诊断</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            明确外伤史+局部固定部位疼痛+胸壁畸形反常呼吸运动（连枷胸）+骨摩擦感+胸片
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(2) 鉴别</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            胸壁软组织损伤
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(3) 治疗原则</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            一般治疗（休息、固定、输液、营养）+镇痛（镇痛、镇静剂）+清理呼吸道+合并血气胸胸腔闭式引流
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 糖尿病 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden card-hover">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mr-4">
+                                        <span class="material-icons text-primary-600 dark:text-primary-400">water_drop</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold">6. 糖尿病</h3>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(1) 诊断</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            血糖升高+三多一少（多尿、多饮、多食、体重减轻）+并发症（严重代谢紊乱、感染、大血管微血管病变、糖尿病眼、足、神经系统）
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(2) 鉴别</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            餐后血糖升高、急性应激状态
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(3) 进一步检查</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            血糖尿糖监测、OGTT、糖化血红蛋白、胰岛素释放试验、C肽释放试验、并发症检查
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="pl-4 border-l-4 border-primary-200 dark:border-primary-800">
+                                        <h4 class="font-medium text-primary-600 dark:text-primary-400 mb-2">(4) 治疗原则</h4>
+                                        <p class="text-gray-700 dark:text-gray-300">
+                                            健康教育+饮食营养+运动疗法+血糖监测+药物（促泌剂、双胍类、噻唑烷二酮、α葡萄糖苷酶抑制剂、胰岛素）+并发症治疗
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 第三部分：高频疾病预测 -->
+            <section id="section3" class="mb-16 opacity-0 animate-fade-in delay-300">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-6 pb-2 border-b-2 border-primary-200 dark:border-primary-800 text-primary-700 dark:text-primary-300 flex items-center">
+                        <span class="material-icons mr-2">trending_up</span>
+                        三、高频疾病预测
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- 考点1 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover border-l-4 border-secondary-500">
+                            <h3 class="text-xl font-bold mb-4 text-secondary-700 dark:text-secondary-300">考点1</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">预测方向</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 bg-secondary-50 dark:bg-secondary-900/30 p-2 rounded">
+                                        急腹症鉴别诊断（急性阑尾炎、胆囊炎、溃疡、穿孔、梗阻、胰腺炎）
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">难度等级</h4>
+                                    <div class="flex items-center">
+                                        <span class="text-gray-600 dark:text-gray-400">中</span>
+                                        <div class="ml-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2 w-24">
+                                            <div class="bg-secondary-500 h-2 rounded-full w-2/3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">涉及领域</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">
+                                        常见病多发病诊疗、临床思维与决策
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 考点2 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover border-l-4 border-secondary-500">
+                            <h3 class="text-xl font-bold mb-4 text-secondary-700 dark:text-secondary-300">考点2</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">预测方向</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 bg-secondary-50 dark:bg-secondary-900/30 p-2 rounded">
+                                        胸痛的临床思维过程（张力性气胸、主动脉夹层、急性冠脉综合征、肺栓塞）
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">难度等级</h4>
+                                    <div class="flex items-center">
+                                        <span class="text-gray-600 dark:text-gray-400">中</span>
+                                        <div class="ml-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2 w-24">
+                                            <div class="bg-secondary-500 h-2 rounded-full w-2/3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">涉及领域</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">
+                                        危急重症的处理诊疗
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 考点3 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover border-l-4 border-secondary-500">
+                            <h3 class="text-xl font-bold mb-4 text-secondary-700 dark:text-secondary-300">考点3</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">预测方向</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 bg-secondary-50 dark:bg-secondary-900/30 p-2 rounded">
+                                        内分泌、代谢疾病（糖尿病、甲亢、肥胖、痛风）
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">难度等级</h4>
+                                    <div class="flex items-center">
+                                        <span class="text-gray-600 dark:text-gray-400">高</span>
+                                        <div class="ml-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2 w-24">
+                                            <div class="bg-secondary-500 h-2 rounded-full w-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">涉及领域</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">
+                                        糖尿病、肥胖的综合管理
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 考点4 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 card-hover border-l-4 border-secondary-500">
+                            <h3 class="text-xl font-bold mb-4 text-secondary-700 dark:text-secondary-300">考点4</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">预测方向</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 bg-secondary-50 dark:bg-secondary-900/30 p-2 rounded">
+                                        呼吸系统常见病诊疗（肺炎、哮喘、COPD、气胸）
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">难度等级</h4>
+                                    <div class="flex items-center">
+                                        <span class="text-gray-600 dark:text-gray-400">中</span>
+                                        <div class="ml-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2 w-24">
+                                            <div class="bg-secondary-500 h-2 rounded-full w-2/3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-700 dark:text-gray-300 mb-1">涉及领域</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">
+                                        常见病多发病诊疗
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 底部作者信息 -->
+            <footer class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 opacity-0 animate-fade-in delay-400">
+                <div class="flex flex-col md:flex-row justify-between items-center border-t pt-6 border-gray-200 dark:border-gray-700">
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-lg font-bold text-primary-700 dark:text-primary-300 mb-1">作者信息</h3>
+                        <p class="text-gray-600 dark:text-gray-400">华图医疗 制作</p>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="https://twitter.com/" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/" target="_blank" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-6 text-gray-500 dark:text-gray-400 text-sm">
+                    © 2025 华图教育. 版权所有.
+                </div>
+            </footer>
+        </div>
+    </main>
+    
+    <!-- 回到顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 bg-primary-600 dark:bg-primary-500 text-white p-2 rounded-full shadow-lg opacity-0 transition-opacity duration-300 hover:bg-primary-700 dark:hover:bg-primary-600">
+        <span class="material-icons">arrow_upward</span>
+    </button>
+    
+    <script>
+        // 暗黑模式切换
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        // 初始化主题（跟随系统设置）
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            htmlElement.classList.add('dark');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+        });
+        
+        // 移动端菜单
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            mobileOverlay.classList.toggle('hidden');
+            document.body.classList.toggle('overflow-hidden');
+        });
+        
+        mobileOverlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            mobileOverlay.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        });
+        
+        // 侧边栏导航项目激活状态
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('section');
+        
+        function setActiveNavItem() {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', setActiveNavItem);
+        
+        // 导航项目点击事件
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                // 移动端关闭菜单
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('-translate-x-full');
+                    mobileOverlay.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                }
+            });
+        });
+        
+        // 动画
+        const animatedElements = document.querySelectorAll('.animate-fade-in');
+        
+        function checkIfInView() {
+            animatedElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.style.opacity = '1';
+                }
+            });
+        }
+        
+        window.addEventListener('load', checkIfInView);
+        window.addEventListener('scroll', checkIfInView);
+        
+        // 回到顶部按钮
+        const backToTopButton = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.opacity = '1';
+            } else {
+                backToTopButton.style.opacity = '0';
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // 初始化页面加载动画
+        window.addEventListener('load', () => {
+            document.getElementById('introduction').style.opacity = '1';
+            setTimeout(() => {
+                document.getElementById('section1').style.opacity = '1';
+            }, 200);
+            setTimeout(() => {
+                document.getElementById('section2').style.opacity = '1';
+            }, 400);
+            setTimeout(() => {
+                document.getElementById('section3').style.opacity = '1';
+            }, 600);
+            setTimeout(() => {
+                document.querySelector('footer').style.opacity = '1';
+            }, 800);
+        });
+    </script>
+</body>
+</html>
+
