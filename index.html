@@ -8,6 +8,10 @@
   <meta name="keywords" content="医考,医学考试,事业单位,医疗招聘,李弋老师,医学基础,临床专业,护理考试,面试培训">
   <meta name="author" content="李弋老师">
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cdefs%3e%3clinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%232563eb;stop-opacity:1' /%3e%3cstop offset='100%25' style='stop-color:%233b82f6;stop-opacity:1' /%3e%3c/linearGradient%3e%3c/defs%3e%3crect width='100' height='100' rx='20' fill='url(%23grad)'/%3e%3cg fill='white'%3e%3ccircle cx='50' cy='35' r='12' stroke='white' stroke-width='2' fill='none'/%3e%3cpath d='M38 47h24v6H38z'/%3e%3cpath d='M42 53h16v3H42z'/%3e%3cpath d='M45 56h10v2H45z'/%3e%3cpath d='M30 65h40v8H30z' rx='2'/%3e%3ctext x='50' y='78' text-anchor='middle' font-family='Arial' font-size='8' font-weight='bold'%3e医考%3c/text%3e%3c/g%3e%3c/svg%3e">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cdefs%3e%3clinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%232563eb;stop-opacity:1' /%3e%3cstop offset='100%25' style='stop-color:%233b82f6;stop-opacity:1' /%3e%3c/linearGradient%3e%3c/defs%3e%3crect width='100' height='100' rx='20' fill='url(%23grad)'/%3e%3cg fill='white'%3e%3ccircle cx='50' cy='35' r='12' stroke='white' stroke-width='2' fill='none'/%3e%3cpath d='M38 47h24v6H38z'/%3e%3cpath d='M42 53h16v3H42z'/%3e%3cpath d='M45 56h10v2H45z'/%3e%3cpath d='M30 65h40v8H30z' rx='2'/%3e%3ctext x='50' y='78' text-anchor='middle' font-family='Arial' font-size='8' font-weight='bold'%3e医考%3c/text%3e%3c/g%3e%3c/svg%3e">
+
   
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -40,11 +44,64 @@
     /* Apple-style淡入上移 */
     .fade { opacity: 0; transform: translateY(30px); transition: .7s cubic-bezier(.4,0,.2,1); }
     .fade.show { opacity: 1; transform: translateY(0); }
-
+    
     /* Bento 基础卡片 */
     .card { @apply bg-white rounded-2xl border border-neutral-200 shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-300; }
     .card:hover:not(.cursor-not-allowed) { transform: translateY(-4px) scale(1.02); }
      .card.cursor-not-allowed:hover { transform: none; }
+    
+    /* 荧光笔标记效果 - 清新版本 */
+    .highlight-yellow {
+      background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+      padding: 1px 4px;
+      border-radius: 3px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .highlight-pink {
+      background: linear-gradient(120deg, #fdf2f8 0%, #fbcfe8 100%);
+      padding: 1px 4px;
+      border-radius: 3px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .highlight-blue {
+      background: linear-gradient(120deg, #eff6ff 0%, #bfdbfe 100%);
+      padding: 1px 4px;
+      border-radius: 3px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .highlight-green {
+      background: linear-gradient(120deg, #f0fdf4 0%, #bbf7d0 100%);
+      padding: 1px 4px;
+      border-radius: 3px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    /* 下划线装饰效果 - 清新版本 */
+    .underline-wavy {
+      position: relative;
+      text-decoration: none;
+    }
+    
+    .underline-wavy::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+    
+
     
     /* 页面加载动画 */
     .page-loader {
@@ -76,7 +133,7 @@
     ::-webkit-scrollbar { width: 8px;height:8px }
     ::-webkit-scrollbar-thumb { background: #efefef;border-radius:8px }
     ::-webkit-scrollbar-thumb:hover { background: #d4d4d4 }
-    
+
     /* 圆点导航样式 */
     .dot-nav-item { position: relative; }
     .dot-nav-item.active > div { background-color: #3b82f6 !important; }
@@ -207,12 +264,27 @@
 
 <section id="about" class="py-16 bg-neutral-50">
   <div class="max-w-6xl mx-auto px-8 text-center space-y-6 fade">
-    <h2 class="text-3xl md:text-4xl font-bold">关于李弋老师</h2>
-    <div class="max-w-4xl mx-auto space-y-4">
-      <p class="text-lg font-semibold text-slate-700">上海交通大学硕士 · 华图医疗研究院院长</p>
-      <p class="text-neutral-600 leading-relaxed">8年医考培训经验，独创"一纵三横"记忆法和AI+大数据驱动的"双频学习法"，让医考不再靠运气，让复习不再靠死记。累计服务学员超1万人，主讲医学基础、临床专业等核心课程。</p>
-      <p class="text-neutral-600 leading-relaxed">以活泼的授课风格和过硬的专业功底著称，善用联想记忆法和母题训练法，让深奥的医学知识变得生动易懂。带班笔试通过率多次突破90%，曾荣获华图教育教师风采大赛特等奖。</p>
-      <p class="text-brand font-medium">坚持"精准教学、高效备考"的理念，帮助每一位医考学员实现职业理想。</p>
+    <h2 class="text-3xl md:text-4xl font-bold">关于<span class="highlight-blue">李弋老师</span></h2>
+    <div class="max-w-4xl mx-auto space-y-5">
+      <p class="text-lg font-semibold text-slate-700 bg-white/60 rounded-lg py-3 px-4">
+        🎓 <span class="highlight-green">上海交通大学硕士</span> · <span class="highlight-pink">华图医疗研究院院长</span>
+      </p>
+      
+      <div class="text-left space-y-4">
+        <p class="text-neutral-600 leading-relaxed">
+          📚 <span class="highlight-yellow">8年医考培训经验</span>，独创<span class="underline-wavy">"一纵三横"记忆法</span>和AI+大数据驱动的"双频学习法"，让医考不再靠运气，让复习不再靠死记。累计服务学员超<span class="highlight-blue">1万人</span>，主讲医学基础、临床专业等核心课程。
+        </p>
+        
+        <p class="text-neutral-600 leading-relaxed">
+          🌟 以活泼的授课风格和过硬的专业功底著称，善用<span class="underline-wavy">联想记忆法</span>和母题训练法，让深奥的医学知识变得生动易懂。带班笔试通过率多次突破<span class="highlight-green">90%</span>，曾荣获华图教育教师风采大赛特等奖。
+        </p>
+        
+        <div class="bg-white/60 rounded-lg py-4 px-6 mt-6">
+          <p class="text-brand font-medium text-center">
+            💡 坚持<span class="highlight-yellow">"精准教学、高效备考"</span>的理念，帮助每一位医考学员实现职业理想。
+          </p>
+        </div>
+      </div>
     </div>
 
 <!-- 社交链接 -->
@@ -238,7 +310,7 @@ const data = {
     { title:'临床专业知识考点', desc:'内科、外科、妇产科等', icon:'ri-stethoscope-line', link:'临床专业知识考点.html' },
     { title:'护理笔试必背知识', desc:'护理学基础与专科护理', icon:'ri-nurse-line', link:'护理笔试必背知识.html' },
     { title:'医疗结构化面试热点', desc:'时政热点与面试技巧', icon:'ri-question-answer-line', link:'医疗结构化面试备考必备时政热点.html' },
-    { title:'面试时政热点', desc:'最新时政热点汇总', icon:'ri-newspaper-line', link:'面试时政热点.md' }
+    { title:'即将上线更多', desc:'更多学习资源正在准备中', icon:'ri-more-line', link:'#', badge:'敬请期待' }
   ],
   tools: [
     { title:'AI 答题机器人', desc:'基于 GPT 医考模型', icon:'ri-robot-line', link:'chatbot.html' },

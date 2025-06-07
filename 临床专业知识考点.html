@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>临床医学知识体系 - 专业医学参考</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+        
+        .red-gradient {
+            background: linear-gradient(135deg, #E31937 0%, #ff4757 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(227, 25, 55, 0.3);
+        }
+        
+        .system-icon {
+            background: linear-gradient(45deg, #E31937, #ff4757);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            grid-auto-rows: auto;
+        }
+        
+        .bento-item {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bento-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #E31937, #ff4757);
+        }
+        
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #E31937, #ff4757);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .knowledge-item {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #E31937;
+            transition: all 0.3s ease;
+        }
+        
+        .knowledge-item:hover {
+            background: #f1f5f9;
+            transform: translateX(4px);
+        }
+        
+        .system-header {
+            background: linear-gradient(135deg, #E31937 0%, #ff4757 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Header Section -->
+    <header class="relative overflow-hidden py-20 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="animate-float">
+                <i class="fas fa-heartbeat text-6xl text-red-600 mb-6"></i>
+            </div>
+            <h1 class="text-6xl md:text-8xl font-black text-gray-900 mb-6 text-shadow">
+                临床医学
+                <span class="block text-red-600">知识体系</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                全面覆盖十大医学系统，精准整理核心知识要点，助力医学学习与临床实践
+            </p>
+            <div class="mt-12 flex justify-center space-x-8">
+                <div class="text-center">
+                    <div class="stats-number">10</div>
+                    <p class="text-gray-600 font-medium">医学系统</p>
+                </div>
+                <div class="text-center">
+                    <div class="stats-number">500+</div>
+                    <p class="text-gray-600 font-medium">知识要点</p>
+                </div>
+                <div class="text-center">
+                    <div class="stats-number">100%</div>
+                    <p class="text-gray-600 font-medium">覆盖率</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Systems Overview -->
+    <section class="py-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-900">医学系统概览</h2>
+            <div class="bento-grid">
+                <!-- 呼吸系统 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-lungs text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">呼吸系统</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>慢性支气管炎：</strong>咳痰喘，连二三
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>COPD特征：</strong>不完全可逆的气流受限
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>肺癌分类：</strong>腺癌最常见，小细胞肺癌恶性程度最高
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>肺结核：</strong>成人最常见浸润性肺结核
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 心血管系统 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-heart text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">心血管系统</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>CPR黄金时间：</strong>4-6分钟内
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>心衰分级：</strong>NYHA分级评估心功能
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>心梗诊断：</strong>胸痛+ST段抬高+心肌标志物
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>高血压定义：</strong>收缩压≥140mmHg或舒张压≥90mmHg
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 消化系统 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-stomach text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">消化系统</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>消化性溃疡：</strong>幽门螺杆菌感染为主因
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>肝硬化：</strong>我国以乙肝为主要病因
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>急性胰腺炎：</strong>胆石症为最常见病因
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>肠梗阻：</strong>痛、吐、胀、闭四大症状
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 泌尿系统 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-kidneys text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">泌尿系统</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>急性肾炎：</strong>血尿、蛋白尿、水肿、高血压
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>肾病综合征：</strong>大量蛋白尿+低白蛋白血症
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>尿路感染：</strong>大肠杆菌最常见致病菌
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>肾癌三联征：</strong>血尿、腰痛、腹部肿块
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 内分泌系统 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-dna text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">内分泌系统</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>甲亢诊断：</strong>FT3、FT4↑，TSH↓
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>糖尿病诊断：</strong>空腹血糖≥7.0mmol/L
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>库欣综合征：</strong>满月脸、水牛背、紫纹
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>嗜铬细胞瘤：</strong>阵发性高血压
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 血液系统 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-tint text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">血液系统</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>贫血诊断：</strong>男性<120g/L，女性<110g/L
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>缺铁性贫血：</strong>小细胞低色素性贫血
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>白血病诊断：</strong>原始细胞≥30%
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>过敏性紫癜：</strong>四肢对称性紫癜
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 运动系统 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-bone text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">运动系统</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>骨折治疗：</strong>复位、固定、康复治疗
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>骨髓炎：</strong>金黄色葡萄球菌最常见
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>颈椎病：</strong>神经根型最常见
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>类风湿关节炎：</strong>对称性多关节炎症
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 儿科学 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-baby text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">儿科学</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>生长发育：</strong>婴儿期和青春期两个高峰
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>营养不良：</strong>体重不增是最先出现症状
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>佝偻病：</strong>维生素D缺乏所致
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>先心病：</strong>室间隔缺损最常见
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 妇产科学 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-female text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">妇产科学</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>早孕症状：</strong>停经是最早且最重要症状
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>异位妊娠：</strong>输卵管妊娠最常见
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>宫颈癌：</strong>与HPV16、18型相关
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>子宫肌瘤：</strong>肌壁间肌瘤最常见
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 其他系统 -->
+                <div class="bento-item card-hover scroll-reveal">
+                    <div class="system-header">
+                        <i class="fas fa-plus-circle text-2xl mb-2"></i>
+                        <h3 class="text-xl font-bold">其他重要内容</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="knowledge-item">
+                            <strong>系统性红斑狼疮：</strong>蝶形红斑最具特征性
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>水电解质平衡：</strong>高渗性脱水有明显口渴
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>烧伤面积：</strong>成人烧伤面积估算口诀
+                        </div>
+                        <div class="knowledge-item">
+                            <strong>中毒急救：</strong>有机磷中毒主要死因呼吸衰竭
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 详细知识点展示 -->
+    <section class="py-16 px-6 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-900">详细知识点</h2>
+            
+            <!-- 呼吸系统详细内容 -->
+            <div class="mb-16 scroll-reveal">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-lungs text-3xl text-red-600 mr-4"></i>
+                        <h3 class="text-3xl font-bold text-gray-900">呼吸系统</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-xl font-semibold mb-4 text-red-600">慢性阻塞性肺疾病</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• 慢性支气管炎诊断：咳痰喘，连二三</li>
+                                <li>• COPD是不完全可逆的气流受限为特征</li>
+                                <li>• 长期吸烟为COPD最主要病因</li>
+                                <li>• 特征性体征：桶状胸、肺部叩诊过清音</li>
+                                <li>• 诊断标准：FEV1/FVC＜70%及FEV1＜80%</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-4 text-red-600">支气管哮喘</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• 病理本质：慢性气道炎症</li>
+                                <li>• 基本特征：气道高反应性</li>
+                                <li>• 典型症状：发作性呼气性呼吸困难</li>
+                                <li>• 急性发作首选：SABA（沙丁胺醇）</li>
+                                <li>• 控制发作首选：LABA+ICS</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 心血管系统详细内容 -->
+            <div class="mb-16 scroll-reveal">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-heart text-3xl text-red-600 mr-4"></i>
+                        <h3 class="text-3xl font-bold text-gray-900">心血管系统</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-xl font-semibold mb-4 text-red-600">心脏骤停与复苏</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• 急救黄金时间：4-6分钟内</li>
+                                <li>• 基础生命支持顺序：C-A-B</li>
+                                <li>• 按压频率：100-120次/分</li>
+                                <li>• 按压深度：成人5-6cm</li>
+                                <li>• 首选药物：肾上腺素</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold mb-4 text-red-600">心力衰竭</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• 主要诱因：感染、心律失常、治疗不当</li>
+                                <li>• 左心衰最早症状：劳力性呼吸困难</li>
+                                <li>• 急性左心衰特征：咳粉红色泡沫痰</li>
+                                <li>• 诊断首选：超声心动图</li>
+                                <li>• 实验室检查：BNP及NT-proBNP</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计图表展示 -->
+            <div class="mb-16 scroll-reveal">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <h3 class="text-2xl font-bold mb-6 text-center text-gray-900">各系统知识点分布</h3>
+                    <div class="max-w-2xl mx-auto">
+                        <canvas id="systemChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="mb-8">
+                <i class="fas fa-heartbeat text-4xl text-red-600 mb-4"></i>
+                <h3 class="text-2xl font-bold mb-2">临床医学知识体系</h3>
+                <p class="text-gray-400">专业、全面、实用的医学知识参考</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h4 class="font-semibold mb-3">知识覆盖</h4>
+                    <ul class="text-gray-400 space-y-1">
+                        <li>10大医学系统</li>
+                        <li>500+核心知识点</li>
+                        <li>临床实践指导</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3">特色功能</h4>
+                    <ul class="text-gray-400 space-y-1">
+                        <li>系统化整理</li>
+                        <li>重点突出</li>
+                        <li>便于记忆</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3">适用人群</h4>
+                    <ul class="text-gray-400 space-y-1">
+                        <li>医学生</li>
+                        <li>临床医师</li>
+                        <li>医学研究者</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8">
+                <p class="text-gray-400">&copy; 2024 临床医学知识体系. 专业医学知识参考平台.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 滚动动画
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.scroll-reveal');
+            
+            reveals.forEach(reveal => {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveal.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('revealed');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // 初始检查
+
+        // 图表初始化
+        const ctx = document.getElementById('systemChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['呼吸系统', '心血管系统', '消化系统', '泌尿系统', '内分泌系统', '血液系统', '运动系统', '儿科学', '妇产科学', '其他'],
+                datasets: [{
+                    data: [73, 65, 68, 37, 32, 31, 50, 53, 46, 21],
+                    backgroundColor: [
+                        '#E31937',
+                        '#ff4757',
+                        '#ff6b7a',
+                        '#ff7f8a',
+                        '#ff939a',
+                        '#ffa7aa',
+                        '#ffbbba',
+                        '#ffcfca',
+                        '#ffe3da',
+                        '#fff7ea'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 添加交互效果
+        document.querySelectorAll('.knowledge-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(8px)';
+                this.style.backgroundColor = '#f1f5f9';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+                this.style.backgroundColor = '#f8fafc';
+            });
+        });
+
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease-in-out';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
