@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025年全国事业单位联考E类 - 考前30分《综合应用能力》</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-red': '#E31937',
+                        'brand-red-light': '#FF4D6B',
+                        'brand-red-dark': '#B01429'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slide-up 0.8s ease-out',
+                        'fade-in': 'fade-in 1s ease-out'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        'pulse-glow': {
+                            '0%': { boxShadow: '0 0 20px rgba(227, 25, 55, 0.3)' },
+                            '100%': { boxShadow: '0 0 40px rgba(227, 25, 55, 0.6)' }
+                        },
+                        'slide-up': {
+                            '0%': { transform: 'translateY(50px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        'fade-in': {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .scroll-trigger {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+        .scroll-trigger.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #E31937, #FF4D6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tech-glow {
+            background: linear-gradient(135deg, rgba(227, 25, 55, 0.1), rgba(255, 77, 107, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(227, 25, 55, 0.2);
+        }
+        .number-highlight {
+            background: linear-gradient(135deg, #E31937, #FF4D6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 overflow-x-hidden">
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-white to-gray-50">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 left-20 w-64 h-64 bg-brand-red opacity-5 rounded-full animate-float"></div>
+            <div class="absolute bottom-20 right-20 w-96 h-96 bg-brand-red opacity-3 rounded-full animate-float" style="animation-delay: -3s;"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <div class="scroll-trigger">
+                <h1 class="text-8xl md:text-9xl font-black mb-8">
+                    <span class="gradient-text">2025</span>
+                </h1>
+                <h2 class="text-4xl md:text-6xl font-bold mb-6 text-gray-800">
+                    全国事业单位联考<span class="text-brand-red">E类</span>
+                </h2>
+                <div class="bg-brand-red text-white px-8 py-4 rounded-2xl inline-block mb-8 animate-pulse-glow">
+                    <span class="text-2xl md:text-3xl font-bold">考前30分</span>
+                </div>
+                <h3 class="text-3xl md:text-4xl font-semibold text-gray-700 mb-12">
+                    《综合应用能力》
+                </h3>
+                <div class="flex justify-center space-x-8 text-gray-600">
+                    <div class="flex items-center">
+                        <i class="fas fa-clock text-brand-red mr-2"></i>
+                        <span>30分钟精华</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-star text-brand-red mr-2"></i>
+                        <span>高频考点</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-trophy text-brand-red mr-2"></i>
+                        <span>制胜密码</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Table of Contents -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="scroll-trigger text-center mb-16">
+                <h2 class="text-5xl font-bold mb-4">
+                    <i class="fas fa-list-ul text-brand-red mr-4"></i>
+                    目录导航
+                </h2>
+                <p class="text-xl text-gray-600">快速定位，高效复习</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="scroll-trigger tech-glow rounded-3xl p-8 hover:scale-105 transition-transform duration-300">
+                    <div class="text-6xl font-black number-highlight mb-4">01</div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">制胜密码</h3>
+                    <p class="text-gray-600 mb-4">医学基础高频考点</p>
+                    <div class="flex items-center text-brand-red">
+                        <i class="fas fa-arrow-right mr-2"></i>
+                        <span>第1页</span>
+                    </div>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-8 hover:scale-105 transition-transform duration-300">
+                    <div class="text-6xl font-black number-highlight mb-4">02</div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">临考破局</h3>
+                    <p class="text-gray-600 mb-4">临床一句话重点</p>
+                    <div class="flex items-center text-brand-red">
+                        <i class="fas fa-arrow-right mr-2"></i>
+                        <span>第1页</span>
+                    </div>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-8 hover:scale-105 transition-transform duration-300">
+                    <div class="text-6xl font-black number-highlight mb-4">03</div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">临考破局</h3>
+                    <p class="text-gray-600 mb-4">常考金标准</p>
+                    <div class="flex items-center text-brand-red">
+                        <i class="fas fa-arrow-right mr-2"></i>
+                        <span>第7页</span>
+                    </div>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-8 hover:scale-105 transition-transform duration-300">
+                    <div class="text-6xl font-black number-highlight mb-4">04</div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">过目不忘</h3>
+                    <p class="text-gray-600 mb-4">名师总结</p>
+                    <div class="flex items-center text-brand-red">
+                        <i class="fas fa-arrow-right mr-2"></i>
+                        <span>第8页</span>
+                    </div>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-8 hover:scale-105 transition-transform duration-300">
+                    <div class="text-6xl font-black number-highlight mb-4">05</div>
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">巅峰状态</h3>
+                    <p class="text-gray-600 mb-4">临阵磨枪</p>
+                    <div class="flex items-center text-brand-red">
+                        <i class="fas fa-arrow-right mr-2"></i>
+                        <span>第10页</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: 制胜密码 -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="scroll-trigger text-center mb-16">
+                <div class="text-8xl font-black number-highlight mb-4">01</div>
+                <h2 class="text-5xl font-bold mb-4">
+                    <i class="fas fa-key text-brand-red mr-4"></i>
+                    制胜密码
+                </h2>
+                <p class="text-2xl text-gray-600">医学基础高频考点</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- 缺乏、过多与疾病 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-exclamation-triangle mr-3"></i>
+                            缺乏、过多与疾病
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>缺乏维生素A→视紫红质缺乏</strong> → 夜盲症
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>幼年缺乏生长激素</strong> → 侏儒症
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>幼年生长激素分泌过多</strong> → 巨人症
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>成年生长激素分泌过多</strong> → 肢端肥大症
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>甲状腺功能低下的儿童</strong> → 呆小症
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>甲状腺功能低下的成人</strong> → 粘液性水肿
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 感受器考点总结 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-eye mr-3"></i>
+                            感受器考点总结
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>动脉压力感受器</strong> → 颈动脉窦和主动脉弓
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>呼吸调节外周化学感受器</strong> → 颈动脉体、主动脉体
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>呼吸调节中枢化学感受器</strong> → 延髓外侧浅表部位
+                            </div>
+                            <div class="bg-gray-50 rounded-2xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <strong>牵张反射的感受器</strong> → 肌梭
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: 临床一句话重点 -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="scroll-trigger text-center mb-16">
+                <div class="text-8xl font-black number-highlight mb-4">02</div>
+                <h2 class="text-5xl font-bold mb-4">
+                    <i class="fas fa-stethoscope text-brand-red mr-4"></i>
+                    临考破局
+                </h2>
+                <p class="text-2xl text-gray-600">临床一句话重点</p>
+                <div class="mt-8 text-6xl font-black number-highlight">120</div>
+                <p class="text-xl text-gray-600">个核心要点</p>
+            </div>
+
+            <!-- 分组展示临床要点 -->
+            <div class="grid gap-8">
+                <!-- 呼吸系统 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-lungs mr-3"></i>
+                            呼吸系统疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">1. COPD特征</div>
+                                    <p class="text-sm">以不完全可逆的气流受限为特征，可预防、可治疗、不可治愈</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">2. COPD病因</div>
+                                    <p class="text-sm">长期吸烟为最主要的病因</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">3. 肺炎分类</div>
+                                    <p class="text-sm">细菌性肺炎最常见；肺炎链球菌→大叶性；金黄色葡萄球菌→小叶性</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">4. 肺炎链球菌肺炎</div>
+                                    <p class="text-sm">青壮年+受凉+寒战高热+铁锈色痰+肺实变影→首选青霉素G</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">5. 医院获得性肺炎</div>
+                                    <p class="text-sm">入院≥48小时后在医院内新发生的肺炎</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">6. 肺癌类型</div>
+                                    <p class="text-sm">最常见解剖学类型：中央型；组织学类型：腺癌；最恶性：小细胞肺癌</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 循环系统 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-heartbeat mr-3"></i>
+                            循环系统疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">10. 心脏按压</div>
+                                    <p class="text-sm">胸骨下半部，频率100-120次/分，深度5-6cm</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">11. 心衰症状</div>
+                                    <p class="text-sm">左心衰最早：劳力性呼吸困难；右心衰特征：肝颈静脉回流征(+)</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">12. 急性心衰</div>
+                                    <p class="text-sm">急性肺水肿表现，咳粉红色泡沫痰</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">18. 高血压并发症</div>
+                                    <p class="text-sm">最严重的并发症是脑卒中</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">19. 高血压急症</div>
+                                    <p class="text-sm">首要治疗：迅速降压，首选硝普钠</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">20. 冠心病诊断</div>
+                                    <p class="text-sm">冠状动脉造影(CAG)是金标准</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 消化系统 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-stomach mr-3"></i>
+                            消化系统疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">23. 胃食管反流病</div>
+                                    <p class="text-sm">最常见典型症状：烧心和反流</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">24. 食管癌</div>
+                                    <p class="text-sm">中晚期典型症状：进行性吞咽困难</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">28. 胆囊结石</div>
+                                    <p class="text-sm">首选检查：B超；首选治疗：胆囊切除术</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">29. 胆管结石</div>
+                                    <p class="text-sm">Charcot三联征：腹痛、寒战高热、黄疸</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">32. 急性胰腺炎</div>
+                                    <p class="text-sm">最常见病因：胆石症；最常见诱因：暴饮暴食</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">36. 肠梗阻</div>
+                                    <p class="text-sm">典型症状：痛、吐、胀、闭</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 泌尿系统 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-kidneys mr-3"></i>
+                            泌尿系统疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">40. 急性肾小球肾炎</div>
+                                    <p class="text-sm">链球菌感染后1-3周，血尿、蛋白尿、水肿、高血压</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">41. 慢性肾炎</div>
+                                    <p class="text-sm">病程>1年，蛋白尿、血尿、高血压、肾功能损害</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">42. 肾病综合征</div>
+                                    <p class="text-sm">大量蛋白尿(>3.5g/d)、低蛋白血症、水肿、高脂血症</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">43. 急性肾衰竭</div>
+                                    <p class="text-sm">少尿期、多尿期、恢复期；最危险：高钾血症</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">44. 慢性肾衰竭</div>
+                                    <p class="text-sm">肾功能代偿期→失代偿期→肾衰竭期→尿毒症期</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">45. 尿路感染</div>
+                                    <p class="text-sm">女性多见，大肠杆菌最常见，首选喹诺酮类</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 血液系统 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-tint mr-3"></i>
+                            血液系统疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">50. 缺铁性贫血</div>
+                                    <p class="text-sm">小细胞低色素性贫血，血清铁↓，总铁结合力↑</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">51. 巨幼细胞贫血</div>
+                                    <p class="text-sm">维生素B12或叶酸缺乏，大细胞性贫血</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">52. 再生障碍性贫血</div>
+                                    <p class="text-sm">全血细胞减少，骨髓增生减低</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">53. 急性白血病</div>
+                                    <p class="text-sm">骨髓原始细胞≥20%，贫血、出血、感染、浸润</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">54. 特发性血小板减少性紫癜</div>
+                                    <p class="text-sm">血小板<100×10⁹/L，皮肤黏膜出血</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">55. 血友病</div>
+                                    <p class="text-sm">X连锁隐性遗传，凝血因子Ⅷ或Ⅸ缺乏</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 内分泌系统 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-dna mr-3"></i>
+                            内分泌系统疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">60. 糖尿病诊断</div>
+                                    <p class="text-sm">空腹血糖≥7.0mmol/L或餐后2h血糖≥11.1mmol/L</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">61. 1型糖尿病</div>
+                                    <p class="text-sm">青少年发病，胰岛β细胞破坏，绝对胰岛素缺乏</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">62. 2型糖尿病</div>
+                                    <p class="text-sm">中老年发病，胰岛素抵抗和分泌不足</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">63. 糖尿病酮症酸中毒</div>
+                                    <p class="text-sm">血糖>13.9mmol/L，尿酮体(+)，血pH<7.3</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">64. 甲状腺功能亢进</div>
+                                    <p class="text-sm">高代谢症候群，突眼，甲状腺肿大</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">65. 甲状腺危象</div>
+                                    <p class="text-sm">高热(>39℃)，心动过速，意识障碍</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 神经系统 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-brain mr-3"></i>
+                            神经系统疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">70. 脑出血</div>
+                                    <p class="text-sm">高血压最常见并发症，基底节区最常见</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">71. 脑梗死</div>
+                                    <p class="text-sm">血栓性最常见，栓塞性起病最急</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">72. 蛛网膜下腔出血</div>
+                                    <p class="text-sm">突发剧烈头痛，脑膜刺激征(+)</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">73. 癫痫大发作</div>
+                                    <p class="text-sm">强直-阵挛发作，意识丧失，首选苯妥英钠</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">74. 帕金森病</div>
+                                    <p class="text-sm">静止性震颤，肌强直，运动迟缓</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">75. 重症肌无力</div>
+                                    <p class="text-sm">晨轻暮重，眼睑下垂，首选新斯的明</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 风湿免疫系统 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-shield-alt mr-3"></i>
+                            风湿免疫系统疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">80. 类风湿关节炎</div>
+                                    <p class="text-sm">对称性多关节炎，晨僵>1小时，RF(+)</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">81. 系统性红斑狼疮</div>
+                                    <p class="text-sm">蝶形红斑，多系统损害，ANA(+)</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">82. 强直性脊柱炎</div>
+                                    <p class="text-sm">青年男性，腰背痛，HLA-B27(+)</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">83. 痛风</div>
+                                    <p class="text-sm">高尿酸血症，第一跖趾关节最常受累</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">84. 骨关节炎</div>
+                                    <p class="text-sm">退行性关节病，负重关节受累</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">85. 骨质疏松症</div>
+                                    <p class="text-sm">骨量减少，骨折风险增加，绝经后女性多见</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 传染病 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-virus mr-3"></i>
+                            传染病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">90. 病毒性肝炎</div>
+                                    <p class="text-sm">甲肝：粪-口传播；乙肝：血液、性、母婴传播</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">91. 肺结核</div>
+                                    <p class="text-sm">飞沫传播，午后低热，盗汗，咳嗽咳痰</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">92. 艾滋病</div>
+                                    <p class="text-sm">HIV感染，CD4+T细胞<200/μL，机会性感染</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">93. 流行性感冒</div>
+                                    <p class="text-sm">流感病毒，高热，全身中毒症状重</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">94. 细菌性痢疾</div>
+                                    <p class="text-sm">志贺菌，腹痛腹泻，黏液脓血便</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">95. 霍乱</div>
+                                    <p class="text-sm">霍乱弧菌，无痛性水样腹泻，米泔水样便</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 急诊医学 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-ambulance mr-3"></i>
+                            急诊医学
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">100. 心肺复苏</div>
+                                    <p class="text-sm">CAB：胸外按压→开放气道→人工呼吸</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">101. 休克</div>
+                                    <p class="text-sm">血压下降，脉压差缩小，尿量减少</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">102. 急性中毒</div>
+                                    <p class="text-sm">催吐、洗胃、导泻、解毒、对症支持</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">103. 溺水</div>
+                                    <p class="text-sm">立即心肺复苏，不要控水，防止误吸</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">104. 电击伤</div>
+                                    <p class="text-sm">立即脱离电源，心肺复苏，防治心律失常</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">105. 烧伤</div>
+                                    <p class="text-sm">面积评估：九分法；深度：Ⅰ°、浅Ⅱ°、深Ⅱ°、Ⅲ°</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 妇产科 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-baby mr-3"></i>
+                            妇产科疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">110. 异位妊娠</div>
+                                    <p class="text-sm">输卵管妊娠最常见，停经、腹痛、阴道流血</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">111. 流产</div>
+                                    <p class="text-sm">先兆→难免→不全→完全→稽留→习惯性</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">112. 妊娠期高血压</div>
+                                    <p class="text-sm">妊娠20周后，血压≥140/90mmHg</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">113. 胎盘早剥</div>
+                                    <p class="text-sm">妊娠20周后，胎盘部分或完全剥离</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">114. 前置胎盘</div>
+                                    <p class="text-sm">胎盘附着于子宫下段，无痛性阴道流血</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">115. 产后出血</div>
+                                    <p class="text-sm">胎儿娩出后24小时内出血>500ml</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 儿科 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-child mr-3"></i>
+                            儿科疾病
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">116. 新生儿窒息</div>
+                                    <p class="text-sm">Apgar评分<7分，立即清理呼吸道，给氧</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">117. 新生儿黄疸</div>
+                                    <p class="text-sm">生理性：2-3天出现；病理性：24小时内出现</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">118. 小儿腹泻</div>
+                                    <p class="text-sm">轮状病毒最常见，预防脱水，口服补液盐</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">119. 小儿肺炎</div>
+                                    <p class="text-sm">发热、咳嗽、气促、肺部啰音</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">120. 手足口病</div>
+                                    <p class="text-sm">肠道病毒感染，手、足、口、臀部皮疹</p>
+                                </div>
+                                <div class="bg-white rounded-xl p-4 border-l-4 border-brand-red hover:shadow-lg transition-shadow duration-300">
+                                    <div class="font-bold text-brand-red mb-2">完成</div>
+                                    <p class="text-sm">🎉 120个临床要点全部展示完毕！</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </section>
+
+    <!-- Section 3: 常考金标准 -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="scroll-trigger text-center mb-16">
+                <div class="text-8xl font-black number-highlight mb-4">03</div>
+                <h2 class="text-5xl font-bold mb-4">
+                    <i class="fas fa-medal text-brand-red mr-4"></i>
+                    临考破局
+                </h2>
+                <p class="text-2xl text-gray-600">常考金标准</p>
+                <div class="mt-8 text-6xl font-black number-highlight">20</div>
+                <p class="text-xl text-gray-600">个诊断金标准</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="scroll-trigger tech-glow rounded-3xl p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl font-black number-highlight mb-4">01</div>
+                    <h4 class="text-xl font-bold mb-3 text-brand-red">诊断冠心病</h4>
+                    <p class="text-lg font-semibold">冠脉造影</p>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl font-black number-highlight mb-4">02</div>
+                    <h4 class="text-xl font-bold mb-3 text-brand-red">诊断肿瘤</h4>
+                    <p class="text-lg font-semibold">病理活检</p>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl font-black number-highlight mb-4">03</div>
+                    <h4 class="text-xl font-bold mb-3 text-brand-red">诊断支扩</h4>
+                    <p class="text-lg font-semibold">HR-CT</p>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl font-black number-highlight mb-4">04</div>
+                    <h4 class="text-xl font-bold mb-3 text-brand-red">诊断胰腺炎</h4>
+                    <p class="text-lg font-semibold">增强CT</p>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl font-black number-highlight mb-4">05</div>
+                    <h4 class="text-xl font-bold mb-3 text-brand-red">诊断结核</h4>
+                    <p class="text-lg font-semibold">痰培养</p>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl font-black number-highlight mb-4">11</div>
+                    <h4 class="text-xl font-bold mb-3 text-brand-red">诊断心律失常</h4>
+                    <p class="text-lg font-semibold">心电图</p>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl font-black number-highlight mb-4">19</div>
+                    <h4 class="text-xl font-bold mb-3 text-brand-red">诊断COPD</h4>
+                    <p class="text-lg font-semibold">肺功能FEV1/FVC<0.7</p>
+                </div>
+
+                <div class="scroll-trigger tech-glow rounded-3xl p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="text-4xl font-black number-highlight mb-4">20</div>
+                    <h4 class="text-xl font-bold mb-3 text-brand-red">胃幽门梗阻</h4>
+                    <p class="text-lg font-semibold">首选胃镜，慎用钡剂</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: 名师总结 -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="scroll-trigger text-center mb-16">
+                <div class="text-8xl font-black number-highlight mb-4">04</div>
+                <h2 class="text-5xl font-bold mb-4">
+                    <i class="fas fa-graduation-cap text-brand-red mr-4"></i>
+                    过目不忘
+                </h2>
+                <p class="text-2xl text-gray-600">名师总结首选药</p>
+            </div>
+
+            <div class="scroll-trigger">
+                <div class="tech-glow rounded-3xl p-8 overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b-2 border-brand-red">
+                                <th class="py-4 px-6 text-2xl font-bold text-brand-red">疾病</th>
+                                <th class="py-4 px-6 text-2xl font-bold text-brand-red">首选药物</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-lg">
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">过敏性休克</td>
+                                <td class="py-4 px-6">肾上腺素</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">青光眼</td>
+                                <td class="py-4 px-6">毛果芸香碱</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">重症肌无力</td>
+                                <td class="py-4 px-6">新斯的明</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">有机磷中毒</td>
+                                <td class="py-4 px-6">阿托品（对症）+ 解磷定（对因）</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">癫痫持续状态</td>
+                                <td class="py-4 px-6">地西泮静脉注射</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">癫痫大发作和局限性发作</td>
+                                <td class="py-4 px-6">苯妥英钠</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">变异型心绞痛</td>
+                                <td class="py-4 px-6">硝苯地平</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">室性心律失常</td>
+                                <td class="py-4 px-6">利多卡因</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">哮喘急性发作</td>
+                                <td class="py-4 px-6">沙丁胺醇/特布他林</td>
+                            </tr>
+                            <tr class="border-b border-gray-200 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                <td class="py-4 px-6 font-semibold">1型糖尿病、酮症酸中毒</td>
+                                <td class="py-4 px-6">胰岛素</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: 巅峰状态 -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="scroll-trigger text-center mb-16">
+                <div class="text-8xl font-black number-highlight mb-4">05</div>
+                <h2 class="text-5xl font-bold mb-4">
+                    <i class="fas fa-rocket text-brand-red mr-4"></i>
+                    巅峰状态
+                </h2>
+                <p class="text-2xl text-gray-600">临阵磨枪</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- 得分秘籍 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-trophy mr-3"></i>
+                            得分秘籍
+                        </h3>
+                        
+                        <div class="mb-8">
+                            <h4 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+                                <i class="fas fa-check-circle text-brand-red mr-2"></i>
+                                选择题技巧
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    <strong>关键词划线法</strong> - 快速定位核心信息
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    <strong>排除法</strong> - 先排除明显错误选项
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    <strong>最佳答案法</strong> - 选择最准确的答案
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    <strong>完整性原则</strong> - 注意"除外"、"不包括"
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+                                <i class="fas fa-edit text-brand-red mr-2"></i>
+                                简答题技巧
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    <strong>审题要仔细</strong> - 划出关键词
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    <strong>答题要分层</strong> - 分点列举
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    <strong>书写要规范</strong> - 字迹工整
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    <strong>重点要突出</strong> - 核心词加下划线
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 绝地反击 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-bolt mr-3"></i>
+                            绝地反击
+                        </h3>
+                        
+                        <div class="mb-8">
+                            <h4 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+                                <i class="fas fa-clock text-brand-red mr-2"></i>
+                                时间不足处理
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-xl">
+                                    <strong>选择题：</strong>直觉选择，关注关键词，放弃复杂计算
+                                </div>
+                                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl">
+                                    <strong>简答题：</strong>列出关键词，简明扼要，确保基本分
+                                </div>
+                                <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-xl">
+                                    <strong>病例分析：</strong>抓住主要症状，写出基本诊断和治疗
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+                                <i class="fas fa-brain text-brand-red mr-2"></i>
+                                思维卡壳处理
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    深呼吸放松
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    跳过此题，标记待回顾
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    联系相关知识点
+                                </div>
+                                <div class="bg-gray-50 rounded-xl p-4 hover:bg-brand-red hover:text-white transition-colors duration-300">
+                                    从基础理论推导
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 心理防护 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-heart mr-3"></i>
+                            心理防护
+                        </h3>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-xl font-bold mb-3 text-gray-800">4-7-8呼吸法</h4>
+                                <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4">
+                                    <div class="flex justify-between text-center">
+                                        <div>
+                                            <div class="text-2xl font-bold text-blue-600">4秒</div>
+                                            <div class="text-sm">吸气</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-2xl font-bold text-blue-600">7秒</div>
+                                            <div class="text-sm">屏息</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-2xl font-bold text-blue-600">8秒</div>
+                                            <div class="text-sm">呼气</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-xl font-bold mb-3 text-gray-800">正向自我暗示</h4>
+                                <div class="space-y-2">
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-3 text-green-800">
+                                        "我已经充分准备"
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-3 text-green-800">
+                                        "我能够冷静应对"
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-3 text-green-800">
+                                        "我相信自己的能力"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 临门一脚 -->
+                <div class="scroll-trigger">
+                    <div class="tech-glow rounded-3xl p-8">
+                        <h3 class="text-3xl font-bold mb-6 text-brand-red flex items-center">
+                            <i class="fas fa-star mr-3"></i>
+                            临门一脚
+                        </h3>
+                        
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🍀</div>
+                            <h4 class="text-2xl font-bold mb-4 text-brand-red">祝考试顺利！</h4>
+                            
+                            <div class="space-y-4 text-left">
+                                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-xl">
+                                    <strong>温馨提示：</strong>保持平和心态，相信自己的准备
+                                </div>
+                                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl">
+                                    考场上要沉着冷静，合理调配时间
+                                </div>
+                                <div class="bg-brand-red text-white p-4 rounded-xl text-center">
+                                    <strong>记住：你比想象中更强大！</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-8">
+                <h3 class="text-3xl font-bold mb-4">
+                    <span class="gradient-text">2025年事业单位E类考试</span>
+                </h3>
+                <p class="text-xl text-gray-400">愿所有考生都能取得理想成绩</p>
+            </div>
+            
+            <div class="flex justify-center space-x-8 mb-8">
+                <div class="flex items-center">
+                    <i class="fas fa-clock text-brand-red mr-2"></i>
+                    <span>高效复习</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-target text-brand-red mr-2"></i>
+                    <span>精准备考</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-trophy text-brand-red mr-2"></i>
+                    <span>成功上岸</span>
+                </div>
+            </div>
+            
+            <div class="text-gray-500">
+                <p>&copy; 2025 事业单位E类考试资料. 祝愿所有考生金榜题名！</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 滚动触发动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // 观察所有需要动画的元素
+        document.querySelectorAll('.scroll-trigger').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 显示更多临床要点功能
+        document.getElementById('showMoreClinical').addEventListener('click', function() {
+            // 这里可以添加显示更多内容的逻辑
+            this.innerHTML = '<i class="fas fa-check mr-2"></i>已显示全部内容';
+            this.classList.remove('animate-pulse-glow');
+            this.classList.add('bg-green-500');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 页面加载完成后的初始动画
+        window.addEventListener('load', function() {
+            document.body.classList.add('loaded');
+        });
+    </script>
+</body>
+</html>

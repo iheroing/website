@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>护理学考点精要 - 专业知识体系</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .text-brand {
+            color: #E31937;
+        }
+        
+        .bg-brand {
+            background-color: #E31937;
+        }
+        
+        .border-brand {
+            border-color: #E31937;
+        }
+        
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(227, 25, 55, 0.3);
+        }
+        
+        .parallax-element {
+            transition: transform 0.1s ease-out;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .animate-pulse-slow {
+            animation: pulse-slow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .grid-pattern {
+            background-image: radial-gradient(circle at 1px 1px, rgba(227, 25, 55, 0.1) 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .bento-item {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #f1f5f9;
+        }
+        
+        .bento-item-large {
+            grid-column: span 2;
+        }
+        
+        @media (max-width: 768px) {
+            .bento-item-large {
+                grid-column: span 1;
+            }
+        }
+        
+        .number-highlight {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, #E31937, #ff4757);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #E31937, transparent);
+            margin: 3rem 0;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-brand rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user-nurse text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">护理学考点精要</h1>
+                        <p class="text-sm text-gray-600">专业知识体系 · 全面覆盖</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <span class="text-sm text-gray-600">涵盖五大核心领域</span>
+                    <div class="w-2 h-2 bg-brand rounded-full animate-pulse-slow"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 grid-pattern opacity-30"></div>
+        <div class="max-w-7xl mx-auto px-6 relative">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center px-4 py-2 bg-brand/10 rounded-full text-brand text-sm font-medium mb-6">
+                    <i class="fas fa-star mr-2"></i>
+                    专业护理知识体系
+                </div>
+                <h2 class="text-6xl md:text-8xl font-black text-gray-900 mb-6 animate-float">
+                    护理学
+                    <span class="text-brand">考点</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    涵盖基础护理学、内科护理学、外科护理学、妇产科护理学、儿科护理学五大核心领域，
+                    系统整理重要考点，助力专业能力提升
+                </p>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 mb-16">
+                <div class="text-center">
+                    <div class="number-highlight">5</div>
+                    <p class="text-gray-600 font-medium">核心领域</p>
+                </div>
+                <div class="text-center">
+                    <div class="number-highlight">90+</div>
+                    <p class="text-gray-600 font-medium">重要考点</p>
+                </div>
+                <div class="text-center">
+                    <div class="number-highlight">18</div>
+                    <p class="text-gray-600 font-medium">章节内容</p>
+                </div>
+                <div class="text-center">
+                    <div class="number-highlight">100%</div>
+                    <p class="text-gray-600 font-medium">知识覆盖</p>
+                </div>
+                <div class="text-center">
+                    <div class="number-highlight">∞</div>
+                    <p class="text-gray-600 font-medium">学习价值</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 pb-20">
+        
+        <!-- 基础护理学 -->
+        <section class="mb-20">
+            <div class="flex items-center mb-12">
+                <div class="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mr-6">
+                    <i class="fas fa-hospital text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-gray-900">基础护理学</h2>
+                    <p class="text-gray-600 mt-2">护理工作的基石，涵盖医院环境、基础操作、生命体征监测等核心内容</p>
+                </div>
+            </div>
+
+            <div class="bento-grid">
+                <!-- 医院和住院环境 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-building text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">医院和住院环境</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-brand mb-2">温度控制</h4>
+                            <p class="text-sm text-gray-700">一般：18～22℃ | 新生儿/老年人：22～24℃</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-brand mb-2">湿度管理</h4>
+                            <p class="text-sm text-gray-700">标准：50%～60%</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-brand mb-2">噪音控制</h4>
+                            <p class="text-sm text-gray-700">理想：35～40dB | 干扰：50～60dB</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卧位护理 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-bed text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">卧位护理</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-medium">去枕仰卧位</span>
+                            <span class="text-sm text-gray-600">昏迷/全麻</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-medium">中凹卧位</span>
+                            <span class="text-sm text-gray-600">休克</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                            <span class="font-medium">半坐卧位</span>
+                            <span class="text-sm text-gray-600">呼吸困难</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span class="font-medium">端坐卧位</span>
+                            <span class="text-sm text-gray-600">急性肺水肿</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 压疮护理 -->
+                <div class="bento-item bento-item-large card-hover">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-shield-alt text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">压疮的护理</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                            <h4 class="font-semibold text-red-700 mb-2">淤血红润期</h4>
+                            <p class="text-sm text-red-600 mb-2">皮肤红、肿、热、痛</p>
+                            <p class="text-xs text-gray-600">每2h翻身一次</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-400">
+                            <h4 class="font-semibold text-orange-700 mb-2">炎性浸润期</h4>
+                            <p class="text-sm text-orange-600 mb-2">紫红色、水疱</p>
+                            <p class="text-xs text-gray-600">防止感染</p>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
+                            <h4 class="font-semibold text-yellow-700 mb-2">浅度溃疡期</h4>
+                            <p class="text-sm text-yellow-600 mb-2">水疱破溃</p>
+                            <p class="text-xs text-gray-600">清洁伤口</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-gray-400">
+                            <h4 class="font-semibold text-gray-700 mb-2">坏死溃疡期</h4>
+                            <p class="text-sm text-gray-600 mb-2">脓液、臭味</p>
+                            <p class="text-xs text-gray-600">手术治疗</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 生命体征监测 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-heartbeat text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">生命体征</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="vitalSignsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 给药护理 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-pills text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">给药护理</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <h4 class="font-semibold text-blue-700 mb-1">注射角度</h4>
+                            <div class="text-sm space-y-1">
+                                <p>皮内：5° | 皮下：30°-40°</p>
+                                <p>肌内：90° | 静脉：15°-30°</p>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <h4 class="font-semibold text-green-700 mb-1">雾化吸入</h4>
+                            <p class="text-sm">氧流量：6～8L/min</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 内科护理学 -->
+        <section class="mb-20">
+            <div class="flex items-center mb-12">
+                <div class="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mr-6">
+                    <i class="fas fa-stethoscope text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-gray-900">内科护理学</h2>
+                    <p class="text-gray-600 mt-2">内科疾病的专业护理，涵盖呼吸、循环、消化、内分泌等系统疾病</p>
+                </div>
+            </div>
+
+            <div class="bento-grid">
+                <!-- 呼吸系统疾病 -->
+                <div class="bento-item bento-item-large card-hover">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-lungs text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">呼吸系统疾病</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-brand">肺炎链球菌肺炎</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-sm mb-2"><strong>典型症状：</strong>寒战、高热、胸痛</p>
+                                <p class="text-sm mb-2"><strong>特征性痰：</strong>铁锈色痰</p>
+                                <p class="text-sm"><strong>首选药物：</strong>青霉素</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-brand">支气管哮喘</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-sm mb-2"><strong>本质：</strong>气道慢性炎症</p>
+                                <p class="text-sm mb-2"><strong>主要表现：</strong>呼气性呼吸困难</p>
+                                <p class="text-sm"><strong>首选药物：</strong>β受体激动剂</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-brand">肺结核</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-sm mb-2"><strong>病原体：</strong>结核杆菌</p>
+                                <p class="text-sm mb-2"><strong>确诊依据：</strong>痰菌检查</p>
+                                <p class="text-sm"><strong>治疗原则：</strong>早期、联合、适量</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 循环系统疾病 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-heart text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">心功能不全</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-red-700 mb-2">左心衰</h4>
+                            <p class="text-sm text-red-600">最典型：呼吸困难</p>
+                            <p class="text-sm text-red-600">最严重：急性肺水肿</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-700 mb-2">右心衰</h4>
+                            <p class="text-sm text-blue-600">颈静脉怒张、肝大</p>
+                            <p class="text-sm text-blue-600">下垂部位水肿</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 心肌梗死 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">心肌梗死</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-yellow-50 p-3 rounded-lg">
+                            <p class="text-sm"><strong>最早症状：</strong>疼痛</p>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded-lg">
+                            <p class="text-sm"><strong>死亡原因：</strong>室颤（24h内）</p>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <p class="text-sm"><strong>诊断金标准：</strong>冠脉造影</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <p class="text-sm"><strong>治疗原则：</strong>心肌再灌注</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 糖尿病 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-tint text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">糖尿病</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-purple-700 mb-2">"三多一少"</h4>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <span>多饮</span><span>多食</span>
+                                <span>多尿</span><span>体重↓</span>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-3 rounded-lg">
+                            <p class="text-sm"><strong>酮症酸中毒：</strong>烂苹果味</p>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <p class="text-sm"><strong>基本治疗：</strong>饮食治疗</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 外科护理学 -->
+        <section class="mb-20">
+            <div class="flex items-center mb-12">
+                <div class="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mr-6">
+                    <i class="fas fa-user-md text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-gray-900">外科护理学</h2>
+                    <p class="text-gray-600 mt-2">外科疾病的专业护理，包括手术前后护理、创伤处理、感染控制等</p>
+                </div>
+            </div>
+
+            <div class="bento-grid">
+                <!-- 破伤风 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-virus text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">破伤风</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-red-700 mb-2">典型症状</h4>
+                            <p class="text-sm text-red-600 mb-1">牙关紧闭</p>
+                            <p class="text-sm text-red-600 mb-1">"苦笑"面容</p>
+                            <p class="text-sm text-red-600">"角弓反张"</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-700 mb-2">护理要点</h4>
+                            <p class="text-sm text-blue-600">单间隔离、避光、安静</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 烧伤深度 -->
+                <div class="bento-item bento-item-large card-hover">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-fire text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">烧伤深度分级</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
+                            <h4 class="font-semibold text-yellow-700 mb-2">Ⅰ度</h4>
+                            <p class="text-sm text-yellow-600 mb-2">表皮浅层</p>
+                            <p class="text-sm text-yellow-600 mb-2">红斑、干燥</p>
+                            <p class="text-xs text-gray-600">3～7日痊愈</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-400">
+                            <h4 class="font-semibold text-orange-700 mb-2">浅Ⅱ度</h4>
+                            <p class="text-sm text-orange-600 mb-2">表皮全层</p>
+                            <p class="text-sm text-orange-600 mb-2">大水疱、疼痛剧烈</p>
+                            <p class="text-xs text-gray-600">1～2周愈合</p>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                            <h4 class="font-semibold text-red-700 mb-2">深Ⅱ度</h4>
+                            <p class="text-sm text-red-600 mb-2">真皮深层</p>
+                            <p class="text-sm text-red-600 mb-2">小水疱、痛觉迟钝</p>
+                            <p class="text-xs text-gray-600">3～4周愈合</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-gray-400">
+                            <h4 class="font-semibold text-gray-700 mb-2">Ⅲ度</h4>
+                            <p class="text-sm text-gray-600 mb-2">皮肤全层</p>
+                            <p class="text-sm text-gray-600 mb-2">焦痂、痛觉消失</p>
+                            <p class="text-xs text-gray-600">需植皮愈合</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 气胸类型 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-lungs-virus text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">气胸类型</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <h4 class="font-semibold text-green-700">闭合性气胸</h4>
+                            <p class="text-sm text-green-600">胸膜已闭、轻症</p>
+                        </div>
+                        <div class="bg-yellow-50 p-3 rounded-lg">
+                            <h4 class="font-semibold text-yellow-700">开放性气胸</h4>
+                            <p class="text-sm text-yellow-600">胸膜未闭、纵膈扑动</p>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded-lg">
+                            <h4 class="font-semibold text-red-700">张力性气胸</h4>
+                            <p class="text-sm text-red-600">活瓣机制、最危险</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 疝的鉴别 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-search text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">疝的鉴别</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="p-2 text-left">类型</th>
+                                    <th class="p-2 text-left">年龄</th>
+                                    <th class="p-2 text-left">嵌顿</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-2 font-medium">斜疝</td>
+                                    <td class="p-2">青壮年</td>
+                                    <td class="p-2">较多</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 font-medium">直疝</td>
+                                    <td class="p-2">老年人</td>
+                                    <td class="p-2">较少</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 妇产科护理学 -->
+        <section class="mb-20">
+            <div class="flex items-center mb-12">
+                <div class="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mr-6">
+                    <i class="fas fa-baby text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-gray-900">妇产科护理学</h2>
+                    <p class="text-gray-600 mt-2">妇女生殖健康和围产期护理，涵盖妊娠、分娩、产褥期等专业护理</p>
+                </div>
+            </div>
+
+            <div class="bento-grid">
+                <!-- 妊娠期护理 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-pregnant text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">早期妊娠</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-pink-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-pink-700 mb-2">临床表现</h4>
+                            <div class="text-sm space-y-1">
+                                <p>• 停经（最早、最重要）</p>
+                                <p>• 早孕反应（6周左右）</p>
+                                <p>• 尿频（12周后消失）</p>
+                                <p>• 乳房变化</p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <p class="text-sm"><strong>确诊检查：</strong>HCG、超声</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分娩过程 -->
+                <div class="bento-item bento-item-large card-hover">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-clock text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">分娩三个产程</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-700 mb-3">第一产程</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><strong>时间：</strong></p>
+                                <p>初产妇：11～12小时</p>
+                                <p>经产妇：6～8小时</p>
+                                <p><strong>特点：</strong>宫颈扩张期</p>
+                            </div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-700 mb-3">第二产程</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><strong>时间：</strong></p>
+                                <p>初产妇：1～2小时</p>
+                                <p>经产妇：几分钟～1小时</p>
+                                <p><strong>特点：</strong>胎儿娩出期</p>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-purple-700 mb-3">第三产程</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><strong>时间：</strong></p>
+                                <p>5～15分钟</p>
+                                <p>不超过30分钟</p>
+                                <p><strong>特点：</strong>胎盘娩出期</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 异位妊娠 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-exclamation-circle text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">异位妊娠</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-red-700 mb-2">最常见部位</h4>
+                            <p class="text-sm text-red-600">输卵管妊娠（壶腹部）</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-orange-700 mb-2">主要病因</h4>
+                            <p class="text-sm text-orange-600">输卵管炎症</p>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-yellow-700 mb-2">诊断方法</h4>
+                            <p class="text-sm text-yellow-600">阴道后穹隆穿刺</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 妊娠期高血压 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-thermometer-half text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">妊娠期高血压</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-red-700 mb-2">基本病变</h4>
+                            <p class="text-sm text-red-600">全身小动脉痉挛</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-700 mb-2">临床表现</h4>
+                            <p class="text-sm text-blue-600">高血压、水肿、蛋白尿</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-700 mb-2">首选药物</h4>
+                            <p class="text-sm text-green-600">硫酸镁（解痉）</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 儿科护理学 -->
+        <section class="mb-20">
+            <div class="flex items-center mb-12">
+                <div class="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center mr-6">
+                    <i class="fas fa-child text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-gray-900">儿科护理学</h2>
+                    <p class="text-gray-600 mt-2">儿童健康护理，涵盖生长发育、疾病护理、预防接种等专业内容</p>
+                </div>
+            </div>
+
+            <div class="bento-grid">
+                <!-- 计划免疫 -->
+                <div class="bento-item bento-item-large card-hover">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-syringe text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">计划免疫程序</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="p-3 text-left">疫苗</th>
+                                    <th class="p-3 text-left">接种时间</th>
+                                    <th class="p-3 text-left">接种途径</th>
+                                    <th class="p-3 text-left">部位</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-3 font-medium">乙肝疫苗</td>
+                                    <td class="p-3">0、1、6月龄</td>
+                                    <td class="p-3">肌内注射</td>
+                                    <td class="p-3">上臂三角肌</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-3 font-medium">卡介苗</td>
+                                    <td class="p-3">出生时</td>
+                                    <td class="p-3">皮内注射</td>
+                                    <td class="p-3">上臂三角肌</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-3 font-medium">脊髓灰质炎</td>
+                                    <td class="p-3">2、3、4月龄，4周岁</td>
+                                    <td class="p-3">口服</td>
+                                    <td class="p-3">-</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-3 font-medium">百白破</td>
+                                    <td class="p-3">3、4、5月龄，18～24月龄</td>
+                                    <td class="p-3">肌内注射</td>
+                                    <td class="p-3">上臂三角肌</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-medium">麻风疫苗</td>
+                                    <td class="p-3">8月龄</td>
+                                    <td class="p-3">皮下注射</td>
+                                    <td class="p-3">上臂外侧</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 生长发育 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-chart-line text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">生长发育指标</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-blue-700 mb-2">体重</h4>
+                            <p class="text-sm text-blue-600">出生：3kg | 1岁：9kg（3倍）</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-green-700 mb-2">身高</h4>
+                            <p class="text-sm text-green-600">出生：50cm | 1岁：75cm</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-purple-700 mb-2">头围</h4>
+                            <p class="text-sm text-purple-600">出生：34cm | 1岁：46cm</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 新生儿窒息 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-heartbeat text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">新生儿窒息</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-yellow-700 mb-2">Apgar评分</h4>
+                            <div class="text-sm space-y-1">
+                                <p>轻度窒息：4～7分</p>
+                                <p>重度窒息：0～3分</p>
+                            </div>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-red-700 mb-2">复苏步骤</h4>
+                            <p class="text-sm text-red-600">A-B-C-D-E</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 常见疾病 -->
+                <div class="bento-item card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-stethoscope text-brand text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold">常见疾病</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-orange-50 p-3 rounded-lg">
+                            <h4 class="font-semibold text-orange-700">佝偻病</h4>
+                            <p class="text-sm text-orange-600">维生素D缺乏</p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <h4 class="font-semibold text-blue-700">法洛四联症</h4>
+                            <p class="text-sm text-blue-600">最常见青紫型先心病</p>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <h4 class="font-semibold text-green-700">口炎</h4>
+                            <p class="text-sm text-green-600">鹅口疮、疱疹性、溃疡性</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 总结区域 -->
+        <section class="bg-white rounded-3xl p-12 shadow-lg">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center px-6 py-3 bg-brand/10 rounded-full text-brand text-lg font-semibold mb-6">
+                    <i class="fas fa-graduation-cap mr-3"></i>
+                    学习总结
+                </div>
+                <h2 class="text-4xl font-bold text-gray-900 mb-6">护理学知识体系</h2>
+                <p class="text-xl text-gray-600 max-w-4xl mx-auto">
+                    通过系统学习五大核心领域的护理知识，建立完整的专业知识框架，
+                    为临床护理实践和考试备考提供全面支持
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-hospital text-brand text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">基础护理学</h3>
+                    <p class="text-sm text-gray-600">18个核心考点</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-stethoscope text-brand text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">内科护理学</h3>
+                    <p class="text-sm text-gray-600">12个重要疾病</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-md text-brand text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">外科护理学</h3>
+                    <p class="text-sm text-gray-600">7个专科护理</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-baby text-brand text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">妇产科护理学</h3>
+                    <p class="text-sm text-gray-600">8个关键内容</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-child text-brand text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">儿科护理学</h3>
+                    <p class="text-sm text-gray-600">8个发育要点</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="w-12 h-12 bg-brand rounded-xl flex items-center justify-center mr-4">
+                        <i class="fas fa-user-nurse text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold">护理学考点精要</h3>
+                </div>
+                <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                    专业护理知识体系，助力学习成长。持续更新，精益求精。
+                </p>
+                <div class="flex items-center justify-center space-x-8 text-sm text-gray-500">
+                    <span>© 2024 护理学考点精要</span>
+                    <span>•</span>
+                    <span>专业知识分享</span>
+                    <span>•</span>
+                    <span>持续更新维护</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Chart.js 生命体征图表
+        const ctx = document.getElementById('vitalSignsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['体温', '脉搏', '呼吸', '血压'],
+                datasets: [{
+                    data: [25, 25, 25, 25],
+                    backgroundColor: [
+                        '#E31937',
+                        '#ff4757',
+                        '#ff6b7a',
+                        '#ff8a9b'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 滚动动画效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // 观察所有卡片元素
+        document.querySelectorAll('.bento-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(item);
+        });
+
+        // 鼠标视差效果
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.parallax-element');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            cards.forEach(card => {
+                const speed = card.dataset.speed || 0.5;
+                const xMove = (x - 0.5) * speed * 20;
+                const yMove = (y - 0.5) * speed * 20;
+                card.style.transform = `translate(${xMove}px, ${yMove}px)`;
+            });
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 加载动画
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+            document.body.style.transform = 'translateY(0)';
+        });
+
+        // 初始化页面样式
+        document.body.style.opacity = '0';
+        document.body.style.transform = 'translateY(20px)';
+        document.body.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+    </script>
+</body>
+</html>

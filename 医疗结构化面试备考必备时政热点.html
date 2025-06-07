@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗结构化面试备考必备时政热点</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-red': '#E31937',
+                        'brand-red-light': '#FF4757',
+                        'brand-red-dark': '#C41E3A'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'slide-up': 'slideUp 0.6s ease-out forwards',
+                        'scale-in': 'scaleIn 0.5s ease-out forwards',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.8)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 20px rgba(227, 25, 55, 0.3)' },
+                            '100%': { boxShadow: '0 0 40px rgba(227, 25, 55, 0.6)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #E31937, #FF4757);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-observer {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .section-observer.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: #E31937;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(227, 25, 55, 0.2);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1.5rem;
+            width: 2px;
+            height: calc(100% - 1rem);
+            background: linear-gradient(to bottom, #E31937, transparent);
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 overflow-x-hidden">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-stethoscope text-2xl text-brand-red"></i>
+                    <h1 class="text-xl font-bold gradient-text">医疗时政热点</h1>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#overview" class="text-gray-700 hover:text-brand-red transition-colors">概览</a>
+                    <a href="#medical-reform" class="text-gray-700 hover:text-brand-red transition-colors">医改政策</a>
+                    <a href="#healthcare-innovation" class="text-gray-700 hover:text-brand-red transition-colors">医疗创新</a>
+                    <a href="#comprehensive" class="text-gray-700 hover:text-brand-red transition-colors">综合时政</a>
+                </div>
+                <button class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section id="hero" class="pt-20 pb-16 bg-gradient-to-br from-white via-red-50 to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h1 class="text-6xl md:text-8xl font-bold gradient-text mb-6 animate-fade-in">
+                    医疗时政热点
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-600 mb-8 animate-slide-up">
+                    结构化面试备考必备 · 全面覆盖医疗政策与综合时政
+                </p>
+                <div class="flex justify-center space-x-8 animate-scale-in">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-brand-red">27</div>
+                        <div class="text-sm text-gray-600">热点话题</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-brand-red">15</div>
+                        <div class="text-sm text-gray-600">医疗专题</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-brand-red">12</div>
+                        <div class="text-sm text-gray-600">综合时政</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 概览统计 -->
+    <section id="overview" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- 医疗时政分布图 -->
+                <div class="lg:col-span-2 bg-white rounded-3xl p-8 shadow-lg hover-lift section-observer">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-chart-pie text-brand-red mr-3"></i>
+                        医疗时政热点分布
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="policyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 重要指标 -->
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-br from-brand-red to-brand-red-light rounded-3xl p-6 text-white hover-lift section-observer">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-3xl font-bold">100%</div>
+                                <div class="text-sm opacity-90">政策覆盖率</div>
+                            </div>
+                            <i class="fas fa-shield-alt text-3xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-3xl font-bold text-brand-red">2024</div>
+                                <div class="text-sm text-gray-600">最新政策年份</div>
+                            </div>
+                            <i class="fas fa-calendar-alt text-3xl text-brand-red"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-3xl font-bold text-brand-red">85%</div>
+                                <div class="text-sm text-gray-600">政策实施进度</div>
+                            </div>
+                            <i class="fas fa-tasks text-3xl text-brand-red"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 医疗时政篇 -->
+    <section id="medical-reform" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 section-observer">
+                <h2 class="text-5xl font-bold gradient-text mb-4">医疗时政篇</h2>
+                <p class="text-xl text-gray-600">深度解析医疗改革政策与发展趋势</p>
+            </div>
+
+            <!-- Bento Grid 布局 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- 三明医改 - 大卡片 -->
+                <div class="lg:col-span-2 lg:row-span-2 bg-white rounded-3xl p-8 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <div class="w-3 h-3 bg-brand-red rounded-full pulse-dot mr-3"></div>
+                        <span class="text-sm font-medium text-brand-red">重点关注</span>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-4">三明医改</h3>
+                    <p class="text-gray-600 mb-6">
+                        "三医联动"改革模式，医疗服务收入占比提升至47.65%，医生平均年薪从5.65万增至19.56万元
+                    </p>
+                    <div class="space-y-4">
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg">组建总医院（医共体）</h4>
+                            <p class="text-gray-600 text-sm">县乡村人财物高度集中统一管理</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg">医保基金"双打包"支付</h4>
+                            <p class="text-gray-600 text-sm">按人头总额预付，二次分配</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg">药品耗材联合限价采购</h4>
+                            <p class="text-gray-600 text-sm">集中带量采购，量价挂钩</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex space-x-4">
+                        <span class="px-3 py-1 bg-brand-red/10 text-brand-red rounded-full text-sm">医疗改革</span>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">政策创新</span>
+                    </div>
+                </div>
+
+                <!-- DRG/DIP付费2.0版 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fas fa-coins text-2xl text-brand-red"></i>
+                        <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">2.0版本</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">DRG/DIP付费2.0版</h3>
+                    <p class="text-gray-600 text-sm mb-4">
+                        26个主要诊断大类，409个核心分组，634个细分组
+                    </p>
+                    <div class="text-2xl font-bold text-brand-red">634</div>
+                    <div class="text-xs text-gray-500">细分组数量</div>
+                </div>
+
+                <!-- 医联体与分级诊疗 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fas fa-sitemap text-2xl text-brand-red"></i>
+                        <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">体系建设</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">医联体与分级诊疗</h3>
+                    <p class="text-gray-600 text-sm mb-4">
+                        基层首诊、双向转诊、急慢分治、上下联动
+                    </p>
+                    <div class="flex space-x-2">
+                        <div class="flex-1 bg-brand-red/10 rounded-lg p-2 text-center">
+                            <div class="text-sm font-bold text-brand-red">4</div>
+                            <div class="text-xs text-gray-600">联动模式</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 医保改革 -->
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-shield-alt text-2xl text-brand-red mr-3"></i>
+                        <h3 class="text-2xl font-bold">医保改革</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold mb-2">覆盖范围扩大</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• 放宽参保户籍限制</li>
+                                <li>• 扩大职工医保个人账户共济范围</li>
+                                <li>• 村卫生室纳入医保定点</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-2">待遇提升</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• 提高大病保险封顶线</li>
+                                <li>• 连续参保激励机制</li>
+                                <li>• 多层次医疗保障</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5G远程手术 -->
+                <div class="bg-gradient-to-br from-brand-red to-brand-red-light rounded-3xl p-6 text-white hover-lift section-observer">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fas fa-wifi text-2xl"></i>
+                        <span class="text-xs bg-white/20 px-2 py-1 rounded-full">科技创新</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">5G远程手术</h3>
+                    <p class="text-sm opacity-90 mb-4">
+                        跨越5000公里，杭州-新疆远程肝脏手术成功
+                    </p>
+                    <div class="text-2xl font-bold">5000</div>
+                    <div class="text-xs opacity-80">公里距离</div>
+                </div>
+
+                <!-- 健康中国 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fas fa-heart text-2xl text-brand-red"></i>
+                        <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">国家战略</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">健康中国</h3>
+                    <p class="text-gray-600 text-sm mb-4">
+                        健全健康教育体系，提升全民健康素养
+                    </p>
+                    <div class="text-2xl font-bold text-brand-red">2030</div>
+                    <div class="text-xs text-gray-500">规划目标年</div>
+                </div>
+            </div>
+
+            <!-- 详细医疗热点内容 -->
+            <div class="mt-12">
+                <div class="bg-white rounded-3xl p-8 shadow-lg section-observer">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold gradient-text">医疗时政热点详解</h3>
+                        <button id="toggleMedicalDetails" class="px-4 py-2 bg-brand-red text-white rounded-lg hover:bg-brand-red-dark transition-colors">
+                            <i class="fas fa-chevron-down mr-2"></i>展开详情
+                        </button>
+                    </div>
+                    
+                    <div id="medicalDetailsContent" class="hidden space-y-8">
+                        <!-- 热点3：医联体与分级诊疗 -->
+                        <div class="border-l-4 border-brand-red pl-6">
+                            <h4 class="text-xl font-bold mb-3 text-brand-red">热点3：医联体与分级诊疗</h4>
+                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-semibold mb-2">【试题速览】</h5>
+                                <p class="text-gray-700">为了推进分级诊疗制度建设，某地区建立了紧密型医联体，通过"基层首诊、双向转诊、急慢分治、上下联动"的分级诊疗模式，有效缓解了"看病难、看病贵"问题。对此，你怎么看？</p>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">政策要点：</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>构建分级诊疗制度，形成"基层首诊、双向转诊、急慢分治、上下联动"的就医格局</li>
+                                        <li>建设紧密型医联体，实现医疗资源上下贯通</li>
+                                        <li>提升基层医疗服务能力，推进家庭医生签约服务</li>
+                                        <li>完善医保支付政策，引导患者合理就医</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">改革意义：</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>优化医疗资源配置，缓解大医院就诊压力</li>
+                                        <li>提升基层医疗服务水平，实现就近就医</li>
+                                        <li>降低医疗费用，减轻患者经济负担</li>
+                                        <li>促进医疗服务连续性，提高治疗效果</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 热点4：医保改革 -->
+                        <div class="border-l-4 border-blue-500 pl-6">
+                            <h4 class="text-xl font-bold mb-3 text-blue-600">热点4：医保改革</h4>
+                            <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-semibold mb-2">【试题速览】</h5>
+                                <p class="text-gray-700">近年来，我国医保制度不断完善，覆盖范围持续扩大，保障水平稳步提升。从职工医保个人账户改革到异地就医直接结算，从药品集中采购到医保支付方式改革，医保制度改革取得显著成效。对此，你怎么看？</p>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">改革举措：</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>放宽参保户籍限制，扩大医保覆盖范围</li>
+                                        <li>扩大职工医保个人账户共济范围，提高保障水平</li>
+                                        <li>村卫生室纳入医保定点，便民惠民</li>
+                                        <li>提高大病保险封顶线，减轻重病患者负担</li>
+                                        <li>建立连续参保激励机制，鼓励长期参保</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">改革成效：</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>基本医保参保率稳定在95%以上</li>
+                                        <li>异地就医直接结算覆盖全国</li>
+                                        <li>药品集采平均降价超过50%</li>
+                                        <li>多层次医疗保障体系基本建立</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 热点5：5G远程手术 -->
+                        <div class="border-l-4 border-green-500 pl-6">
+                            <h4 class="text-xl font-bold mb-3 text-green-600">热点5：5G远程手术</h4>
+                            <div class="bg-green-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-semibold mb-2">【试题速览】</h5>
+                                <p class="text-gray-700">2024年，某医院成功完成了跨越5000公里的5G远程肝脏手术，主刀医生在杭州，患者在新疆，手术全程实时传输，延迟仅为几毫秒。这标志着5G技术在医疗领域的应用取得重大突破。对此，你怎么看？</p>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">技术优势：</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>超低延迟：5G网络延迟低至1毫秒，满足手术实时性要求</li>
+                                        <li>高清传输：4K/8K高清视频实时传输，确保手术精准度</li>
+                                        <li>稳定连接：5G网络稳定性高，保障手术安全</li>
+                                        <li>远程协作：多专家远程会诊，提升手术成功率</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">应用价值：</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>缓解医疗资源分布不均问题</li>
+                                        <li>提升偏远地区医疗服务水平</li>
+                                        <li>降低患者就医成本和时间</li>
+                                        <li>推动医疗技术创新发展</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 热点6：健康中国 -->
+                        <div class="border-l-4 border-purple-500 pl-6">
+                            <h4 class="text-xl font-bold mb-3 text-purple-600">热点6：健康中国</h4>
+                            <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-semibold mb-2">【试题速览】</h5>
+                                <p class="text-gray-700">《健康中国2030规划纲要》提出，到2030年，基本实现健康公平，主要健康指标进入高收入国家行列。健康中国建设取得显著成效，人民健康水平持续提升。对此，你怎么看？</p>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">战略目标：</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>人均预期寿命达到79岁</li>
+                                        <li>居民健康素养水平达到30%</li>
+                                        <li>重大慢性病过早死亡率比2015年降低30%</li>
+                                        <li>个人卫生支出占卫生总费用比重降到25%左右</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-800">重点任务：</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                        <li>普及健康生活方式，提升全民健康素养</li>
+                                        <li>优化健康服务，完善医疗卫生服务体系</li>
+                                        <li>完善健康保障，建立覆盖全民的基本医疗卫生制度</li>
+                                        <li>建设健康环境，营造绿色安全的健康环境</li>
+                                        <li>发展健康产业，培育健康产业新业态</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 更多医疗热点概览 -->
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-bold mb-4 text-gray-800">其他重要医疗热点</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-orange-600 mb-2">热点7：暴力伤医事件</h5>
+                                    <p class="text-sm text-gray-600">加强医护人员安全保护，构建和谐医患关系</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-green-600 mb-2">热点8：一次挂号管三天</h5>
+                                    <p class="text-sm text-gray-600">优化就医流程，提升患者就医体验</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-blue-600 mb-2">热点9：家庭养老床位</h5>
+                                    <p class="text-sm text-gray-600">专业照护服务延伸至老年人家中</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-green-700 mb-2">热点10：中医药发展</h5>
+                                    <p class="text-sm text-gray-600">传承创新发展，推动中医药现代化</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-purple-600 mb-2">热点11：药品集采</h5>
+                                    <p class="text-sm text-gray-600">第八批集采启动，约40种药品降价</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-pink-600 mb-2">热点12：医养结合</h5>
+                                    <p class="text-sm text-gray-600">医疗卫生与养老服务深度融合</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-indigo-600 mb-2">热点13：夜间门诊</h5>
+                                    <p class="text-sm text-gray-600">延长服务时间，满足多元化就医需求</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-yellow-600 mb-2">热点14：药品说明书适老化</h5>
+                                    <p class="text-sm text-gray-600">字体放大，语言通俗，便于老年人理解</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow-sm">
+                                    <h5 class="font-semibold text-red-600 mb-2">热点15：心理疾病防治</h5>
+                                    <p class="text-sm text-gray-600">重视心理健康，完善心理服务体系</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 医疗创新技术 -->
+    <section id="healthcare-innovation" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 section-observer">
+                <h2 class="text-5xl font-bold gradient-text mb-4">医疗创新前沿</h2>
+                <p class="text-xl text-gray-600">科技赋能医疗，创新引领未来</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- 夜间门诊/医疗夜市 -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 hover-lift section-observer">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-moon text-3xl text-indigo-600 mr-4"></i>
+                        <h3 class="text-2xl font-bold">夜间门诊/医疗夜市</h3>
+                    </div>
+                    <p class="text-gray-700 mb-6">
+                        延长医疗服务时间，满足上班族、学生等白天无暇看病人群的需求
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white rounded-2xl p-4">
+                            <div class="text-2xl font-bold text-indigo-600">33</div>
+                            <div class="text-sm text-gray-600">汕头医疗机构</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4">
+                            <div class="text-2xl font-bold text-indigo-600">24h</div>
+                            <div class="text-sm text-gray-600">全天候服务</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 药品说明书"适老化" -->
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 hover-lift section-observer">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-eye text-3xl text-emerald-600 mr-4"></i>
+                        <h3 class="text-2xl font-bold">药品说明书"适老化"</h3>
+                    </div>
+                    <p class="text-gray-700 mb-6">
+                        大字版、简化版、电子版药品说明书，解决老年人"看不清"问题
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white rounded-2xl p-4">
+                            <div class="text-2xl font-bold text-emerald-600">657</div>
+                            <div class="text-sm text-gray-600">首批试点药品</div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4">
+                            <div class="text-2xl font-bold text-emerald-600">3</div>
+                            <div class="text-sm text-gray-600">版本类型</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 重视心理疾病防治 -->
+                <div class="lg:col-span-2 bg-gradient-to-r from-purple-50 to-pink-50 rounded-3xl p-8 hover-lift section-observer">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-brain text-3xl text-purple-600 mr-4"></i>
+                        <h3 class="text-2xl font-bold">重视心理疾病防治</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-3">关注重点</h4>
+                            <ul class="text-gray-700 space-y-2">
+                                <li>• 青少年心理健康</li>
+                                <li>• 抑郁症、焦虑症防治</li>
+                                <li>• 心理健康教育</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-3">政策支持</h4>
+                            <ul class="text-gray-700 space-y-2">
+                                <li>• 全国学生心理健康宣传月</li>
+                                <li>• 精神卫生服务体系</li>
+                                <li>• 社会心理服务体系</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-purple-600">5月</div>
+                                <div class="text-sm text-gray-600">心理健康宣传月</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 综合时政篇 -->
+    <section id="comprehensive" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 section-observer">
+                <h2 class="text-5xl font-bold gradient-text mb-4">综合时政篇</h2>
+                <p class="text-xl text-gray-600">关注社会热点，把握时代脉搏</p>
+            </div>
+
+            <!-- 热点话题网格 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 银发经济 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-coins text-2xl text-yellow-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">银发经济</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        老年人口2.64亿，"朝阳产业"发展潜力巨大
+                    </p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full">经济发展</span>
+                        <div class="text-lg font-bold text-yellow-500">2.64亿</div>
+                    </div>
+                </div>
+
+                <!-- 食品安全 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-shield-alt text-2xl text-red-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">食品安全</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        从源头到餐桌，全链条监管保障食品安全
+                    </p>
+                    <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">民生保障</span>
+                </div>
+
+                <!-- 网络暴力 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-2xl text-orange-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">网络暴力</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        《网络暴力信息治理规定》8月1日正式施行
+                    </p>
+                    <span class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">网络治理</span>
+                </div>
+
+                <!-- "上门经济" -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-home text-2xl text-blue-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">"上门经济"</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        新业态蓬勃发展，规范管理守好门
+                    </p>
+                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">新兴业态</span>
+                </div>
+
+                <!-- 文化产业发展 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-gamepad text-2xl text-purple-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">文化产业发展</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        《黑神话：悟空》带动文旅融合新发展
+                    </p>
+                    <span class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full">文化创新</span>
+                </div>
+
+                <!-- AI电信诈骗 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-robot text-2xl text-red-600 mr-3"></i>
+                        <h3 class="text-xl font-bold">AI电信诈骗</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        AI技术双刃剑，防范新型诈骗手段
+                    </p>
+                    <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">网络安全</span>
+                </div>
+
+                <!-- 腐败不在年高 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-gavel text-2xl text-gray-600 mr-3"></i>
+                        <h3 class="text-xl font-bold">腐败不在年高</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        90后干部落马，反腐败斗争持续深入
+                    </p>
+                    <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">反腐倡廉</span>
+                </div>
+
+                <!-- 毕业生延毕 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-graduation-cap text-2xl text-indigo-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">毕业生主动延毕</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        73.1%受访大学生身边有选择延毕的同学
+                    </p>
+                    <span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">教育就业</span>
+                </div>
+
+                <!-- 预制菜进校园 -->
+                <div class="bg-white rounded-3xl p-6 shadow-lg hover-lift section-observer">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-utensils text-2xl text-green-500 mr-3"></i>
+                        <h3 class="text-xl font-bold">预制菜进校园</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">
+                        80%网民不赞成，食品安全引关注
+                    </p>
+                    <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">校园安全</span>
+                </div>
+            </div>
+
+            <!-- 详细综合时政内容 -->
+             <div class="mt-12">
+                 <div class="bg-white rounded-3xl p-8 shadow-lg section-observer">
+                     <div class="flex items-center justify-between mb-6">
+                         <h3 class="text-2xl font-bold gradient-text">综合时政热点详解</h3>
+                         <button id="toggleComprehensiveDetails" class="px-4 py-2 bg-brand-red text-white rounded-lg hover:bg-brand-red-dark transition-colors">
+                             <i class="fas fa-chevron-down mr-2"></i>展开详情
+                         </button>
+                     </div>
+                     
+                     <div id="comprehensiveDetailsContent" class="hidden space-y-8">
+                         <!-- 热点16：银发经济 -->
+                         <div class="border-l-4 border-yellow-500 pl-6">
+                             <h4 class="text-xl font-bold mb-3 text-yellow-600">热点16：银发经济</h4>
+                             <div class="bg-yellow-50 p-4 rounded-lg mb-4">
+                                 <h5 class="font-semibold mb-2">【试题速览】</h5>
+                                 <p class="text-gray-700">我国60岁及以上老年人口已达2.64亿，占总人口的18.7%。银发经济作为"朝阳产业"，市场潜力巨大。对此，你怎么看？</p>
+                             </div>
+                             <div class="space-y-3">
+                                 <div>
+                                     <h5 class="font-semibold text-gray-800">发展现状：</h5>
+                                     <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                         <li>老年人口2.64亿，占总人口18.7%</li>
+                                         <li>银发经济规模约7万亿元，占GDP比重约6%</li>
+                                         <li>养老服务、健康管理、文娱旅游等领域快速发展</li>
+                                         <li>智能化适老产品需求增长</li>
+                                     </ul>
+                                 </div>
+                                 <div>
+                                     <h5 class="font-semibold text-gray-800">发展机遇：</h5>
+                                     <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                         <li>消费升级带动银发经济多元化发展</li>
+                                         <li>科技赋能提升养老服务质量</li>
+                                         <li>政策支持促进产业规范发展</li>
+                                         <li>社会资本积极参与养老产业</li>
+                                     </ul>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <!-- 热点17：食品安全 -->
+                         <div class="border-l-4 border-red-500 pl-6">
+                             <h4 class="text-xl font-bold mb-3 text-red-600">热点17：食品安全</h4>
+                             <div class="bg-red-50 p-4 rounded-lg mb-4">
+                                 <h5 class="font-semibold mb-2">【试题速览】</h5>
+                                 <p class="text-gray-700">近年来，从"三聚氰胺"到"瘦肉精"，从网红食品安全问题到预制菜进校园争议，食品安全问题频发。如何构建从农田到餐桌的全链条食品安全监管体系？</p>
+                             </div>
+                             <div class="space-y-3">
+                                 <div>
+                                     <h5 class="font-semibold text-gray-800">监管举措：</h5>
+                                     <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                         <li>建立食品安全追溯体系，实现全程可追溯</li>
+                                         <li>加强源头治理，规范农业投入品使用</li>
+                                         <li>完善检验检测体系，提高检测覆盖率</li>
+                                         <li>严厉打击食品安全违法犯罪行为</li>
+                                     </ul>
+                                 </div>
+                                 <div>
+                                     <h5 class="font-semibold text-gray-800">治理成效：</h5>
+                                     <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                         <li>食品安全抽检合格率保持在97%以上</li>
+                                         <li>食品安全事故发生率持续下降</li>
+                                         <li>公众食品安全满意度不断提升</li>
+                                         <li>食品产业健康发展</li>
+                                     </ul>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <!-- 热点18：网络暴力 -->
+                         <div class="border-l-4 border-orange-500 pl-6">
+                             <h4 class="text-xl font-bold mb-3 text-orange-600">热点18：网络暴力</h4>
+                             <div class="bg-orange-50 p-4 rounded-lg mb-4">
+                                 <h5 class="font-semibold mb-2">【试题速览】</h5>
+                                 <p class="text-gray-700">《网络暴力信息治理规定》于2024年8月1日正式施行，明确了网络暴力信息的定义和治理措施。如何有效治理网络暴力，营造清朗网络空间？</p>
+                             </div>
+                             <div class="space-y-3">
+                                 <div>
+                                     <h5 class="font-semibold text-gray-800">治理措施：</h5>
+                                     <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                         <li>明确网络暴力信息定义和认定标准</li>
+                                         <li>建立网络暴力信息监测预警机制</li>
+                                         <li>完善举报处置流程，及时处理违规内容</li>
+                                         <li>加强平台主体责任，建立防护机制</li>
+                                     </ul>
+                                 </div>
+                                 <div>
+                                     <h5 class="font-semibold text-gray-800">防护机制：</h5>
+                                     <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                         <li>一键防护功能，快速屏蔽恶意信息</li>
+                                         <li>私信保护，防范骚扰信息</li>
+                                         <li>评论过滤，自动识别不当内容</li>
+                                         <li>用户举报，社会共治网络环境</li>
+                                     </ul>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <!-- 热点19："上门经济" -->
+                         <div class="border-l-4 border-blue-500 pl-6">
+                             <h4 class="text-xl font-bold mb-3 text-blue-600">热点19："上门经济"</h4>
+                             <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                                 <h5 class="font-semibold mb-2">【试题速览】</h5>
+                                 <p class="text-gray-700">"上门经济"作为新兴服务业态蓬勃发展，从上门做饭、上门按摩到上门维修，满足了消费者多样化需求。如何规范"上门经济"发展，保障消费者权益？</p>
+                             </div>
+                             <div class="space-y-3">
+                                 <div>
+                                     <h5 class="font-semibold text-gray-800">发展特点：</h5>
+                                     <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                         <li>服务便民：满足个性化、多样化需求</li>
+                                         <li>就业创新：创造新的就业机会和模式</li>
+                                         <li>技术驱动：依托互联网平台快速发展</li>
+                                         <li>市场广阔：涵盖生活服务各个领域</li>
+                                     </ul>
+                                 </div>
+                                 <div>
+                                     <h5 class="font-semibold text-gray-800">规范要求：</h5>
+                                     <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                         <li>建立服务标准，规范服务流程</li>
+                                         <li>加强从业人员培训和资质管理</li>
+                                         <li>完善保险保障，降低服务风险</li>
+                                         <li>强化平台责任，保护消费者权益</li>
+                                     </ul>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <!-- 更多综合热点概览 -->
+                         <div class="bg-gray-50 p-6 rounded-lg">
+                             <h4 class="text-lg font-bold mb-4 text-gray-800">其他重要综合热点</h4>
+                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-purple-600 mb-2">热点20：文化产业发展</h5>
+                                     <p class="text-sm text-gray-600">《黑神话：悟空》带动文旅融合新发展</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-red-700 mb-2">热点21：AI电信诈骗</h5>
+                                     <p class="text-sm text-gray-600">AI技术双刃剑，防范新型诈骗手段</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-gray-700 mb-2">热点22：腐败不在年高</h5>
+                                     <p class="text-sm text-gray-600">90后干部落马，反腐败斗争持续深入</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-indigo-600 mb-2">热点23：毕业生主动延毕</h5>
+                                     <p class="text-sm text-gray-600">73.1%受访大学生身边有选择延毕的同学</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-green-600 mb-2">热点24：预制菜进校园</h5>
+                                     <p class="text-sm text-gray-600">80%网民不赞成，食品安全引关注</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-pink-600 mb-2">热点25：网红城市</h5>
+                                     <p class="text-sm text-gray-600">"流量"如何变"留量"</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-yellow-700 mb-2">热点26：文物出圈</h5>
+                                     <p class="text-sm text-gray-600">新兴科技让文物活起来</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-blue-700 mb-2">热点27：《问政山东》</h5>
+                                     <p class="text-sm text-gray-600">直播问政新模式</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-teal-600 mb-2">热点28：生育支持体系</h5>
+                                     <p class="text-sm text-gray-600">延长产假，育儿补贴</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-orange-700 mb-2">热点29：延迟退休</h5>
+                                     <p class="text-sm text-gray-600">渐进式延迟法定退休年龄</p>
+                                 </div>
+                                 <div class="bg-white p-4 rounded-lg shadow-sm">
+                                     <h5 class="font-semibold text-green-700 mb-2">热点30：农业绿色发展</h5>
+                                     <p class="text-sm text-gray-600">绿色兴农战略实施</p>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+        </div>
+    </section>
+
+    <!-- 总结与展望 -->
+    <section class="py-16 bg-gradient-to-br from-brand-red to-brand-red-light text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="section-observer">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">把握时政脉搏</h2>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">
+                    深入理解政策内涵，准确把握发展趋势
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold mb-2">全面</div>
+                        <div class="opacity-90">覆盖医疗与综合时政</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold mb-2">深入</div>
+                        <div class="opacity-90">政策解读与现象分析</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold mb-2">实用</div>
+                        <div class="opacity-90">面试备考必备资料</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i class="fas fa-stethoscope text-2xl text-brand-red"></i>
+                        <h3 class="text-xl font-bold">医疗时政热点</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        为医疗结构化面试提供全面、深入的时政热点分析，助力考生成功上岸。
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">主要内容</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>医疗改革政策</li>
+                        <li>医疗创新技术</li>
+                        <li>综合时政热点</li>
+                        <li>政策解读分析</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">更新时间</h4>
+                    <p class="text-gray-400">2024年最新政策</p>
+                    <p class="text-gray-400">实时更新维护</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 医疗时政热点. 专注医疗面试备考.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 图表初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 政策分布饼图
+            const ctx = document.getElementById('policyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['医疗改革', '医保政策', '医疗创新', '综合时政'],
+                    datasets: [{
+                        data: [40, 25, 20, 15],
+                        backgroundColor: [
+                            '#E31937',
+                            '#FF4757',
+                            '#3742FA',
+                            '#2ED573'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 滚动动画观察器
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            // 观察所有需要动画的元素
+            document.querySelectorAll('.section-observer').forEach(el => {
+                observer.observe(el);
+            });
+
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // 导航栏背景效果
+             window.addEventListener('scroll', function() {
+                 const nav = document.querySelector('nav');
+                 if (window.scrollY > 100) {
+                     nav.style.background = 'rgba(255, 255, 255, 0.95)';
+                 } else {
+                     nav.style.background = 'rgba(255, 255, 255, 0.1)';
+                 }
+             });
+
+             // 医疗详情展开/收起功能
+             const toggleButton = document.getElementById('toggleMedicalDetails');
+             const detailsContent = document.getElementById('medicalDetailsContent');
+             
+             if (toggleButton && detailsContent) {
+                 toggleButton.addEventListener('click', function() {
+                     const isHidden = detailsContent.classList.contains('hidden');
+                     
+                     if (isHidden) {
+                         detailsContent.classList.remove('hidden');
+                         toggleButton.innerHTML = '<i class="fas fa-chevron-up mr-2"></i>收起详情';
+                         toggleButton.classList.add('bg-brand-red-dark');
+                     } else {
+                         detailsContent.classList.add('hidden');
+                         toggleButton.innerHTML = '<i class="fas fa-chevron-down mr-2"></i>展开详情';
+                         toggleButton.classList.remove('bg-brand-red-dark');
+                     }
+                 });
+             }
+             
+             // 综合时政详情展开/收起功能
+             const toggleComprehensiveButton = document.getElementById('toggleComprehensiveDetails');
+             const comprehensiveDetailsContent = document.getElementById('comprehensiveDetailsContent');
+             
+             if (toggleComprehensiveButton && comprehensiveDetailsContent) {
+                 toggleComprehensiveButton.addEventListener('click', function() {
+                     const isHidden = comprehensiveDetailsContent.classList.contains('hidden');
+                     
+                     if (isHidden) {
+                         comprehensiveDetailsContent.classList.remove('hidden');
+                         toggleComprehensiveButton.innerHTML = '<i class="fas fa-chevron-up mr-2"></i>收起详情';
+                         toggleComprehensiveButton.classList.add('bg-brand-red-dark');
+                     } else {
+                         comprehensiveDetailsContent.classList.add('hidden');
+                         toggleComprehensiveButton.innerHTML = '<i class="fas fa-chevron-down mr-2"></i>展开详情';
+                         toggleComprehensiveButton.classList.remove('bg-brand-red-dark');
+                     }
+                 });
+             }
+        });
+    </script>
+</body>
+</html>

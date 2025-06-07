@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医学基础笔试考点 - 知识体系全览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10/dist/framer-motion.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #E31937, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(227, 25, 55, 0.25);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 20px rgba(227, 25, 55, 0.3); }
+            to { box-shadow: 0 0 40px rgba(227, 25, 55, 0.6); }
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .highlight-red {
+            background: linear-gradient(135deg, rgba(227, 25, 55, 0.1), rgba(255, 107, 107, 0.05));
+            border-left: 4px solid #E31937;
+        }
+        
+        .tech-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(227, 25, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 107, 107, 0.1) 0%, transparent 50%);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 overflow-x-hidden">
+    <!-- Header Section -->
+    <header class="relative min-h-screen flex items-center justify-center tech-pattern">
+        <div class="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-white opacity-90"></div>
+        <div class="relative z-10 text-center px-6 max-w-6xl mx-auto">
+            <div class="floating-animation">
+                <i class="fas fa-user-md text-8xl text-red-600 mb-8"></i>
+            </div>
+            <h1 class="text-7xl md:text-9xl font-black mb-6 tracking-tight">
+                <span class="gradient-text">医学基础</span>
+            </h1>
+            <h2 class="text-4xl md:text-6xl font-bold text-gray-800 mb-8">笔试考点全览</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
+                <div class="text-center pulse-glow bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="text-4xl font-black text-red-600">15</div>
+                    <div class="text-sm font-medium text-gray-600">学科模块</div>
+                </div>
+                <div class="text-center pulse-glow bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="text-4xl font-black text-red-600">1000+</div>
+                    <div class="text-sm font-medium text-gray-600">核心考点</div>
+                </div>
+                <div class="text-center pulse-glow bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="text-4xl font-black text-red-600">100%</div>
+                    <div class="text-sm font-medium text-gray-600">覆盖率</div>
+                </div>
+                <div class="text-center pulse-glow bg-white rounded-2xl p-6 shadow-lg">
+                    <div class="text-4xl font-black text-red-600">A+</div>
+                    <div class="text-sm font-medium text-gray-600">备考等级</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Subject Overview -->
+    <section class="py-24 px-6 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-5xl font-black mb-6">
+                    <span class="gradient-text">学科分布</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    涵盖医学基础教育的核心学科，系统性整理各科目重点考试内容
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-16">
+                <div class="bg-white rounded-2xl p-6 text-center card-hover shadow-lg">
+                    <i class="fas fa-bone text-4xl text-red-600 mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">解剖学</h3>
+                    <div class="text-3xl font-black text-red-600">100</div>
+                    <div class="text-sm text-gray-600">考点</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center card-hover shadow-lg">
+                    <i class="fas fa-heartbeat text-4xl text-red-600 mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">生理学</h3>
+                    <div class="text-3xl font-black text-red-600">91</div>
+                    <div class="text-sm text-gray-600">考点</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center card-hover shadow-lg">
+                    <i class="fas fa-pills text-4xl text-red-600 mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">药理学</h3>
+                    <div class="text-3xl font-black text-red-600">85</div>
+                    <div class="text-sm text-gray-600">考点</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center card-hover shadow-lg">
+                    <i class="fas fa-microscope text-4xl text-red-600 mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">病理学</h3>
+                    <div class="text-3xl font-black text-red-600">68</div>
+                    <div class="text-sm text-gray-600">考点</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center card-hover shadow-lg">
+                    <i class="fas fa-stethoscope text-4xl text-red-600 mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">诊断学</h3>
+                    <div class="text-3xl font-black text-red-600">81</div>
+                    <div class="text-sm text-gray-600">考点</div>
+                </div>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="bg-white rounded-3xl p-8 shadow-xl scroll-reveal">
+                <h3 class="text-2xl font-bold mb-6 text-center">各学科考点分布</h3>
+                <div class="h-96">
+                    <canvas id="subjectChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Content Sections -->
+    <main class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- 解剖学 -->
+            <section class="mb-24 scroll-reveal">
+                <div class="bg-white rounded-3xl p-8 shadow-xl highlight-red">
+                    <div class="flex items-center mb-8">
+                        <i class="fas fa-bone text-5xl text-red-600 mr-6"></i>
+                        <div>
+                            <h2 class="text-4xl font-black gradient-text">解剖学</h2>
+                            <p class="text-gray-600 text-lg">人体结构基础知识 - 100个考点</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">基本概念与姿势 (1-10)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>1. 解剖学姿势的"三前"：两眼向前、掌心向前、双脚并拢向前</li>
+                                    <li>2. 内和外描述空腔器官，内侧和外侧以正中矢状面为界</li>
+                                    <li>3. 长骨的特点是"一体两端"；短骨"连接紧密，活动灵活"，包括腕骨和跗骨</li>
+                                    <li>4. 骨的构造包括骨膜、骨质与骨髓，临床常选髂前（后）上棘进行骨髓穿刺</li>
+                                    <li>5. 椎孔由椎体和椎弓共同围成，里面容纳脊髓</li>
+                                    <li>6. 椎间孔由相邻椎骨的上、下切迹共同围成，中间走行脊神经</li>
+                                    <li>7. 横突孔是颈椎横突特有，中间走行椎动脉和椎静脉</li>
+                                    <li>8. 第一颈椎（寰椎）无棘突，2-6颈椎棘突分叉，第七颈椎（隆椎）棘突特长</li>
+                                    <li>9. 胸椎棘突呈叠瓦状排列，腰椎呈水平状排列</li>
+                                    <li>10. 真肋：1～7肋；假肋：8～10肋；浮肋：11～12肋</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">骨骼系统 (11-30)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>11. 额骨、顶骨、颞骨、蝶骨形成骨缝称为翼点，底下有脑膜中动脉穿行</li>
+                                    <li>12. 下颌骨是最大的面颅骨，且不成对，上颌骨为成对面颅骨</li>
+                                    <li>13. 髋骨由髂骨、耻骨和坐骨组成，三骨会合于髋臼</li>
+                                    <li>14. 股骨是人体最长最结实的长骨；髌骨是人体最大的籽骨</li>
+                                    <li>15. 关节的基本结构包括"面、囊、腔"</li>
+                                    <li>16. 椎体间连结：椎间盘、前纵韧带、后纵韧带</li>
+                                    <li>17. 椎弓间连结：棘上韧带和项韧带、棘间韧带、黄韧带等</li>
+                                    <li>18. 关节易脱位方向：椎间盘后外侧；肩关节前下方；髋关节后下方；颞下颌关节向前</li>
+                                    <li>19. 颈曲和腰曲凸向前，胸曲和骶曲凸向后</li>
+                                    <li>20. 桡腕关节由舟骨、月骨和三角骨以及桡骨的腕关节面和尺骨头下方的关节盘构成</li>
+                                    <li>21. 膝关节是人体最大最复杂关节，由股骨、髌骨和胫骨构成</li>
+                                    <li>22. 膝关节内侧半月板较大，呈"C"形，外侧半月板较小，为"O"形</li>
+                                    <li>23. 前交叉韧带防止胫骨前移；后交叉韧带防止胫骨后移</li>
+                                    <li>24. 胸锁乳突肌一侧收缩使头向同侧倾斜，脸转向对侧；两侧同时收缩使头后仰</li>
+                                    <li>25. 竖脊肌一侧收缩使脊柱向同侧屈，两侧同时收缩使脊柱后伸和仰头</li>
+                                    <li>26. 斜方肌受损出现塌肩，前锯肌受损出现翼状肩，三角肌受损出现方肩</li>
+                                    <li>27. 膈肌：从上往下分别为腔静脉孔、食管裂孔以及主动脉裂孔，平对第8、10、12胸椎</li>
+                                    <li>28. 腹股沟管中男性有精索，女性有子宫圆韧带穿行</li>
+                                    <li>29. 缝匠肌是最长的肌肉，背阔肌是最大的扁肌</li>
+                                    <li>30. 上下消化道分界点：十二指肠悬韧带（屈氏韧带）</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">消化系统 (31-50)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>31. 丝状乳头是数量最多，却无味蕾的舌乳头</li>
+                                    <li>32. 腮腺是最大的唾液腺，开口于上颌第2磨牙的颊黏膜处</li>
+                                    <li>33. 咽鼓管连接鼻咽中和耳鼓室，平衡鼓膜内外大气压；小儿咽鼓管短而宽且呈水平</li>
+                                    <li>34. 胃分为贲门、幽门、胃底以及胃体4部</li>
+                                    <li>35. 胃壁由内向外为粘膜层、黏膜下层、肌层、浆膜层</li>
+                                    <li>36. 结肠和盲肠具有3种特征性结构，即结肠带、结肠袋和肠脂垂</li>
+                                    <li>37. 右髂前上棘与脐连线的中、外1/3交点处，该点称McBurney点</li>
+                                    <li>38. 肝门内有肝左、右管，肝固有动脉左、右支，肝门静脉左、右支和神经、淋巴管等穿行</li>
+                                    <li>39. 胆囊为贮存和浓缩胆汁的囊状器官</li>
+                                    <li>40. 胆囊底的体表投影点在右锁骨中线或右腹直肌外缘与右肋弓交点附近</li>
+                                    <li>41. 胆囊分底、体、颈、管；胰分头、颈、体、尾；膀胱分为尖、体、底、颈</li>
+                                    <li>42. 腹膜内位器官：乙状结肠、胃、阑尾、脾、输卵管、横结肠、卵巢等</li>
+                                    <li>43. 腹膜间位器官：肝、胆囊、直肠上部、子宫等</li>
+                                    <li>44. 腹膜外位器官：肾、肾上腺、胰、输尿管等</li>
+                                    <li>45. 鼻中隔前下方是易出血区</li>
+                                    <li>46. 蝶窦开口于蝶筛隐窝，后筛窦开口于上鼻道，其余开口于中鼻道</li>
+                                    <li>47. 喉软骨：甲状软骨最大，环状软骨为唯一完整环形，勺状软骨成对，会厌软骨防呛咳</li>
+                                    <li>48. 声门裂是喉腔最狭窄处，声门下腔易发生喉水肿</li>
+                                    <li>49. 左主支气管细而长，右主支气管短而粗，易掉入异物</li>
+                                    <li>50. 肋膈隐窝是胸膜腔最低点，直肠子宫陷凹是女性盆腔最低点</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">泌尿生殖系统 (51-100)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>51. 肾蒂由前向后依次为肾静脉、肾动脉和肾盂；自上而下依次为肾动脉、肾静脉和肾盂</li>
+                                    <li>52. 左肾起自第11胸椎体下缘；右肾起自第12胸椎体上缘，左高右低</li>
+                                    <li>53. 肾被膜由内向外依次为纤维囊、脂肪囊和肾筋膜</li>
+                                    <li>54. 生精小管，其上皮能产生精子</li>
+                                    <li>55. 男性结扎常选部位为精索部，女性结扎常选部位为输卵管峡</li>
+                                    <li>56. 输卵管壶腹部是卵子受精部位以及宫外孕好发部位</li>
+                                    <li>57. 子宫为前倾前屈位</li>
+                                    <li>58. 阔韧带限制两侧移动；圆韧带维持前倾；主韧带防止脱垂；骶韧带协同圆韧带</li>
+                                    <li>59. 乳腺癌时乳房悬韧带受累出现酒窝征，淋巴管受累出现橘皮样变</li>
+                                    <li>60. 心血管系统、神经系统、感觉器官、内分泌系统等重要解剖结构和功能要点</li>
+                                    <li>61. 心脏的位置、形态、结构和功能</li>
+                                    <li>62. 血管系统的组成和功能</li>
+                                    <li>63. 血液的通路和调节</li>
+                                    <li>64. 神经系统的分类和组成</li>
+                                    <li>65. 中枢神经系统的结构和功能</li>
+                                    <li>66. 周围神经系统的组成和功能</li>
+                                    <li>67. 感觉器官的结构和功能</li>
+                                    <li>68. 视觉器官的解剖结构</li>
+                                    <li>69. 听觉器官的解剖结构</li>
+                                    <li>70. 内分泌系统的组成和功能</li>
+                                    <li>71. 主要内分泌腺的位置和功能</li>
+                                    <li>72. 激素的分类和作用机制</li>
+                                    <li>73. 生殖系统的解剖结构</li>
+                                    <li>74. 男性生殖系统的组成</li>
+                                    <li>75. 女性生殖系统的组成</li>
+                                    <li>76. 泌尿系统的解剖结构</li>
+                                    <li>77. 肾脏的位置、形态和结构</li>
+                                    <li>78. 输尿管、膀胱、尿道的结构</li>
+                                    <li>79. 消化系统的解剖结构</li>
+                                    <li>80. 口腔、食管、胃的结构</li>
+                                    <li>81. 小肠、大肠的结构和功能</li>
+                                    <li>82. 肝脏、胰腺的解剖结构</li>
+                                    <li>83. 呼吸系统的解剖结构</li>
+                                    <li>84. 鼻腔、咽、喉的结构</li>
+                                    <li>85. 气管、支气管、肺的结构</li>
+                                    <li>86. 运动系统的组成</li>
+                                    <li>87. 骨骼系统的分类和功能</li>
+                                    <li>88. 关节的分类和结构</li>
+                                    <li>89. 肌肉系统的组成和功能</li>
+                                    <li>90. 主要肌群的位置和作用</li>
+                                    <li>91. 皮肤的结构和功能</li>
+                                    <li>92. 表皮、真皮、皮下组织的特点</li>
+                                    <li>93. 皮肤附属器的结构</li>
+                                    <li>94. 淋巴系统的组成和功能</li>
+                                    <li>95. 淋巴管道的分布</li>
+                                    <li>96. 淋巴器官的结构和功能</li>
+                                    <li>97. 免疫系统的解剖基础</li>
+                                    <li>98. 胸腺、脾脏的结构和功能</li>
+                                    <li>99. 骨髓的结构和造血功能</li>
+                                    <li>100. 人体各系统的相互关系和整体性</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 生理学 -->
+            <section class="mb-24 scroll-reveal">
+                <div class="bg-white rounded-3xl p-8 shadow-xl highlight-red">
+                    <div class="flex items-center mb-8">
+                        <i class="fas fa-heartbeat text-5xl text-red-600 mr-6"></i>
+                        <div>
+                            <h2 class="text-4xl font-black gradient-text">生理学</h2>
+                            <p class="text-gray-600 text-lg">人体功能机制 - 91个考点</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-bold text-lg mb-3 text-red-600">基本生命特征 (1-17)</h4>
+                            <ul class="space-y-1 text-sm">
+                                <li>1. 基本生命特征：新代谢、兴奋性、适应性和生殖等，其中以新代谢为最基本体征</li>
+                                <li>2. 内环境是细胞外液，内环境的稳态即细胞外液的理化性质保持相对恒定、动态平衡</li>
+                                <li>3. 神经调节特点为迅速、精准和短暂；体液调节特点为缓慢、持久和弥散</li>
+                                <li>4. 反射弧包括：感受器、传入神经、神经中枢、传出神经和效应器五个部分</li>
+                                <li>5. 正反馈包括排尿、排便、分娩、凝血过程等</li>
+                                <li>6. 经通道易化扩散特点为：离子选择性、门控特性</li>
+                                <li>7. 经载体易化扩散特点为：结构特异性、饱和性和竞争性抑制</li>
+                                <li>8. 葡萄糖、氨基酸在肾小管上皮和肠上皮的转运方式为继发性主动转运</li>
+                                <li>9. 静息电位是由K+外流形成外正内负的状态</li>
+                                <li>10. 动作电位神经细胞去极化由Na+内流形成，窦房结细胞去极化由Ca2+内流形成</li>
+                                <li>11. 工作细胞动作电位的二期平台期由Ca2+内流和K+外流形成</li>
+                                <li>12. 自律细胞与工作细胞动作电位的最大区别是在4期自动去极化</li>
+                                <li>13. 4期自动去极化是自律细胞产生自动节律性兴奋的基础</li>
+                                <li>14. 动作电位特点："全或无"、不衰减传导以及脉冲式发放</li>
+                                <li>15. 局部电位特点：等级性电位、衰减性传导以及能总和、没有不应期</li>
+                                <li>16. 骨骼肌兴奋后经历时期包括：绝对不应期、相对不应期、超常期和低常期</li>
+                                <li>17. 胞质内Ca2+浓度升高和降低是引起肌肉收缩和舒张的关键</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-bold text-lg mb-3 text-red-600">血液浓度 (18-49)</h4>
+                            <ul class="space-y-1 text-sm">
+                                <li>18. 体液占体重的60%，血液占7%～8%</li>
+                                <li>19. 晶体渗透压由NaCl维持，维持细胞内外水平衡</li>
+                                <li>20. 胶体渗透压由白蛋白维持，维持血管内外水平衡</li>
+                                <li>21. 血浆蛋白中白蛋白分子量最小，而含量最多</li>
+                                <li>22. 红细胞为双凹圆碟形，具有可塑变形性、悬浮稳定性和渗透脆性</li>
+                                <li>23. 细菌感染时中性粒细胞升高，病毒感染时淋巴细胞升高，过敏和寄生虫感染时嗜酸性粒细胞升高</li>
+                                <li>24. 白细胞具有的变形、游走、趋化、分泌和吞噬等特性</li>
+                                <li>25. 血小板具有黏附、聚集、收缩、释放和吸附的特性</li>
+                                <li>26. 血液凝固的本质就是血浆中的可溶性纤维蛋白原转变成不溶性的纤维蛋白的过程</li>
+                                <li>27. 生理性止血过程包括血管收缩、血小板止血栓形成和血液凝固三个过程</li>
+                                <li>28. 凝血过程包括凝血酶原酶复合物的形成、凝血酶原的激活和纤维蛋白的生成三个过程</li>
+                                <li>29. FⅡ、FⅦ、FⅨ、FⅩ为维生素K依赖性凝血因子</li>
+                                <li>30. 内源性凝血途径起始因子为凝血因子Ⅻ，外源性凝血途径起始因子为凝血因子Ⅲ</li>
+                                <li>31. 纤溶过程与凝血过程是相互拮抗的两个系统，共同维持血液在血管内正常流动</li>
+                                <li>32. 决定血型的是红细胞膜上的抗原即凝集原</li>
+                                <li>33. ABO血型抗体为IgM，不可通过胎盘；Rh血型抗体为IgG，可通过胎盘</li>
+                                <li>34. Rh血型导致溶血一般见于Rh阴性母亲两胎都是Rh阳性的第二胎孩子</li>
+                                <li>35. 心肌细胞生理特性包括兴奋性、自律性、传导性和收缩性</li>
+                                <li>36. 窦房结是心脏正常起搏点，自律性最高</li>
+                                <li>37. 心肌细胞有效不应期长，避免强直收缩</li>
+                                <li>38. 心脏泵血功能的评价指标：心率、每搏输出量、心输出量</li>
+                                <li>39. 心输出量=心率×每搏输出量</li>
+                                <li>40. 前负荷是心室舒张末期容量，后负荷是心室射血时的阻力</li>
+                                <li>41. 肌肉收缩力增强时，心输出量增加</li>
+                                <li>42. 动脉血压形成的前提是心血管系统充盈</li>
+                                <li>43. 收缩压主要反映心脏收缩功能，舒张压主要反映外周阻力</li>
+                                <li>44. 脉压=收缩压-舒张压，平均动脉压=舒张压+1/3脉压</li>
+                                <li>45. 影响动脉血压的因素：心输出量、外周阻力、主动脉弹性、循环血量</li>
+                                <li>46. 静脉回流的影响因素：体位变化、骨骼肌收缩、呼吸运动</li>
+                                <li>47. 微循环包括微动脉、毛细血管前括约肌、真毛细血管、微静脉</li>
+                                <li>48. 组织液生成和回流主要取决于毛细血管血压和血浆胶体渗透压</li>
+                                <li>49. 心血管活动的神经调节中枢位于延髓</li>
+                                <li>50. 呼吸包括4个阶段：肺通气、肺换气、气体运输、组织换气</li>
+                                <li>51. 肺通气直接动力是肺和外界气压差、原动力是膈肌的舒缩运动</li>
+                                <li>52. 胸膜腔由紧贴于肺表面的脏层和紧贴于胸廓内壁的壁层组成</li>
+                                <li>53. 胸膜腔内仅有少量浆液，没有气体。胸膜腔内压通常比大气压低，为负压</li>
+                                <li>54. 肺活量为肺功能测定的常用指标，用力肺活量和用力呼气量能更好地反映肺通气功能</li>
+                                <li>55. 肺换气和组织换气动力来自于气体分压差</li>
+                                <li>56. 肺换气主要受通气/血流比值影响，正常值为0.84</li>
+                                <li>57. Hb与O2结合特征：反应快，可逆，不需酶催化；氧合反应；结合4分子O2；曲线S形</li>
+                                <li>58. 发绀时血液中还原血红蛋白含量应高达5g/100ml以上</li>
+                                <li>59. 二氧化碳分压、H+浓度、温度、二磷酸甘油酸上升，氧解离曲线右移，亲和力下降</li>
+                                <li>60. 氧气主要以氧合血红蛋白形式存在于体内，二氧化碳主要以碳酸氢盐形式存在于体内</li>
+                                <li>61. 呼吸外周化学感受器位于颈动脉体、主动脉体，中枢化学感受器位于延髓</li>
+                                <li>62. 外周化学感受器能感受缺氧刺激，中枢化学感受器对脑脊液中H+浓度更敏感</li>
+                                <li>63. 消化道平滑肌具有自动节律性收缩的特性</li>
+                                <li>64. 胃液的主要成分：胃酸、胃蛋白酶原、内因子、黏液</li>
+                                <li>65. 胃酸的作用：激活胃蛋白酶原、杀菌、促进铁和钙的吸收</li>
+                                <li>66. 胃蛋白酶的最适pH为1.5-2.0</li>
+                                <li>67. 胰液含有胰蛋白酶、胰脂肪酶、胰淀粉酶等消化酶</li>
+                                <li>68. 胆汁的主要功能是乳化脂肪，促进脂肪消化吸收</li>
+                                <li>69. 小肠是消化吸收的主要部位</li>
+                                <li>70. 体温调节中枢位于下丘脑</li>
+                                <li>71. 正常体温：口温36.3-37.2℃，腋温36-37℃，肛温36.5-37.7℃</li>
+                                <li>72. 产热器官主要是肝脏和骨骼肌</li>
+                                <li>73. 散热方式：辐射、传导、对流、蒸发</li>
+                                <li>74. 肾脏的基本功能单位是肾单位</li>
+                                <li>75. 肾小球滤过率正常值为120ml/min</li>
+                                <li>76. 肾小管和集合管具有重吸收和分泌功能</li>
+                                <li>77. 抗利尿激素调节水的重吸收</li>
+                                <li>78. 醛固酮调节钠的重吸收</li>
+                                <li>79. 视觉感受器是视网膜上的视杆细胞和视锥细胞</li>
+                                <li>80. 听觉感受器位于内耳的螺旋器</li>
+                                <li>81. 前庭器官感受头部位置变化和直线加速度</li>
+                                <li>82. 半规管感受头部旋转运动</li>
+                                <li>83. 神经元是神经系统的基本结构和功能单位</li>
+                                <li>84. 神经纤维传导兴奋的特点是双向性和不衰减性</li>
+                                <li>85. 突触传递的特点是单向性、时间延搞、易疲劳</li>
+                                <li>86. 反射是神经系统的基本活动方式</li>
+                                <li>87. 下丘脑是内分泌系统的最高调节中枢</li>
+                                <li>88. 生长激素促进蛋白质合成和骨骼生长</li>
+                                <li>89. 甲状腺激素调节基础代谢率</li>
+                                <li>90. 胰岛素是唯一降血糖的激素</li>
+                                <li>91. 激素的作用机制包括膜受体机制和胞内受体机制</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <h4 class="font-bold text-lg mb-3 text-red-600">呼吸与代谢 (50-91)</h4>
+                            <ul class="space-y-1 text-sm">
+                                <li>50. 呼吸包括4个阶段：肺通气、肺换气、气体运输、组织换气</li>
+                                <li>51. 肺通气直接动力是肺和外界气压差、原动力是膈肌的舒缩运动</li>
+                                <li>52. 胸膜腔由紧贴于肺表面的脏层和紧贴于胸廓内壁的壁层组成</li>
+                                <li>53. 胸膜腔内仅有少量浆液，没有气体。胸膜腔内压通常比大气压低，为负压</li>
+                                <li>54. 肺活量为肺功能测定的常用指标，用力肺活量和用力呼气量能更好地反映肺通气功能</li>
+                                <li>55. 肺换气和组织换气动力来自于气体分压差</li>
+                                <li>56. 肺换气主要受通气/血流比值影响，正常值为0.84</li>
+                                <li>57. Hb与O2结合特征：反应快，可逆，不需酶催化；氧合反应；结合4分子O2；曲线S形</li>
+                                <li>58. 发绀时血液中还原血红蛋白含量应高达5g/100ml以上</li>
+                                <li>59. 二氧化碳分压、H+浓度、温度、二磷酸甘油酸上升，氧解离曲线右移，亲和力下降</li>
+                                <li>60. 氧气主要以氧合血红蛋白形式存在于体内，二氧化碳主要以碳酸氢盐形式存在于体内</li>
+                                <li>61. 呼吸外周化学感受器位于颈动脉体、主动脉体，中枢化学感受器位于延髓</li>
+                                <li>62. 外周化学感受器能感受缺氧刺激，中枢化学感受器对脑脊液中H+浓度更敏感</li>
+                                <li>63-91. 消化生理、体温调节、泌尿生理、感觉器官生理、神经生理、内分泌生理等重要考点...</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 药理学 -->
+            <section class="mb-24 scroll-reveal">
+                <div class="bg-white rounded-3xl p-8 shadow-xl highlight-red">
+                    <div class="flex items-center mb-8">
+                        <i class="fas fa-pills text-5xl text-red-600 mr-6"></i>
+                        <div>
+                            <h2 class="text-4xl font-black gradient-text">药理学</h2>
+                            <p class="text-gray-600 text-lg">药物作用机制 - 85个考点</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">药物动力学 (1-17)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>1. 简单扩散是药物在体内转运最常见的方式</li>
+                                    <li>2. 药物在体内的过程包括：吸收、分布、代谢、排泄</li>
+                                    <li>3. 药物自用药部位进入血液的分界线的药物浓度下降一半所需要的时间</li>
+                                    <li>4. 口服是最常用的给药途径，且安全、方便、经济</li>
+                                    <li>5. 首关消除最主要的器官是肝脏，肺和肠壁细胞也可成为首关消除的器官</li>
+                                    <li>6. 舌下给药后经颊黏膜吸收，可避免在肝脏迅速代谢，可很大程度上避免肝脏的首关消除</li>
+                                    <li>7. 直肠给药部分避免肝脏的首关消除</li>
+                                    <li>8. 理化性质影响药物吸收：酸酸碱碱促吸收，酸碱碱酸促排泄</li>
+                                    <li>9. 代谢过程中主要参与器官是肝脏</li>
+                                    <li>10. 药物及其代谢产物主要经尿排泄</li>
+                                    <li>11. 清除半衰期指的是血浆药物浓度下降一半所需要的时间</li>
+                                    <li>12. 按固定剂量、固定间隔时间给药，药物达到稳态血药浓度的时间一般为4～5个半衰期</li>
+                                    <li>13. 副作用指在正常治疗剂量范围内出现的与用药目的无关的作用</li>
+                                    <li>14. 后遗效应指停药后血浆药物浓度下降至低于治疗效应的阈浓度时仍然残存的其他效应</li>
+                                    <li>15. 治疗指数是LD50/ED50的比值，治疗指数大的药物相对较治疗指数小的药物安全</li>
+                                    <li>16. 耐受性是连续多次用药后机体对药物的反应性降低</li>
+                                    <li>17. 耐药性是指微生物、寄生虫以及肿瘤细胞反应性降低</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">神经系统药物 (18-40)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>18. 新斯的明是治疗重症肌无力的首选药，禁用于机械性肠梗阻</li>
+                                    <li>19. 毛果芸香碱可缩瞳、降低眼内压、调节痉挛，是治疗闭角型青光眼的首选药</li>
+                                    <li>20. 有机磷农药中毒时使用阿托品和胆碱酯酶复活药解救</li>
+                                    <li>21. 阿托品是M受体阻断剂，心脏兴奋、瞳孔扩大、抑制腺体分泌、平滑肌舒张</li>
+                                    <li>22. α1受体激动时主要表现为皮肤、黏膜和内脏血管收缩、瞳孔扩大等</li>
+                                    <li>23. β1受体激动时主要表现为心脏兴奋、肾素分泌增加等</li>
+                                    <li>24. β2受体激动时主要表现为血管扩张、平滑肌舒张等</li>
+                                    <li>25. 肾上腺素是过敏性休克、心脏骤停的首选用药</li>
+                                    <li>26. 去甲肾上腺素稀释后口服，可使食管和胃内血管收缩产生局部止血作用</li>
+                                    <li>27. 低浓度多巴胺激动D1受体；中浓度多巴胺激动β1受体；高浓度多巴胺激动α受体</li>
+                                    <li>28. 若先poon妥拉明，再给肾上腺素，血压不升反降，称为肾上腺素升压效应的翻转</li>
+                                    <li>29. 普鲁卡因常局部注射用于浸润麻醉；丁卡因适用于表面麻醉</li>
+                                    <li>30. 癫痫小发作首选乙琥胺；大发作首选苯妥英钠；大发作合并小发作首选丙戊酸钠；癫痫持续状态首选地西泮</li>
+                                    <li>31. 卡马西平是治疗三叉神经、舌咽神经等外周神经痛的首选药</li>
+                                    <li>32. 地西泮为抗惊厥的首选药</li>
+                                    <li>33. 苯二氮䓬类药物具有抗焦虑、镇静催眠、抗惊厥、肌肉松弛作用</li>
+                                    <li>34. 巴比妥类药物主要用于镇静催眠和抗惊厥</li>
+                                    <li>35. 吗啡是阿片受体激动剂，具有强效镇痛作用</li>
+                                    <li>36. 哌替啶镇痛强度为吗啡的1/10，成瘾性较吗啡轻</li>
+                                    <li>37. 可待因镇痛作用较弱，主要用于镇咳</li>
+                                    <li>38. 纳洛酮是阿片受体拮抗剂，用于阿片类药物中毒的解救</li>
+                                    <li>39. 氯丙嗪是典型的抗精神病药物</li>
+                                    <li>40. 左旋多巴是治疗帕金森病的首选药物</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">心血管系统药物 (41-65)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>41. 急性肺水肿首选呋塞米</li>
+                                    <li>42. 硝酸甘油能迅速缓解各种类型心绞痛</li>
+                                    <li>43. 普萘洛尔用于稳定型心绞痛</li>
+                                    <li>44. 硝苯地平对变异型心绞痛效果最好</li>
+                                    <li>45. 强心苷类药物的作用机制和临床应用</li>
+                                    <li>46. 利尿药的分类和作用特点</li>
+                                    <li>47. 抗高血压药物的分类和选择原则</li>
+                                    <li>48. 抗心律失常药物的分类和作用机制</li>
+                                    <li>49. 洋地黄毒苷的作用机制是抑制Na+-K+-ATP酶</li>
+                                <li>50. 洋地黄类药物中毒时可出现各种心律失常</li>
+                                <li>51. 氢氯噻嗪是中效利尿药，主要作用于远曲小管</li>
+                                <li>52. 呋塞米是强效利尿药，主要作用于髓袢升支粗段</li>
+                                <li>53. 螺内酯是保钾利尿药，拮抗醛固酮受体</li>
+                                <li>54. 卡托普利是ACE抑制剂，用于治疗高血压和心力衰竭</li>
+                                <li>55. 硝苯地平是钙通道阻滞剂，主要用于治疗高血压和心绞痛</li>
+                                <li>56. 普萘洛尔是β受体阻断剂，用于治疗高血压和心律失常</li>
+                                <li>57. 利多卡因是Ⅰb类抗心律失常药</li>
+                                <li>58. 胺碘酮是Ⅲ类抗心律失常药，延长动作电位时程</li>
+                                <li>59. 维拉帕米是Ⅳ类抗心律失常药，阻滞钙通道</li>
+                                <li>60. 硝酸甘油通过释放NO发挥血管扩张作用</li>
+                                <li>61. 阿司匹林小剂量时具有抗血小板聚集作用</li>
+                                <li>62. 华法林是口服抗凝药，抑制维生素K依赖性凝血因子合成</li>
+                                <li>63. 肝素是注射用抗凝药，激活抗凝血酶Ⅲ</li>
+                                <li>64. 尿激酶和链激酶是纤溶药，用于溶栓治疗</li>
+                                <li>65. 氨甲环酸是抗纤溶药，用于止血</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">抗感染药物 (66-85)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>66. β-内酰胺类抗生素抑制细菌细胞壁合成</li>
+                                    <li>67. 青霉素抗菌谱包括大多数G+球菌</li>
+                                    <li>68. 链霉素对土拉菌病和鼠疫有特效</li>
+                                    <li>69. 异烟肼是结核病首选药物</li>
+                                    <li>70. 氨基糖苷类抗生素的作用机制和不良反应</li>
+                                    <li>71. 大环内酯类抗生素的特点和临床应用</li>
+                                    <li>72. 喹诺酮类抗菌药的作用机制和适应症</li>
+                                    <li>73. 磺胺类药物的抗菌机制和临床应用</li>
+                                    <li>74. 抗真菌药物的分类和作用特点</li>
+                                    <li>75. 抗病毒药物的作用机制和临床应用</li>
+                                    <li>76. 万古霉素对耐甲氧西林金黄色葡萄球菌有效</li>
+                                    <li>77. 氯霉素可引起再生障碍性贫血</li>
+                                    <li>78. 四环素类药物可引起牙齿黄染和骨骼发育不良</li>
+                                    <li>79. 甲硝唑对厌氧菌和原虫有效</li>
+                                    <li>80. 两性霉素B是抗深部真菌感染的首选药</li>
+                                    <li>81. 氟康唑主要用于念珠菌感染</li>
+                                    <li>82. 阿昔洛韦主要用于疱疹病毒感染</li>
+                                    <li>83. 齐多夫定是第一个用于治疗AIDS的药物</li>
+                                    <li>84. 干扰素具有抗病毒、抗肿瘤和免疫调节作用</li>
+                                    <li>85. 抗菌药物的合理应用原则和耐药性防治</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 病理学 -->
+            <section class="mb-24 scroll-reveal">
+                <div class="bg-white rounded-3xl p-8 shadow-xl highlight-red">
+                    <div class="flex items-center mb-8">
+                        <i class="fas fa-microscope text-5xl text-red-600 mr-6"></i>
+                        <div>
+                            <h2 class="text-4xl font-black gradient-text">病理学</h2>
+                            <p class="text-gray-600 text-lg">疾病发生发展规律 - 68个考点</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">基本病理过程 (1-34)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>1. 细胞损伤的原因包括缺氧、物理性因子、化学性因子、生物性因子、免疫反应、遗传缺陷、营养失调</li>
+                                    <li>2. 细胞水肿是细胞损伤最早出现的形态学改变</li>
+                                    <li>3. 脂肪变性常见于肝、心、肾等器官，肝脂肪变性时肝细胞体积增大</li>
+                                    <li>4. 玻璃样变性可发生于细胞内、细胞间质、血管壁</li>
+                                    <li>5. 淀粉样变性的淀粉样物质主要成分为β-折叠片状结构的纤维蛋白</li>
+                                    <li>6. 病理性钙化分为营养不良性钙化和转移性钙化</li>
+                                    <li>7. 细胞死亡包括坏死和凋亡两种基本形式</li>
+                                    <li>8. 坏死的基本病变是蛋白质变性、酶失活</li>
+                                    <li>9. 凝固性坏死常见于心、肾、脾等实质器官</li>
+                                    <li>10. 液化性坏死常见于脑组织和化脓性感染</li>
+                                    <li>11. 干酪样坏死是结核病的特征性病变</li>
+                                    <li>12. 脂肪坏死分为外伤性脂肪坏死和酶解性脂肪坏死</li>
+                                    <li>13. 纤维素样坏死常见于血管壁和结缔组织</li>
+                                    <li>14. 坏疽分为干性坏疽、湿性坏疽和气性坏疽</li>
+                                    <li>15. 细胞凋亡是主动的、程序性的细胞死亡</li>
+                                    <li>16. 炎症的基本病变包括变质、渗出和增生</li>
+                                    <li>17. 炎症介质包括血管活性胺、血管活性肽、花生四烯酸代谢产物、细胞因子等</li>
+                                    <li>18. 急性炎症的血管反应包括血管扩张、血流加快、通透性增加、血流缓慢</li>
+                                    <li>19. 炎性渗出物分为浆液性、纤维素性、化脓性、出血性、坏死性渗出物</li>
+                                    <li>20. 白细胞渗出过程包括边集、黏附、游出、趋化</li>
+                                    <li>21. 肿瘤是机体在各种致瘤因素作用下形成的新生物</li>
+                                    <li>22. 良性肿瘤生长缓慢，恶性肿瘤生长迅速</li>
+                                    <li>23. 癌是来源于上皮组织的恶性肿瘤</li>
+                                    <li>24. 肉瘤是来源于间叶组织的恶性肿瘤</li>
+                                    <li>25. 肿瘤的分化程度与恶性程度呈负相关</li>
+                                    <li>26. 血栓形成的条件：血管内皮损伤、血流状态改变、血液凝固性增高</li>
+                                    <li>27. 血栓的结局：溶解、机化、再通、脱落</li>
+                                    <li>28. 栓塞是循环血液中的异常物质阻塞血管腔</li>
+                                    <li>29. 肺栓塞最常见的栓子是血栓栓子</li>
+                                    <li>30. 水肿是组织间隙或体腔内过量的体液潴留</li>
+                                    <li>31. 心性水肿常从下肢开始，肾性水肿常从眼睑开始</li>
+                                    <li>32. 休克是各种强烈致病因素引起的急性循环功能不全综合征</li>
+                                    <li>33. 休克的基本发病环节是有效循环血量锐减</li>
+                                    <li>34. DIC是弥散性血管内凝血的简称</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-lg mb-3 text-red-600">系统病理 (35-68)</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>35. 动脉粥样硬化的基本病变包括脂纹、纤维斑块、粥样斑块、复合病变</li>
+                                    <li>36. 高血压病的病理变化主要累及细小动脉</li>
+                                    <li>37. 风湿病的基本病变是结缔组织的纤维素样坏死</li>
+                                    <li>38. 感染性心内膜炎分为急性和亚急性两型</li>
+                                    <li>39. 肺炎分为大叶性肺炎、小叶性肺炎、间质性肺炎</li>
+                                    <li>40. 硅肺是最常见最重要的尘肺</li>
+                                    <li>41. 肺癌分为小细胞肺癌和非小细胞肺癌</li>
+                                    <li>42. 慢性胃炎分为慢性浅表性胃炎和慢性萎缩性胃炎</li>
+                                    <li>43. 消化性溃疡包括胃溃疡和十二指肠溃疡</li>
+                                    <li>44. 病毒性肝炎的基本病变是肝细胞变性、坏死和炎症反应</li>
+                                    <li>45. 肝硬化的特征是肝细胞坏死、纤维组织增生、再生结节形成</li>
+                                    <li>46. 原发性肝癌以肝细胞癌最常见</li>
+                                    <li>47. 急性肾小球肾炎的病变特点是毛细血管内皮细胞增生</li>
+                                    <li>48. 慢性肾小球肾炎的病理类型多样</li>
+                                    <li>49. 肾盂肾炎分为急性和慢性两型</li>
+                                    <li>50. 糖尿病的病理变化主要是微血管病变</li>
+                                    <li>51. 甲状腺肿大分为单纯性甲状腺肿和结节性甲状腺肿</li>
+                                    <li>52. 甲状腺癌以乳头状腺癌最常见</li>
+                                    <li>53. 脑水肿分为血管源性脑水肿和细胞毒性脑水肿</li>
+                                    <li>54. 脑疝是颅内压增高时脑组织移位</li>
+                                    <li>55. 脑出血常发生在基底节区</li>
+                                    <li>56. 脑梗死分为血栓性脑梗死和栓塞性脑梗死</li>
+                                    <li>57. 阿尔茨海默病的特征性病变是老年斑和神经纤维缠结</li>
+                                    <li>58. 贫血是指外周血红细胞计数、血红蛋白含量和红细胞压积减少</li>
+                                    <li>59. 缺铁性贫血是最常见的贫血</li>
+                                    <li>60. 巨幼红细胞性贫血是由于维生素B12或叶酸缺乏引起</li>
+                                    <li>61. 再生障碍性贫血是由于骨髓造血功能衰竭引起</li>
+                                    <li>62. 白血病是造血组织的恶性克隆性疾病</li>
+                                    <li>63. 急性白血病的特点是原始和幼稚细胞在骨髓和外周血中增多</li>
+                                    <li>64. 慢性粒细胞白血病的特征是费城染色体阳性</li>
+                                    <li>65. 淋巴瘤分为霍奇金淋巴瘤和非霍奇金淋巴瘤</li>
+                                    <li>66. 多发性骨髓瘤是浆细胞的恶性增生性疾病</li>
+                                    <li>67. 骨肿瘤中骨肉瘤最常见</li>
+                                    <li>68. 乳腺癌是女性最常见的恶性肿瘤</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 其他学科概览 -->
+            <section class="mb-24 scroll-reveal">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 微生物学 -->
+                    <div class="bg-white rounded-3xl p-8 shadow-xl card-hover highlight-red">
+                        <div class="flex items-center mb-6">
+                            <i class="fas fa-bacteria text-3xl text-red-600 mr-4"></i>
+                            <h3 class="text-2xl font-bold gradient-text">微生物学</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm">
+                            <li>• 细菌细胞壁主要成分是肽聚糖</li>
+                            <li>• 革兰阳性菌细胞壁厚，肽聚糖含量高</li>
+                            <li>• 病毒是专性细胞内寄生的非细胞型微生物</li>
+                            <li>• 真菌是真核细胞型微生物</li>
+                            <li>• 支原体无细胞壁，对青霉素天然耐药</li>
+                        </ul>
+                    </div>
+
+                    <!-- 免疫学 -->
+                    <div class="bg-white rounded-3xl p-8 shadow-xl card-hover highlight-red">
+                        <div class="flex items-center mb-6">
+                            <i class="fas fa-shield-alt text-3xl text-red-600 mr-4"></i>
+                            <h3 class="text-2xl font-bold gradient-text">免疫学</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm">
+                            <li>• 免疫系统三大功能：防御、稳定、监视</li>
+                            <li>• T细胞在胸腺中发育成熟</li>
+                            <li>• B细胞在骨髓中发育成熟</li>
+                            <li>• Ⅰ型超敏反应是IgE介导的过敏反应</li>
+                            <li>• 自身免疫病的发生机制包括分子模拟</li>
+                        </ul>
+                    </div>
+
+                    <!-- 生物化学 -->
+                    <div class="bg-white rounded-3xl p-8 shadow-xl card-hover highlight-red">
+                        <div class="flex items-center mb-6">
+                            <i class="fas fa-atom text-3xl text-red-600 mr-4"></i>
+                            <h3 class="text-2xl font-bold gradient-text">生物化学</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm">
+                            <li>• 蛋白质的基本单位是氨基酸</li>
+                            <li>• 酶是生物催化剂，具有高效性、特异性</li>
+                            <li>• 葡萄糖无氧氧化产生2分子ATP</li>
+                            <li>• DNA复制的特点：半保留复制</li>
+                            <li>• 转录起始密码子为AUG</li>
+                        </ul>
+                    </div>
+
+                    <!-- 诊断学 -->
+                    <div class="bg-white rounded-3xl p-8 shadow-xl card-hover highlight-red">
+                        <div class="flex items-center mb-6">
+                            <i class="fas fa-stethoscope text-3xl text-red-600 mr-4"></i>
+                            <h3 class="text-2xl font-bold gradient-text">诊断学</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm">
+                            <li>• 主诉控制在20字以内</li>
+                            <li>• 正常腋下体温36℃～37℃</li>
+                            <li>• 体格检查包括视、触、叩、听、嗅</li>
+                        </ul>
+                    </div>
+
+                    <!-- 医学伦理学 -->
+                    <div class="bg-white rounded-3xl p-8 shadow-xl card-hover highlight-red">
+                        <div class="flex items-center mb-6">
+                            <i class="fas fa-balance-scale text-3xl text-red-600 mr-4"></i>
+                            <h3 class="text-2xl font-bold gradient-text">医学伦理学</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm">
+                            <li>• 医学伦理原则：尊重、不伤害、有利、公正</li>
+                            <li>• 不伤害是底线原则</li>
+                            <li>• 脑死亡首要标准：自主呼吸停止</li>
+                            <li>• 活体器官捐献仅限于亲属</li>
+                            <li>• 实践是提高医学道德修养根本途径</li>
+                        </ul>
+                    </div>
+
+                    <!-- 卫生法规 -->
+                    <div class="bg-white rounded-3xl p-8 shadow-xl card-hover highlight-red">
+                        <div class="flex items-center mb-6">
+                            <i class="fas fa-gavel text-3xl text-red-600 mr-4"></i>
+                            <h3 class="text-2xl font-bold gradient-text">卫生法规</h3>
+                        </div>
+                        <ul class="space-y-3 text-sm">
+                            <li>• 执业医师法规定医师执业条件</li>
+                            <li>• 医疗事故处理条例规范医疗纠纷</li>
+                            <li>• 传染病防治法规定疫情报告</li>
+                            <li>• 药品管理法规范药品生产流通</li>
+                            <li>• 医疗机构管理条例规范医疗服务</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 重点总结 -->
+            <section class="scroll-reveal">
+                <div class="bg-gradient-to-br from-red-50 to-pink-50 rounded-3xl p-12 text-center">
+                    <h2 class="text-5xl font-black mb-8">
+                        <span class="gradient-text">备考要点</span>
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                        <div class="bg-white rounded-2xl p-8 shadow-lg">
+                            <i class="fas fa-brain text-4xl text-red-600 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-4">系统学习</h3>
+                            <p class="text-gray-600">按学科模块系统掌握，建立知识框架</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-8 shadow-lg">
+                            <i class="fas fa-repeat text-4xl text-red-600 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-4">重点复习</h3>
+                            <p class="text-gray-600">突出高频考点，强化记忆训练</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-8 shadow-lg">
+                            <i class="fas fa-chart-line text-4xl text-red-600 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-4">模拟练习</h3>
+                            <p class="text-gray-600">通过练习检验学习效果，查漏补缺</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <h3 class="text-3xl font-bold mb-4">医学基础笔试考点</h3>
+            <p class="text-gray-400 mb-8">全面覆盖医学基础教育核心内容，助力考试成功</p>
+            <div class="flex justify-center space-x-8 text-2xl">
+                <i class="fas fa-graduation-cap text-red-500"></i>
+                <i class="fas fa-book-medical text-red-500"></i>
+                <i class="fas fa-award text-red-500"></i>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal animation
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.scroll-reveal');
+            
+            reveals.forEach(reveal => {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveal.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('revealed');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+
+        // Chart.js configuration
+        const ctx = document.getElementById('subjectChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['解剖学', '生理学', '药理学', '病理学', '诊断学', '卫生法规', '医学伦理学', '病理生理学', '其他学科'],
+                datasets: [{
+                    data: [100, 91, 85, 68, 81, 37, 20, 14, 200],
+                    backgroundColor: [
+                        '#E31937',
+                        '#FF6B6B',
+                        '#FF8E8E',
+                        '#FFB1B1',
+                        '#FFD4D4',
+                        '#FFF7F7',
+                        '#F8F9FA',
+                        '#E9ECEF',
+                        '#DEE2E6'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add loading animation
+        window.addEventListener('load', function() {
+            document.body.classList.add('loaded');
+        });
+    </script>
+</body>
+</html>

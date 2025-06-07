@@ -1,86 +1,213 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>聊天机器人 - 我的网站</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 答题机器人 | 李弋老师 - 专业医学考试培训</title>
+  <meta name="description" content="李弋老师AI答题机器人，基于GPT医考模型，提供专业的医学考试答疑服务，助力医考备考。">
+  <meta name="keywords" content="AI答题,医考机器人,医学考试,李弋老师,GPT,智能答疑">
+  <meta name="author" content="李弋老师">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" />
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#2563eb', light: '#3b82f6', dark: '#1d4ed8' }
+          },
+          fontFamily: { sans: ['Noto Sans SC', 'sans-serif'] }
         }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        nav {
-            background-color: #444;
-            padding: 0.5rem;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 1rem;
-            padding: 0.5rem;
-        }
-        nav a:hover {
-            background-color: #555;
-            border-radius: 4px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-        .chatbot-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 1rem;
-            margin-top: 1rem;
-            height: 700px;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 2rem;
-        }
-    </style>
+      }
+    };
+  </script>
+
+  <style>
+    /* Apple-style淡入上移 */
+    .fade { opacity: 0; transform: translateY(30px); transition: .7s cubic-bezier(.4,0,.2,1); }
+    .fade.show { opacity: 1; transform: translateY(0); }
+
+    /* 卡片样式 */
+    .card { @apply bg-white rounded-2xl border border-neutral-200 shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-300; }
+
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out;
+    }
+    .page-loader.hide { opacity: 0; pointer-events: none; }
+    
+    .loader-content {
+      text-align: center;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+    }
+  </style>
 </head>
-<body>
-    <header>
-        <h1>我的网站</h1>
-    </header>
-    
-    <nav>
-        <a href="index.html">首页</a>
-        <a href="chatbot.html">聊天机器人</a>
-        <!-- 添加更多导航链接 -->
-    </nav>
-    
-    <div class="container">
-        <h2>智能聊天助手</h2>
-        <p>欢迎使用我们的智能聊天助手，您可以在下方与AI进行对话。</p>
-        
-        <div class="chatbot-container">
-            <iframe
-                src="https://udify.app/chatbot/6ja7QLfcCybJcXXp"
-                style="width: 100%; height: 100%;"
-                frameborder="0"
-                allow="microphone">
-            </iframe>
-        </div>
+
+<body class="font-sans text-neutral-800 bg-white">
+
+<!-- 页面加载动画 -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-content">
+    <i class="ri-robot-2-line text-4xl text-brand mb-4 block"></i>
+    <h3 class="text-xl font-bold text-slate-800">AI 答题机器人</h3>
+    <p class="text-slate-600 mt-2">正在启动智能答疑系统...</p>
+  </div>
+</div>
+
+<!-- 返回顶部按钮 -->
+<button id="backToTop" class="fixed bottom-6 right-6 w-12 h-12 bg-brand text-white rounded-full shadow-lg hover:bg-brand-dark transition-all duration-300 opacity-0 pointer-events-none z-50">
+  <i class="ri-arrow-up-line text-xl"></i>
+</button>
+
+<!-- 导航栏 -->
+<nav class="bg-white border-b border-neutral-200 sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-8 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i class="ri-stethoscope-line text-2xl text-brand"></i>
+        <span class="text-xl font-bold text-slate-800">医考助手</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="text-slate-600 hover:text-brand transition-colors font-medium">
+          <i class="ri-home-line mr-2"></i>首页
+        </a>
+        <a href="chatbot.html" class="text-brand font-semibold">
+          <i class="ri-robot-2-line mr-2"></i>AI 答题
+        </a>
+      </div>
     </div>
-    
-    <footer>
-        <p>&copy; 2025 我的网站. 保留所有权利.</p>
-    </footer>
+  </div>
+</nav>
+
+<!-- 主要内容区域 -->
+<main class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <!-- Hero 区域 -->
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-8 text-center">
+      <div class="fade">
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-relaxed text-slate-800 mb-6 tracking-wide">
+          <span class="block mb-4">AI 答题机器人</span>
+          <span class="text-brand block">智能医考助手</span>
+        </h1>
+        <p class="text-slate-600 text-lg leading-relaxed mb-8 max-w-3xl mx-auto">
+          基于 GPT 医考模型训练，专业解答医学考试问题。支持医学基础、临床专业、护理学等各科目答疑，让备考更高效。
+        </p>
+        
+        <!-- 功能特色 -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+          <div class="card p-6 text-center">
+            <i class="ri-brain-line text-3xl text-brand mb-3 block"></i>
+            <h3 class="text-lg font-bold mb-2">智能理解</h3>
+            <p class="text-sm text-slate-600">深度理解医学概念，准确解析复杂问题</p>
+          </div>
+          <div class="card p-6 text-center">
+            <i class="ri-time-line text-3xl text-brand mb-3 block"></i>
+            <h3 class="text-lg font-bold mb-2">即时响应</h3>
+            <p class="text-sm text-slate-600">24小时在线，秒级回复，随时解答疑问</p>
+          </div>
+          <div class="card p-6 text-center">
+            <i class="ri-award-line text-3xl text-brand mb-3 block"></i>
+            <h3 class="text-lg font-bold mb-2">专业权威</h3>
+            <p class="text-sm text-slate-600">基于权威教材和真题训练，答案准确可靠</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 聊天机器人区域 -->
+  <section class="pb-16">
+    <div class="max-w-6xl mx-auto px-8">
+      <div class="card p-8 fade">
+        <div class="flex items-center gap-3 mb-6">
+          <i class="ri-robot-2-line text-2xl text-brand"></i>
+          <h2 class="text-2xl font-bold text-slate-800">开始对话</h2>
+        </div>
+        
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 mb-6">
+          <div class="flex items-start gap-3">
+            <i class="ri-information-line text-brand text-lg mt-1"></i>
+            <div>
+              <h4 class="font-semibold text-slate-800 mb-2">使用提示</h4>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>• 可以直接输入医学问题或上传题目图片</li>
+                <li>• 支持医学基础、临床专业、护理学等各科目</li>
+                <li>• 提供详细解析和知识点总结</li>
+                <li>• 建议描述问题时尽量详细具体</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="chatbot-container bg-white rounded-xl border border-neutral-200 overflow-hidden" style="height: 600px;">
+          <iframe
+             src="https://udify.app/chatbot/W5yfQB0NqCm8d6Hz"
+             style="width: 100%; height: 100%; min-height: 700px"
+             frameborder="0"
+             allow="microphone">
+           </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* -------------- 页面加载完成后隐藏加载动画 -------------- */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('pageLoader').classList.add('hide');
+  }, 800);
+});
+
+/* -------------- 返回顶部按钮功能 -------------- */
+const backToTopBtn = document.getElementById('backToTop');
+
+// 滚动时显示/隐藏返回顶部按钮
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 300) {
+    backToTopBtn.style.opacity = '1';
+    backToTopBtn.style.pointerEvents = 'auto';
+  } else {
+    backToTopBtn.style.opacity = '0';
+    backToTopBtn.style.pointerEvents = 'none';
+  }
+});
+
+// 点击返回顶部
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* -------------- Apple 风格 Intersection 动效 -------------- */
+const io = new IntersectionObserver(entries =>
+  entries.forEach(e => e.isIntersecting && e.target.classList.add('show')),
+  { threshold: 0.12 }
+);
+document.querySelectorAll('.fade').forEach(el => io.observe(el));
+</script>
+
 </body>
-</html> 
+</html>

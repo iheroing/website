@@ -1,493 +1,357 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>医学备考资源中心 - 您的医考助手</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>医考助手 | 李弋老师 - 专业医学考试培训</title>
+  <meta name="description" content="李弋老师医考助手，提供医学基础、临床专业知识考点，AI备考工具，面试资料。8年培训经验，累计服务1万+学员，通过率90%+。">
+  <meta name="keywords" content="医考,医学考试,事业单位,医疗招聘,李弋老师,医学基础,临床专业,护理考试,面试培训">
+  <meta name="author" content="李弋老师">
+
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" />
+
+  
+  <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.umd.js"></script>
+
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#2563eb', light: '#3b82f6', dark: '#1d4ed8' }
+          },
+          keyframes: {
+            float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } }
+          },
+          animation: { float: 'float 4s ease-in-out infinite' },
+          fontFamily: { sans: ['Noto Sans SC', 'sans-serif'] }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Apple-style淡入上移 */
+    .fade { opacity: 0; transform: translateY(30px); transition: .7s cubic-bezier(.4,0,.2,1); }
+    .fade.show { opacity: 1; transform: translateY(0); }
+
+    /* Bento 基础卡片 */
+    .card { @apply bg-white rounded-2xl border border-neutral-200 shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-300; }
+    .card:hover:not(.cursor-not-allowed) { transform: translateY(-4px) scale(1.02); }
+     .card.cursor-not-allowed:hover { transform: none; }
     
-    <!-- TailwindCSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out;
+    }
+    .page-loader.hide { opacity: 0; pointer-events: none; }
     
-    <!-- 字体 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    .loader-content {
+      text-align: center;
+      animation: pulse 2s ease-in-out infinite;
+    }
     
-    <!-- 图标 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+    }
+
+    /* 滚动条 */
+    ::-webkit-scrollbar { width: 8px;height:8px }
+    ::-webkit-scrollbar-thumb { background: #efefef;border-radius:8px }
+    ::-webkit-scrollbar-thumb:hover { background: #d4d4d4 }
     
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Noto Sans SC', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            800: '#3730a3',
-                            900: '#312e81',
-                        },
-                        secondary: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            200: '#99f6e4',
-                            300: '#5eead4',
-                            400: '#2dd4bf',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                            700: '#0f766e',
-                            800: '#115e59',
-                            900: '#134e4a',
-                        },
-                    },
-                    animation: {
-                        'float': 'float 3s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        }
-                    },
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        /* 自定义滚动条 */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #c7d2fe;
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6366f1;
-        }
-        
-        /* 平滑滚动 */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* 渐变背景 */
-        .bg-gradient-hero {
-            background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
-        }
-        
-        /* 卡片悬浮效果 */
-        .hover-card {
-            transition: all 0.3s ease;
-        }
-        
-        .hover-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1), 0 10px 10px -5px rgba(99, 102, 241, 0.04);
-        }
-        
-        /* 按钮悬浮效果 */
-        .btn-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .btn-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-        }
-        
-        /* 图标动画 */
-        .icon-spin {
-            animation: spin 10s linear infinite;
-        }
-        
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
+    /* 圆点导航样式 */
+    .dot-nav-item { position: relative; }
+    .dot-nav-item.active > div { background-color: #3b82f6 !important; }
+    .tooltip {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .dot-nav-item:hover .tooltip { opacity: 1; }
+  </style>
+
 </head>
 
-<body class="font-sans bg-gray-50 text-gray-800">
-    <!-- 导航栏 -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <i class="ri-heart-pulse-fill text-primary-600 text-2xl mr-2"></i>
-                        <span class="font-bold text-xl text-gray-900">医考助手</span>
-                    </div>
-                </div>
-                <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
-                    <a href="#home" class="text-gray-900 hover:text-primary-600 px-3 py-2 text-sm font-medium">首页</a>
-                    <a href="#resources" class="text-gray-900 hover:text-primary-600 px-3 py-2 text-sm font-medium">学习资源</a>
-                    <a href="#features" class="text-gray-900 hover:text-primary-600 px-3 py-2 text-sm font-medium">特色服务</a>
-                    <a href="#contact" class="text-gray-900 hover:text-primary-600 px-3 py-2 text-sm font-medium">联系我们</a>
-                </div>
-                <div class="flex items-center sm:hidden">
-                    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
-                        <i class="ri-menu-line text-xl"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 移动端菜单 -->
-        <div id="mobile-menu" class="sm:hidden hidden bg-white border-t border-gray-200">
-            <div class="pt-2 pb-3 space-y-1">
-                <a href="#home" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-primary-300 hover:text-primary-700">首页</a>
-                <a href="#resources" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-primary-300 hover:text-primary-700">学习资源</a>
-                <a href="#features" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-primary-300 hover:text-primary-700">特色服务</a>
-                <a href="#contact" class="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-primary-300 hover:text-primary-700">联系我们</a>
-            </div>
-        </div>
-    </nav>
+<body class="font-sans text-neutral-800 bg-white">
 
-    <!-- 英雄区域 -->
-    <section id="home" class="bg-gradient-hero text-white py-20 md:py-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between">
-                <div class="md:w-1/2 mb-10 md:mb-0">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                        医学备考<br>
-                        <span class="text-secondary-300">智能助手</span>
-                    </h1>
-                    <p class="text-lg md:text-xl mb-8 text-gray-100 max-w-lg">
-                        专业的医学考试备考资源平台，助您高效备考，轻松通过各类医学考试。
-                    </p>
-                    <div class="flex flex-wrap gap-4">
-                        <a href="E类考前30分 - 西医临床岗岗位大题.html" class="bg-white text-primary-700 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg shadow-md btn-hover inline-flex items-center">
-                            <i class="ri-book-open-line mr-2"></i>
-                            E类岗位大题
-                        </a>
-                        <a href="试题抽取器 5.0.html" class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-6 rounded-lg shadow-md btn-hover inline-flex items-center">
-                            <i class="ri-questionnaire-line mr-2"></i>
-                            智能试题抽取器
-                        </a>
-                        <a href="chatbot.html" class="bg-secondary-500 hover:bg-secondary-600 text-white font-medium py-3 px-6 rounded-lg shadow-md btn-hover inline-flex items-center">
-                            <i class="ri-robot-line mr-2"></i>
-                            医疗备考机器人
-                        </a>
-                    </div>
-                </div>
-                <div class="md:w-1/2 flex justify-center">
-                    <div class="relative">
-                        <div class="absolute inset-0 bg-primary-600 rounded-full opacity-10 animate-pulse-slow" style="transform: scale(1.1);"></div>
-                        <img src="https://img.freepik.com/free-vector/doctors-concept-illustration_114360-1515.jpg" alt="医学专业人员" class="relative z-10 w-full max-w-md rounded-lg shadow-xl animate-float">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 页面加载动画 -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-content">
+    <i class="ri-stethoscope-line text-4xl text-brand mb-4 block"></i>
+    <h3 class="text-xl font-bold text-slate-800">医考助手</h3>
+    <p class="text-slate-600 mt-2">正在为您准备最佳学习体验...</p>
+  </div>
+</div>
 
-    <!-- 资源区域 -->
-    <section id="resources" class="py-16 md:py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">精选学习资源</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    我们提供全面的医学考试备考资料，帮助您高效备考，提高通过率
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- 资源卡片1 -->
-                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md hover-card">
-                    <div class="h-48 bg-primary-100 flex items-center justify-center">
-                        <i class="ri-file-list-3-line text-6xl text-primary-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">E类考前30分</h3>
-                        <p class="text-gray-600 mb-4">
-                            西医临床岗岗位大题精选资料，包含高频考点和答题技巧。
-                        </p>
-                        <a href="E类考前30分 - 西医临床岗岗位大题.html" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
-                            立即查看
-                            <i class="ri-arrow-right-line ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 资源卡片2 -->
-                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md hover-card">
-                    <div class="h-48 bg-yellow-100 flex items-center justify-center">
-                        <i class="ri-questionnaire-line text-6xl text-yellow-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">智能试题抽取器</h3>
-                        <p class="text-gray-600 mb-4">
-                            智能面试题本系统，支持多种筛选条件，随机抽取试题和学员。
-                        </p>
-                        <a href="试题抽取器 5.0.html" class="inline-flex items-center text-yellow-600 hover:text-yellow-700 font-medium">
-                            开始使用
-                            <i class="ri-arrow-right-line ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- 资源卡片3 -->
-                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md hover-card">
-                    <div class="h-48 bg-secondary-100 flex items-center justify-center">
-                        <i class="ri-robot-line text-6xl text-secondary-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">AI医疗备考助手</h3>
-                        <p class="text-gray-600 mb-4">
-                            智能问答机器人，解答医学考试疑问，提供个性化学习建议。
-                        </p>
-                        <a href="chatbot.html" class="inline-flex items-center text-secondary-600 hover:text-secondary-700 font-medium">
-                            开始对话
-                            <i class="ri-arrow-right-line ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<nav id="dotNav" class="fixed left-6 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-4 hidden lg:flex">
+  <div class="dot-nav-item active" data-target="home">
+    <div class="w-3 h-3 rounded-full bg-brand cursor-pointer transition-all duration-300 hover:scale-125"></div>
+    <span class="tooltip">首页</span>
+  </div>
+  <div class="dot-nav-item" data-target="resources">
+    <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
+    <span class="tooltip">备考资料</span>
+  </div>
+  <div class="dot-nav-item" data-target="tools">
+    <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
+    <span class="tooltip">备考工具</span>
+  </div>
+  <div class="dot-nav-item" data-target="updates">
+    <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
+    <span class="tooltip">公告真题</span>
+  </div>
+</nav>
 
-    <!-- 特色服务 -->
-    <section id="features" class="py-16 md:py-24 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">我们的特色服务</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    提供全方位的医学考试备考支持，助您高效学习，轻松通过考试
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- 特色1 -->
-                <div class="bg-white p-6 rounded-xl shadow-md hover-card">
-                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-book-open-line text-xl text-primary-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">精选学习资料</h3>
-                    <p class="text-gray-600">
-                        由专业医学教育团队精心筛选和整理的高质量备考资料，覆盖各类医学考试重点内容。
-                    </p>
-                </div>
-                
-                <!-- 特色2 -->
-                <div class="bg-white p-6 rounded-xl shadow-md hover-card">
-                    <div class="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-ai-generate text-xl text-secondary-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">AI智能问答</h3>
-                    <p class="text-gray-600">
-                        基于先进AI技术的智能问答系统，随时解答您的医学考试疑问，提供个性化学习建议。
-                    </p>
-                </div>
-                
-                <!-- 特色3 -->
-                <div class="bg-white p-6 rounded-xl shadow-md hover-card">
-                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-file-paper-2-line text-xl text-purple-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">考试技巧指导</h3>
-                    <p class="text-gray-600">
-                        提供专业的考试答题技巧和方法指导，帮助您在考试中取得更好的成绩。
-                    </p>
-                </div>
-                
-                <!-- 特色4 -->
-                <div class="bg-white p-6 rounded-xl shadow-md hover-card">
-                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-calendar-check-line text-xl text-pink-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">备考计划制定</h3>
-                    <p class="text-gray-600">
-                        根据考试时间和个人情况，提供科学合理的备考计划，帮助您高效备考。
-                    </p>
-                </div>
-                
-                <!-- 特色5 -->
-                <div class="bg-white p-6 rounded-xl shadow-md hover-card">
-                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-questionnaire-line text-xl text-yellow-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">智能试题抽取</h3>
-                    <p class="text-gray-600">
-                        智能面试题本系统，支持多维度筛选，随机抽取试题和学员，提高面试效率。
-                    </p>
-                </div>
-                
-                <!-- 特色6 -->
-                <div class="bg-white p-6 rounded-xl shadow-md hover-card">
-                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-group-line text-xl text-green-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">学习社区交流</h3>
-                    <p class="text-gray-600">
-                        提供学习交流平台，与其他备考者分享经验，共同进步。
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 返回顶部按钮 -->
+<button id="backToTop" class="fixed bottom-6 right-6 w-12 h-12 bg-brand text-white rounded-full shadow-lg hover:bg-brand-dark transition-all duration-300 opacity-0 pointer-events-none z-50">
+  <i class="ri-arrow-up-line text-xl"></i>
+</button>
 
-    <!-- 行动召唤 -->
-    <section class="py-16 md:py-20 bg-primary-700 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between">
-                <div class="md:w-2/3 mb-8 md:mb-0">
-                    <h2 class="text-2xl md:text-3xl font-bold mb-4">准备好开始您的医学考试备考之旅了吗？</h2>
-                    <p class="text-lg text-primary-100">
-                        立即访问我们的学习资源和AI助手，开启高效备考模式！
-                    </p>
-                </div>
-                <div class="flex flex-wrap gap-4">
-                    <a href="E类考前30分 - 西医临床岗岗位大题.html" class="bg-white text-primary-700 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg shadow-md btn-hover inline-flex items-center">
-                        <i class="ri-book-open-line mr-2"></i>
-                        查看学习资料
-                    </a>
-                    <a href="试题抽取器 5.0.html" class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-6 rounded-lg shadow-md btn-hover inline-flex items-center">
-                        <i class="ri-questionnaire-line mr-2"></i>
-                        试题抽取器
-                    </a>
-                    <a href="chatbot.html" class="bg-primary-900 hover:bg-primary-800 text-white font-medium py-3 px-6 rounded-lg shadow-md btn-hover inline-flex items-center">
-                        <i class="ri-robot-line mr-2"></i>
-                        咨询AI助手
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<section id="home" class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 text-slate-800 flex items-center">
+  <div class="max-w-7xl mx-auto px-8 py-6 flex flex-col md:flex-row items-start gap-8">
+    <div class="md:w-1/2 space-y-8 fade">
+        <h1 class="text-5xl md:text-7xl font-extrabold leading-relaxed text-slate-800 mb-6 tracking-wide">
+          <span class="block mb-4">医学备考</span>
+          <span class="text-slate-600 block">智能加速</span>
+        </h1>
+       <p class="text-slate-600 text-lg leading-relaxed mb-8">笔试/面试资料 + AI 辅助工具，一站式提升通过率。</p>
+       <div class="flex flex-wrap gap-4">
+         <a href="#resources" class="px-8 py-4 bg-brand text-white rounded-lg shadow font-semibold hover:bg-brand-dark transition text-lg">立即浏览资料</a>
+         <a href="#tools" class="px-8 py-4 bg-white border border-brand text-brand rounded-lg font-semibold hover:bg-brand hover:text-white transition text-lg">体验 AI 工具</a>
+       </div>
+     </div>
 
-    <!-- 联系我们 -->
-    <section id="contact" class="py-16 md:py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">联系我们</h2>
-                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    如有任何问题或建议，欢迎随时联系我们
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- 联系方式1 -->
-                <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-card text-center">
-                    <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-mail-line text-2xl text-primary-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">电子邮件</h3>
-                    <p class="text-gray-600">
-                        contact@medicalexam.com
-                    </p>
-                </div>
-                
-                <!-- 联系方式2 -->
-                <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-card text-center">
-                    <div class="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-wechat-line text-2xl text-secondary-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">微信公众号</h3>
-                    <p class="text-gray-600">
-                        医考助手
-                    </p>
-                </div>
-                
-                <!-- 联系方式3 -->
-                <div class="bg-gray-50 p-6 rounded-xl shadow-md hover-card text-center">
-                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ri-customer-service-2-line text-2xl text-purple-600"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">客服热线</h3>
-                    <p class="text-gray-600">
-                        400-123-4567
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 功能板块卡片 -->
+<div class="md:w-1/2 w-full space-y-3 fade">
+  <!-- 卡片：笔试资料 -->
+  <a href="#resources" class="card p-4 flex items-center gap-3 hover:shadow-lg group bg-gradient-to-r from-white to-blue-50/30">
+    <div class="flex-1">
+      <h3 class="text-lg font-black text-slate-800 group-hover:text-brand transition-colors tracking-tight">笔试·面试资料</h3>
+      <p class="text-sm text-slate-600 font-medium">高频考点 / 真题解析 / 模拟卷</p>
+    </div>
+    <i class="ri-book-open-line text-3xl text-brand group-hover:scale-110 transition-transform drop-shadow-sm"></i>
+  </a>
 
-    <!-- 页脚 -->
-    <footer class="bg-gray-900 text-gray-400 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-6 md:mb-0">
-                    <div class="flex items-center">
-                        <i class="ri-heart-pulse-fill text-primary-500 text-2xl mr-2"></i>
-                        <span class="font-bold text-xl text-white">医考助手</span>
-                    </div>
-                    <p class="mt-2 text-sm">
-                        专业的医学考试备考资源平台
-                    </p>
-                </div>
-                
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white">
-                        <i class="ri-wechat-line text-xl"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white">
-                        <i class="ri-weibo-line text-xl"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white">
-                        <i class="ri-bilibili-line text-xl"></i>
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white">
-                        <i class="ri-douban-line text-xl"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="mt-8 pt-8 border-t border-gray-800 text-center text-sm">
-                <p>© 2025 医考助手. 保留所有权利.</p>
-            </div>
-        </div>
-    </footer>
+  <!-- 卡片：AI 工具 -->
+  <a href="#tools" class="card p-4 flex items-center gap-3 hover:shadow-lg group bg-gradient-to-r from-white to-emerald-50/30">
+    <div class="flex-1">
+      <h3 class="text-lg font-black text-slate-800 group-hover:text-brand transition-colors tracking-tight">AI 备考工具</h3>
+      <p class="text-sm text-slate-600 font-medium">答题机器人 / 智能抽题</p>
+    </div>
+    <i class="ri-robot-2-line text-3xl text-brand group-hover:scale-110 transition-transform drop-shadow-sm"></i>
+  </a>
 
-    <script>
-        // 移动端菜单切换
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // 移动端菜单项点击后关闭菜单
-        const mobileMenuItems = mobileMenu.querySelectorAll('a');
-        mobileMenuItems.forEach(item => {
-            item.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-        
-        // 滚动监听，添加导航栏阴影
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 10) {
-                nav.classList.add('shadow-md');
-                nav.classList.remove('shadow-sm');
-            } else {
-                nav.classList.remove('shadow-md');
-                nav.classList.add('shadow-sm');
-            }
-        });
-    </script>
+  <!-- 卡片：公告+资料 -->
+  <a href="#updates" class="card p-4 flex items-center gap-3 hover:shadow-lg group bg-gradient-to-r from-white to-amber-50/30">
+    <div class="flex-1">
+      <h3 class="text-lg font-black text-slate-800 group-hover:text-brand transition-colors tracking-tight">公告 · 真题</h3>
+      <p class="text-sm text-slate-600 font-medium">考试动态 & 历年真题</p>
+    </div>
+    <i class="ri-notification-4-line text-3xl text-brand group-hover:scale-110 transition-transform drop-shadow-sm"></i>
+  </a>
+</div>
+  </div>
+</section>
+
+<section id="resources" class="py-16">
+  <div class="max-w-7xl mx-auto px-8">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">备考资料</h2>
+
+<div id="resourceGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </div>
+</section>
+
+<section id="tools" class="py-16 bg-neutral-50">
+  <div class="max-w-7xl mx-auto px-8">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">备考工具</h2>
+
+<div id="toolGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </div>
+</section>
+
+<section id="updates" class="py-16">
+  <div class="max-w-7xl mx-auto px-8">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">公告 / 真题 / 其他</h2>
+
+<div id="updateGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </div>
+</section>
+
+<section id="about" class="py-16 bg-neutral-50">
+  <div class="max-w-6xl mx-auto px-8 text-center space-y-6 fade">
+    <h2 class="text-3xl md:text-4xl font-bold">关于李弋老师</h2>
+    <div class="max-w-4xl mx-auto space-y-4">
+      <p class="text-lg font-semibold text-slate-700">上海交通大学硕士 · 华图医疗研究院院长</p>
+      <p class="text-neutral-600 leading-relaxed">8年医考培训经验，独创"一纵三横"记忆法和AI+大数据驱动的"双频学习法"，让医考不再靠运气，让复习不再靠死记。累计服务学员超1万人，主讲医学基础、临床专业等核心课程。</p>
+      <p class="text-neutral-600 leading-relaxed">以活泼的授课风格和过硬的专业功底著称，善用联想记忆法和母题训练法，让深奥的医学知识变得生动易懂。带班笔试通过率多次突破90%，曾荣获华图教育教师风采大赛特等奖。</p>
+      <p class="text-brand font-medium">坚持"精准教学、高效备考"的理念，帮助每一位医考学员实现职业理想。</p>
+    </div>
+
+<!-- 社交链接 -->
+<div class="flex flex-wrap justify-center gap-6">
+  <a href="https://v.douyin.com/KWLNwyhxiSQ/" target="_blank" class="flex items-center gap-2 px-4 py-2 border border-brand rounded-lg text-brand hover:bg-brand hover:text-white transition">
+    <i class="fab fa-tiktok"></i> 抖音
+  </a>
+  <a href="https://www.xiaohongshu.com/user/profile/61d313ec000000001000e0df" target="_blank" class="flex items-center gap-2 px-4 py-2 border border-brand rounded-lg text-brand hover:bg-brand hover:text-white transition">
+    <i class="ri-book-mark-line"></i> 小红书
+  </a>
+</div>
+  </div>
+</section>
+
+
+
+<script>
+/* ---------------- 数据配置（后期仅维护此对象即可） ---------------- */
+const data = {
+  resources: [
+    { title:'E类考前30分', desc:'西医临床岗考点&答题技巧', icon:'ri-file-list-3-line', link:'E 类备考之：考前三十分.html' },
+    { title:'医学基础笔试考点', desc:'解剖、生理、药理、病理等', icon:'ri-book-2-line', link:'医学基础笔试考点.html' },
+    { title:'临床专业知识考点', desc:'内科、外科、妇产科等', icon:'ri-stethoscope-line', link:'临床专业知识考点.html' },
+    { title:'护理笔试必背知识', desc:'护理学基础与专科护理', icon:'ri-nurse-line', link:'护理笔试必背知识.html' },
+    { title:'医疗结构化面试热点', desc:'时政热点与面试技巧', icon:'ri-question-answer-line', link:'医疗结构化面试备考必备时政热点.html' },
+    { title:'面试时政热点', desc:'最新时政热点汇总', icon:'ri-newspaper-line', link:'面试时政热点.md' }
+  ],
+  tools: [
+    { title:'AI 答题机器人', desc:'基于 GPT 医考模型', icon:'ri-robot-line', link:'chatbot.html' },
+    { title:'智能抽题器', desc:'随机/定向题库一键生成', icon:'ri-shuffle-line', link:'面试试题抽取器.html' },
+    { title:'学习进度跟踪', desc:'个人学习数据分析', icon:'ri-bar-chart-2-line', link:'#', badge:'即将上线' }
+  ],
+  updates: [
+    { title:'2024年事业单位联考《综合应用能力》E类试卷', desc:'真题试卷 PDF 下载', icon:'ri-file-download-line', link:'2024年事业单位联考 《 综合应用能力》 E类试卷.pdf' },
+    { title:'历年真题合集', desc:'2020-2024年真题汇总', icon:'ri-file-paper-2-line', link:'#', badge:'整理中' },
+    { title:'考试公告订阅', desc:'第一时间获取考试动态', icon:'ri-notification-3-line', link:'#', badge:'开发中' }
+  ]
+};
+
+/* -------------- 渲染函数（统一 Bento 样式） -------------- */
+function renderCards(arr, target) {
+  const grid = document.getElementById(target);
+  arr.forEach(it => {
+    const el = document.createElement('a');
+    el.href   = it.link;
+    el.className = 'card p-6 flex flex-col gap-3 fade relative group';
+    
+    // 如果链接为 #，则禁用点击并添加样式
+    if (it.link === '#') {
+      el.href = 'javascript:void(0)';
+      el.className += ' cursor-not-allowed opacity-75';
+    }
+    
+    const badgeHtml = it.badge ? `<span class="absolute top-3 right-3 px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full font-medium">${it.badge}</span>` : '';
+    
+    el.innerHTML = `
+      ${badgeHtml}
+      <i class="${it.icon} text-3xl text-brand group-hover:scale-110 transition-transform"></i>
+      <h3 class="text-lg font-bold group-hover:text-brand transition-colors">${it.title}</h3>
+      <p class="text-sm opacity-70 group-hover:opacity-90 transition-opacity">${it.desc}</p>`;
+    grid.appendChild(el);
+  });
+}
+renderCards(data.resources, 'resourceGrid');
+renderCards(data.tools,     'toolGrid');
+renderCards(data.updates,   'updateGrid');
+
+/* -------------- 页面加载完成后隐藏加载动画 -------------- */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('pageLoader').classList.add('hide');
+  }, 800);
+});
+
+/* -------------- 返回顶部按钮功能 -------------- */
+const backToTopBtn = document.getElementById('backToTop');
+
+// 滚动时显示/隐藏返回顶部按钮
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 300) {
+    backToTopBtn.style.opacity = '1';
+    backToTopBtn.style.pointerEvents = 'auto';
+  } else {
+    backToTopBtn.style.opacity = '0';
+    backToTopBtn.style.pointerEvents = 'none';
+  }
+});
+
+// 点击返回顶部
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* -------------- Apple 风格 Intersection 动效 -------------- */
+const io = new IntersectionObserver(entries =>
+  entries.forEach(e => e.isIntersecting && e.target.classList.add('show')),
+  { threshold: 0.12 }
+);
+document.querySelectorAll('.fade').forEach(el => io.observe(el));
+
+/* -------------- 圆点导航交互 -------------- */
+const dotNavItems = document.querySelectorAll('.dot-nav-item');
+const sections = document.querySelectorAll('section');
+
+// 圆点导航点击事件
+dotNavItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const target = item.dataset.target;
+    const targetSection = document.getElementById(target);
+    
+    // 移除所有active状态
+    dotNavItems.forEach(dot => dot.classList.remove('active'));
+    // 添加当前active状态
+    item.classList.add('active');
+    
+    // 滚动到目标区域
+    targetSection.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// 滚动时更新圆点导航状态
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+    if (scrollY >= sectionTop - 200) {
+      current = section.getAttribute('id');
+    }
+  });
+  
+  dotNavItems.forEach(item => {
+    item.classList.remove('active');
+    if (item.dataset.target === current) {
+      item.classList.add('active');
+    }
+  });
+});
+</script>
+
 </body>
 </html>
-
