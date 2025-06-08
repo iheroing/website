@@ -1,0 +1,2427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医学知识库 | 李弋老师 - 智能学习系统</title>
+    <meta name="description" content="李弋老师医学知识库，系统化医学知识点学习，支持学习进度跟踪、智能搜索、个性化标记。">
+    <meta name="keywords" content="医学知识库,医考,学习系统,李弋老师,医学基础,临床专业">
+    <meta name="author" content="李弋老师">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cdefs%3e%3clinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' style='stop-color:%232563eb;stop-opacity:1' /%3e%3cstop offset='100%25' style='stop-color:%233b82f6;stop-opacity:1' /%3e%3c/linearGradient%3e%3c/defs%3e%3crect width='100' height='100' rx='20' fill='url(%23grad)'/%3e%3cg fill='white'%3e%3ccircle cx='50' cy='35' r='12' stroke='white' stroke-width='2' fill='none'/%3e%3cpath d='M38 47h24v6H38z'/%3e%3cpath d='M42 53h16v3H42z'/%3e%3cpath d='M45 56h10v2H45z'/%3e%3cpath d='M30 65h40v8H30z' rx='2'/%3e%3ctext x='50' y='78' text-anchor='middle' font-family='Arial' font-size='8' font-weight='bold'%3e知识%3c/text%3e%3c/g%3e%3c/svg%3e">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" />
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { DEFAULT: '#2563eb', light: '#3b82f6', dark: '#1d4ed8' }
+                    },
+                    keyframes: {
+                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
+                        pulse: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '.5' } },
+                        bounce: { '0%, 100%': { transform: 'translateY(-25%)', animationTimingFunction: 'cubic-bezier(0.8,0,1,1)' }, '50%': { transform: 'none', animationTimingFunction: 'cubic-bezier(0,0,0.2,1)' } }
+                    },
+                    animation: {
+                        float: 'float 4s ease-in-out infinite',
+                        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        bounce: 'bounce 1s infinite'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans SC', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <style>
+        /* 滚动进度条 */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #2563eb, #3b82f6, #60a5fa);
+            z-index: 9999;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+        }
+        
+        /* Apple-style淡入上移 */
+        .fade { opacity: 0; transform: translateY(30px); transition: .7s cubic-bezier(.4,0,.2,1); }
+        .fade.show { opacity: 1; transform: translateY(0); }
+        
+        /* 卡片样式 */
+        .card { 
+            @apply bg-white rounded-2xl border border-neutral-200 shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-300;
+        }
+        .card:hover:not(.cursor-not-allowed) { 
+            transform: translateY(-4px) scale(1.02); 
+        }
+        .card.cursor-not-allowed:hover { 
+            transform: none; 
+        }
+        
+        /* 知识点卡片翻转效果 */
+        .flip-card {
+            perspective: 1000px;
+            height: 200px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* 学习状态样式 */
+        .learned {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+            color: white !important;
+        }
+        
+        .difficult {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+            color: white !important;
+        }
+        
+        /* 搜索框样式 */
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        /* 统计面板样式 */
+        .stats-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        .page-loader.hide { opacity: 0; pointer-events: none; }
+        
+        .loader-content {
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* 侧边导航样式 */
+        .side-nav {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .side-nav.open {
+            left: 0;
+        }
+        
+        .nav-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .nav-backdrop.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body class="font-sans text-neutral-800 bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100/30 min-h-screen">
+
+<!-- 滚动进度条 -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- 页面加载动画 -->
+<div id="pageLoader" class="page-loader">
+    <div class="loader-content">
+        <i class="ri-book-open-line text-4xl text-brand mb-4 block"></i>
+        <h3 class="text-xl font-bold text-slate-800">医学知识库</h3>
+        <p class="text-slate-600 mt-2">正在加载知识内容...</p>
+    </div>
+</div>
+
+<!-- 侧边导航 -->
+<div class="nav-backdrop" id="navBackdrop"></div>
+<nav class="side-nav" id="sideNav">
+    <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-slate-800">医学系统</h2>
+            <button id="closeSideNav" class="p-2 hover:bg-gray-100 rounded-lg">
+                <i class="ri-close-line text-xl"></i>
+            </button>
+        </div>
+        <div id="systemList" class="space-y-2">
+            <!-- 系统列表将在这里动态生成 -->
+        </div>
+    </div>
+</nav>
+
+<!-- 数据管理模态框 -->
+<div id="dataModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800">数据管理</h2>
+                    <button id="closeDataModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="ri-close-line text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <!-- 数据管理选项卡 -->
+                <div class="flex space-x-1 bg-gray-100 rounded-lg p-1 mb-6">
+                    <button class="data-tab active px-4 py-2 rounded-md text-sm font-medium transition-colors" data-tab="import">
+                        <i class="ri-download-line mr-2"></i>导入数据
+                    </button>
+                    <button class="data-tab px-4 py-2 rounded-md text-sm font-medium transition-colors" data-tab="edit">
+                        <i class="ri-edit-line mr-2"></i>编辑知识点
+                    </button>
+                    <button class="data-tab px-4 py-2 rounded-md text-sm font-medium transition-colors" data-tab="export">
+                        <i class="ri-upload-line mr-2"></i>导出数据
+                    </button>
+                </div>
+                
+                <!-- 导入数据面板 -->
+                <div id="importPanel" class="data-panel">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- MD文件导入 -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-800">
+                                <i class="ri-markdown-line mr-2 text-blue-500"></i>Markdown 导入
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-4">支持标准格式的Markdown文件导入</p>
+                            <input type="file" id="mdFileInput" accept=".md,.markdown" class="hidden">
+                            <button onclick="document.getElementById('mdFileInput').click()" class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                选择 MD 文件
+                            </button>
+                            <div class="mt-3 text-xs text-gray-500">
+                                格式示例：<br>
+                                # 系统名称<br>
+                                ## 疾病名称<br>
+                                ### 题眼<br>
+                                - 知识点1<br>
+                                - 知识点2
+                            </div>
+                        </div>
+                        
+                        <!-- CSV文件导入 -->
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-800">
+                                <i class="ri-file-excel-line mr-2 text-green-500"></i>CSV 导入
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-4">支持Excel导出的CSV格式文件</p>
+                            <input type="file" id="csvFileInput" accept=".csv" class="hidden">
+                            <button onclick="document.getElementById('csvFileInput').click()" class="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                                选择 CSV 文件
+                            </button>
+                            <div class="mt-3 text-xs text-gray-500">
+                                列格式：系统,疾病,知识类型,内容<br>
+                                示例：呼吸系统,肺炎,题眼,发热咳嗽
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- JSON导入 -->
+                    <div class="mt-6 border border-gray-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-800">
+                            <i class="ri-code-line mr-2 text-purple-500"></i>JSON 数据导入
+                        </h3>
+                        <textarea id="jsonInput" placeholder="粘贴JSON格式的知识库数据..." class="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                        <button id="importJson" class="mt-3 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                            导入 JSON 数据
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 编辑知识点面板 -->
+                <div id="editPanel" class="data-panel hidden">
+                    <div class="space-y-4">
+                        <!-- 选择系统和疾病 -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">医学系统</label>
+                                <select id="editSystemSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="">选择系统</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">疾病</label>
+                                <select id="editDiseaseSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="">选择疾病</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- 新增系统/疾病 -->
+                        <div class="flex space-x-4">
+                            <button id="addSystemBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                <i class="ri-add-line mr-2"></i>新增系统
+                            </button>
+                            <button id="addDiseaseBtn" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                                <i class="ri-add-line mr-2"></i>新增疾病
+                            </button>
+                        </div>
+                        
+                        <!-- 知识点编辑区域 -->
+                        <div id="knowledgeEditArea" class="hidden">
+                            <div class="space-y-4">
+                                <div class="knowledge-type-editor" data-type="题眼">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">题眼</label>
+                                    <div class="knowledge-points-container" data-type="题眼"></div>
+                                    <button class="add-point-btn mt-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300" data-type="题眼">
+                                        <i class="ri-add-line mr-1"></i>添加题眼
+                                    </button>
+                                </div>
+                                
+                                <div class="knowledge-type-editor" data-type="诊断要点">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">诊断要点</label>
+                                    <div class="knowledge-points-container" data-type="诊断要点"></div>
+                                    <button class="add-point-btn mt-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300" data-type="诊断要点">
+                                        <i class="ri-add-line mr-1"></i>添加诊断要点
+                                    </button>
+                                </div>
+                                
+                                <div class="knowledge-type-editor" data-type="鉴别诊断">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">鉴别诊断</label>
+                                    <div class="knowledge-points-container" data-type="鉴别诊断"></div>
+                                    <button class="add-point-btn mt-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300" data-type="鉴别诊断">
+                                        <i class="ri-add-line mr-1"></i>添加鉴别诊断
+                                    </button>
+                                </div>
+                                
+                                <div class="knowledge-type-editor" data-type="检查">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">检查</label>
+                                    <div class="knowledge-points-container" data-type="检查"></div>
+                                    <button class="add-point-btn mt-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300" data-type="检查">
+                                        <i class="ri-add-line mr-1"></i>添加检查
+                                    </button>
+                                </div>
+                                
+                                <div class="knowledge-type-editor" data-type="治疗">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">治疗</label>
+                                    <div class="knowledge-points-container" data-type="治疗"></div>
+                                    <button class="add-point-btn mt-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300" data-type="治疗">
+                                        <i class="ri-add-line mr-1"></i>添加治疗
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 flex space-x-4">
+                                <button id="saveKnowledge" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                    <i class="ri-save-line mr-2"></i>保存修改
+                                </button>
+                                <button id="deleteDisease" class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                                    <i class="ri-delete-bin-line mr-2"></i>删除疾病
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 导出数据面板 -->
+                <div id="exportPanel" class="data-panel hidden">
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="border border-gray-200 rounded-lg p-4 text-center">
+                            <i class="ri-file-text-line text-4xl text-blue-500 mb-3"></i>
+                            <h3 class="text-lg font-semibold mb-2">导出为 JSON</h3>
+                            <p class="text-sm text-gray-600 mb-4">完整的知识库数据</p>
+                            <button id="exportJson" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                下载 JSON
+                            </button>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4 text-center">
+                            <i class="ri-markdown-line text-4xl text-green-500 mb-3"></i>
+                            <h3 class="text-lg font-semibold mb-2">导出为 Markdown</h3>
+                            <p class="text-sm text-gray-600 mb-4">结构化文档格式</p>
+                            <button id="exportMd" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                                下载 MD
+                            </button>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4 text-center">
+                            <i class="ri-file-excel-line text-4xl text-purple-500 mb-3"></i>
+                            <h3 class="text-lg font-semibold mb-2">导出为 CSV</h3>
+                            <p class="text-sm text-gray-600 mb-4">表格数据格式</p>
+                            <button id="exportCsv" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                                下载 CSV
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 学习进度导出 -->
+                    <div class="mt-6 border border-gray-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-800">
+                            <i class="ri-bar-chart-line mr-2 text-orange-500"></i>学习进度导出
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4">导出当前的学习进度和标记状态</p>
+                        <button id="exportProgress" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                            <i class="ri-download-line mr-2"></i>导出学习进度
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 返回顶部按钮 -->
+<button id="backToTop" class="fixed bottom-6 right-6 w-12 h-12 bg-brand text-white rounded-full shadow-lg hover:bg-brand-dark transition-all duration-300 opacity-0 pointer-events-none z-50">
+    <i class="ri-arrow-up-line text-xl"></i>
+</button>
+
+<!-- 主容器 -->
+<div class="max-w-7xl mx-auto px-4 py-8">
+    
+    <!-- 头部区域 -->
+    <header class="text-center mb-12 fade">
+        <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-blue-200/50 mb-6 shadow-sm">
+            <i class="ri-book-open-line text-blue-600"></i>
+            <span class="text-sm font-medium text-slate-700">智能医学学习系统</span>
+        </div>
+        
+        <h1 class="text-4xl md:text-6xl font-black leading-tight text-slate-800 mb-6 tracking-tight">
+            <span class="block mb-2 bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">医学知识库</span>
+            <span class="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent text-3xl md:text-4xl">系统化学习平台</span>
+        </h1>
+        
+        <p class="text-lg text-slate-600 leading-relaxed mb-8 max-w-2xl mx-auto">
+            按医学系统分类整理，支持学习进度跟踪、智能搜索、个性化标记
+        </p>
+        
+        <!-- 操作按钮组 -->
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <button id="toggleSideNav" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <i class="ri-menu-line mr-2"></i>浏览系统
+            </button>
+            <button id="toggleSearch" class="px-6 py-3 bg-white/90 backdrop-blur-sm border-2 border-blue-200 text-slate-700 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <i class="ri-search-line mr-2"></i>智能搜索
+            </button>
+            <button id="resetProgress" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl shadow-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <i class="ri-refresh-line mr-2"></i>重置进度
+            </button>
+            <button id="dataManagement" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-xl shadow-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <i class="ri-database-2-line mr-2"></i>数据管理
+            </button>
+        </div>
+    </header>
+    
+    <!-- 搜索区域 -->
+    <div id="searchSection" class="mb-8 fade hidden">
+        <div class="search-container">
+            <div class="relative">
+                <i class="ri-search-line search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="搜索疾病名称或知识点内容...">
+            </div>
+        </div>
+        <div id="searchResults" class="mt-6"></div>
+    </div>
+    
+    <!-- 学习统计面板 -->
+    <div id="statsPanel" class="stats-panel fade">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+                <div class="text-2xl font-bold" id="totalPoints">0</div>
+                <div class="text-sm opacity-90">总知识点</div>
+            </div>
+            <div class="cursor-pointer hover:bg-green-50 rounded-lg p-2 transition-colors" onclick="showLearnedPoints()">
+                <div class="text-2xl font-bold text-green-600" id="learnedPoints">0</div>
+                <div class="text-sm opacity-90">已掌握</div>
+            </div>
+            <div class="cursor-pointer hover:bg-amber-50 rounded-lg p-2 transition-colors" onclick="showDifficultPoints()">
+                <div class="text-2xl font-bold text-amber-600" id="difficultPoints">0</div>
+                <div class="text-sm opacity-90">标记困难</div>
+            </div>
+            <div>
+                <div class="text-2xl font-bold" id="progressPercent">0%</div>
+                <div class="text-sm opacity-90">学习进度</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 主要内容区域 -->
+    <main id="mainContent">
+        <!-- 系统分类网格 -->
+        <div id="systemGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 fade">
+            <!-- 系统卡片将在这里动态生成 -->
+        </div>
+        
+        <!-- 疾病列表 -->
+        <div id="diseaseList" class="hidden">
+            <div class="flex items-center justify-between mb-6">
+                <button id="backToSystems" class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-all group">
+                    <i class="ri-arrow-left-line group-hover:text-blue-600 transition-colors"></i>
+                    <span class="group-hover:text-blue-600 transition-colors">返回系统</span>
+                </button>
+                <h2 id="currentSystemTitle" class="text-2xl font-bold text-slate-800"></h2>
+                <div></div>
+            </div>
+            <div id="diseaseGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 疾病卡片将在这里动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 知识点详情 -->
+        <div id="knowledgeDetail" class="hidden">
+            <div class="flex items-center justify-between mb-6">
+                <button id="backToDiseases" class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-all group">
+                    <i class="ri-arrow-left-line group-hover:text-blue-600 transition-colors"></i>
+                    <span class="group-hover:text-blue-600 transition-colors">返回疾病</span>
+                </button>
+                <h2 id="currentDiseaseTitle" class="text-2xl font-bold text-slate-800"></h2>
+                <div></div>
+            </div>
+            <div id="knowledgeGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 知识点卡片将在这里动态生成 -->
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="knowledge_base.js"></script>
+<script>
+// 知识库数据已从外部文件加载
+
+// 全局变量
+let currentView = 'systems'; // systems, diseases, knowledge, filtered
+let currentSystem = '';
+let currentDisease = '';
+let currentFilterType = ''; // learned, difficult
+let learningStats = {
+    learned: new Set(),
+    difficult: new Set()
+};
+
+// 页面加载完成
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('hide');
+    }, 800);
+    
+    initializePage();
+    loadLearningStats();
+    updateStats();
+});
+
+// 初始化页面
+function initializePage() {
+    loadKnowledgeBase(); // 加载本地存储的知识库数据
+    loadLearningStats(); // 加载学习进度
+    renderSystemGrid();
+    renderSystemList();
+    updateStats(); // 更新统计信息
+    setupEventListeners();
+    setupScrollEffects();
+    
+    // 初始化淡入动画
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.fade').forEach(el => {
+        observer.observe(el);
+    });
+    
+    // 页面加载动画
+    setTimeout(() => {
+        const loader = document.getElementById('pageLoader');
+        if (loader) loader.style.display = 'none';
+    }, 1000);
+}
+
+// 设置事件监听器
+function setupEventListeners() {
+    // 侧边导航
+    document.getElementById('toggleSideNav').addEventListener('click', () => {
+        document.getElementById('sideNav').classList.add('open');
+        document.getElementById('navBackdrop').classList.add('show');
+    });
+    
+    document.getElementById('closeSideNav').addEventListener('click', closeSideNav);
+    document.getElementById('navBackdrop').addEventListener('click', closeSideNav);
+    
+    // 搜索功能
+    document.getElementById('toggleSearch').addEventListener('click', toggleSearch);
+    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    
+    // 重置进度
+    document.getElementById('resetProgress').addEventListener('click', resetProgress);
+    
+    // 数据管理
+    document.getElementById('dataManagement').addEventListener('click', openDataModal);
+    
+    // 返回按钮
+    document.getElementById('backToSystems').addEventListener('click', () => showView('systems'));
+    document.getElementById('backToDiseases').addEventListener('click', () => showView('diseases'));
+    
+    // 返回顶部
+    document.getElementById('backToTop').addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// 设置滚动效果
+function setupScrollEffects() {
+    const scrollProgress = document.getElementById('scrollProgress');
+    const backToTopBtn = document.getElementById('backToTop');
+    
+    window.addEventListener('scroll', () => {
+        // 更新进度条
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        scrollProgress.style.width = scrollPercent + '%';
+        
+        // 返回顶部按钮
+        if (window.scrollY > 300) {
+            backToTopBtn.style.opacity = '1';
+            backToTopBtn.style.pointerEvents = 'auto';
+        } else {
+            backToTopBtn.style.opacity = '0';
+            backToTopBtn.style.pointerEvents = 'none';
+        }
+    });
+}
+
+// 关闭侧边导航
+function closeSideNav() {
+    document.getElementById('sideNav').classList.remove('open');
+    document.getElementById('navBackdrop').classList.remove('show');
+}
+
+// 切换搜索
+function toggleSearch() {
+    const searchSection = document.getElementById('searchSection');
+    const isHidden = searchSection.classList.contains('hidden');
+    
+    if (isHidden) {
+        searchSection.classList.remove('hidden');
+        document.getElementById('searchInput').focus();
+    } else {
+        searchSection.classList.add('hidden');
+        document.getElementById('searchResults').innerHTML = '';
+    }
+}
+
+// 处理搜索
+function handleSearch(e) {
+    const query = e.target.value.toLowerCase().trim();
+    const resultsContainer = document.getElementById('searchResults');
+    
+    if (!query) {
+        resultsContainer.innerHTML = '';
+        return;
+    }
+    
+    const results = [];
+    
+    // 搜索疾病和知识点
+    Object.keys(knowledgeBase).forEach(system => {
+        Object.keys(knowledgeBase[system]).forEach(disease => {
+            // 搜索疾病名称
+            if (disease.toLowerCase().includes(query)) {
+                results.push({
+                    type: 'disease',
+                    system,
+                    disease,
+                    title: disease,
+                    subtitle: `${system} - 疾病`
+                });
+            }
+            
+            // 搜索知识点内容
+            Object.keys(knowledgeBase[system][disease]).forEach(type => {
+                knowledgeBase[system][disease][type].forEach((content, index) => {
+                    if (content.toLowerCase().includes(query)) {
+                        results.push({
+                            type: 'knowledge',
+                            system,
+                            disease,
+                            knowledgeType: type,
+                            content,
+                            title: content,
+                            subtitle: `${disease} - ${type}`
+                        });
+                    }
+                });
+            });
+        });
+    });
+    
+    renderSearchResults(results);
+}
+
+// 渲染搜索结果
+function renderSearchResults(results) {
+    const container = document.getElementById('searchResults');
+    
+    if (results.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8">
+                <i class="ri-search-line text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500">未找到相关内容</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold text-slate-800">搜索结果 (${results.length})</h3>
+        </div>
+        <div class="grid gap-4">
+            ${results.map(result => `
+                <div class="card p-4 cursor-pointer hover:bg-blue-50" onclick="handleSearchResultClick('${result.type}', '${result.system}', '${result.disease}', '${result.knowledgeType || ''}')">
+                    <h4 class="font-semibold text-slate-800 mb-1">${result.title}</h4>
+                    <p class="text-sm text-slate-600">${result.subtitle}</p>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+// 处理搜索结果点击
+function handleSearchResultClick(type, system, disease, knowledgeType) {
+    if (type === 'disease') {
+        currentSystem = system;
+        showView('diseases');
+    } else if (type === 'knowledge') {
+        currentSystem = system;
+        currentDisease = disease;
+        showView('knowledge');
+    }
+    
+    // 隐藏搜索
+    document.getElementById('searchSection').classList.add('hidden');
+}
+
+// 渲染系统网格
+function renderSystemGrid() {
+    const container = document.getElementById('systemGrid');
+    const systems = Object.keys(knowledgeBase);
+    
+    // 为每个医疗系统定义专业的图标和颜色主题
+    // 支持动态扩展新系统，每个系统都有独特的视觉标识
+    const systemConfig = {
+        '呼吸系统': {
+            icon: 'ri-lungs-line',
+            color: 'from-sky-500 to-blue-600',
+            hoverColor: 'text-sky-600',
+            description: '肺部疾病诊疗',
+            category: 'internal' // 内科系统
+        },
+        '循环系统': {
+            icon: 'ri-heart-pulse-line',
+            color: 'from-red-500 to-rose-600',
+            hoverColor: 'text-red-600',
+            description: '心血管疾病诊疗',
+            category: 'internal'
+        },
+        '消化系统': {
+            icon: 'ri-stomach-line',
+            color: 'from-emerald-500 to-teal-600',
+            hoverColor: 'text-emerald-600',
+            description: '消化道疾病诊疗',
+            category: 'internal'
+        },
+        '神经系统': {
+            icon: 'ri-brain-line',
+            color: 'from-purple-500 to-violet-600',
+            hoverColor: 'text-purple-600',
+            description: '神经系统疾病诊疗',
+            category: 'internal'
+        },
+        '泌尿系统': {
+            icon: 'ri-drop-line',
+            color: 'from-cyan-500 to-blue-600',
+            hoverColor: 'text-cyan-600',
+            description: '泌尿生殖系统疾病诊疗',
+            category: 'internal'
+        },
+        '内分泌系统': {
+            icon: 'ri-medicine-bottle-line',
+            color: 'from-amber-500 to-orange-600',
+            hoverColor: 'text-amber-600',
+            description: '内分泌代谢疾病诊疗',
+            category: 'internal'
+        },
+        '血液系统': {
+            icon: 'ri-drop-fill',
+            color: 'from-rose-500 to-pink-600',
+            hoverColor: 'text-rose-600',
+            description: '血液系统疾病诊疗',
+            category: 'internal'
+        },
+        '风湿免疫系统': {
+            icon: 'ri-shield-cross-line',
+            color: 'from-indigo-500 to-purple-600',
+            hoverColor: 'text-indigo-600',
+            description: '风湿免疫疾病诊疗',
+            category: 'internal'
+        },
+        '妇产科系统': {
+            icon: 'ri-women-line',
+            color: 'from-pink-500 to-rose-600',
+            hoverColor: 'text-pink-600',
+            description: '妇产科疾病诊疗',
+            category: 'specialty'
+        },
+        '儿科系统': {
+            icon: 'ri-bear-smile-line',
+            color: 'from-yellow-500 to-orange-600',
+            hoverColor: 'text-yellow-600',
+            description: '儿科疾病诊疗',
+            category: 'specialty'
+        },
+        '传染病系统': {
+            icon: 'ri-virus-line',
+            color: 'from-red-600 to-orange-600',
+            hoverColor: 'text-red-600',
+            description: '传染性疾病诊疗',
+            category: 'specialty'
+        },
+        '外科系统': {
+            icon: 'ri-surgical-mask-line',
+            color: 'from-slate-500 to-gray-600',
+            hoverColor: 'text-slate-600',
+            description: '外科疾病诊疗',
+            category: 'surgical'
+        },
+        // 预留扩展系统配置
+        '皮肤科系统': {
+            icon: 'ri-hand-sanitizer-line',
+            color: 'from-orange-500 to-red-600',
+            hoverColor: 'text-orange-600',
+            description: '皮肤疾病诊疗',
+            category: 'specialty'
+        },
+        '眼科系统': {
+            icon: 'ri-eye-line',
+            color: 'from-blue-500 to-cyan-600',
+            hoverColor: 'text-blue-600',
+            description: '眼科疾病诊疗',
+            category: 'specialty'
+        },
+        '耳鼻喉科系统': {
+            icon: 'ri-ear-line',
+            color: 'from-green-500 to-emerald-600',
+            hoverColor: 'text-green-600',
+            description: '耳鼻喉疾病诊疗',
+            category: 'specialty'
+        },
+        '口腔科系统': {
+            icon: 'ri-tooth-line',
+            color: 'from-teal-500 to-cyan-600',
+            hoverColor: 'text-teal-600',
+            description: '口腔疾病诊疗',
+            category: 'specialty'
+        },
+        '精神科系统': {
+            icon: 'ri-mental-health-line',
+            color: 'from-violet-500 to-purple-600',
+            hoverColor: 'text-violet-600',
+            description: '精神心理疾病诊疗',
+            category: 'specialty'
+        },
+        '康复医学系统': {
+            icon: 'ri-wheelchair-line',
+            color: 'from-lime-500 to-green-600',
+            hoverColor: 'text-lime-600',
+            description: '康复医学诊疗',
+            category: 'specialty'
+        },
+        '急诊医学系统': {
+            icon: 'ri-alarm-warning-line',
+            color: 'from-red-500 to-pink-600',
+            hoverColor: 'text-red-600',
+            description: '急诊医学诊疗',
+            category: 'emergency'
+        },
+        '重症医学系统': {
+            icon: 'ri-heart-add-line',
+            color: 'from-gray-600 to-slate-700',
+            hoverColor: 'text-gray-600',
+            description: '重症医学诊疗',
+            category: 'emergency'
+        }
+    };
+    
+    container.innerHTML = systems.map(system => {
+        const diseases = Object.keys(knowledgeBase[system]);
+        const totalPoints = diseases.reduce((sum, disease) => {
+            return sum + Object.values(knowledgeBase[system][disease]).flat().length;
+        }, 0);
+        
+        // 获取系统配置，如果没有配置则使用默认值
+        const config = systemConfig[system] || {
+            icon: 'ri-stethoscope-line',
+            color: 'from-gray-500 to-slate-600',
+            hoverColor: 'text-gray-600',
+            description: '医学知识诊疗'
+        };
+        
+        return `
+            <div class="card p-6 cursor-pointer group hover:shadow-xl transition-all duration-300" onclick="selectSystem('${system}')">
+                <div class="w-16 h-16 bg-gradient-to-br ${config.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <i class="${config.icon} text-2xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:${config.hoverColor} transition-colors">${system}</h3>
+                <p class="text-slate-500 text-sm mb-3">${config.description}</p>
+                <p class="text-slate-600 mb-4">${diseases.length} 个疾病，${totalPoints} 个知识点</p>
+                <div class="flex items-center ${config.hoverColor} font-semibold group-hover:gap-3 transition-all">
+                    <span>开始学习</span>
+                    <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 渲染系统列表（侧边导航）
+function renderSystemList() {
+    const container = document.getElementById('systemList');
+    const systems = Object.keys(knowledgeBase);
+    
+    // 使用与主页面相同的系统配置，支持动态扩展
+    const systemConfig = {
+        '呼吸系统': {
+            icon: 'ri-lungs-line',
+            color: 'text-sky-600',
+            bgColor: 'bg-sky-50'
+        },
+        '循环系统': {
+            icon: 'ri-heart-pulse-line',
+            color: 'text-red-600',
+            bgColor: 'bg-red-50'
+        },
+        '消化系统': {
+            icon: 'ri-stomach-line',
+            color: 'text-emerald-600',
+            bgColor: 'bg-emerald-50'
+        },
+        '神经系统': {
+            icon: 'ri-brain-line',
+            color: 'text-purple-600',
+            bgColor: 'bg-purple-50'
+        },
+        '泌尿系统': {
+            icon: 'ri-drop-line',
+            color: 'text-cyan-600',
+            bgColor: 'bg-cyan-50'
+        },
+        '内分泌系统': {
+            icon: 'ri-medicine-bottle-line',
+            color: 'text-amber-600',
+            bgColor: 'bg-amber-50'
+        },
+        '血液系统': {
+            icon: 'ri-drop-fill',
+            color: 'text-rose-600',
+            bgColor: 'bg-rose-50'
+        },
+        '风湿免疫系统': {
+            icon: 'ri-shield-cross-line',
+            color: 'text-indigo-600',
+            bgColor: 'bg-indigo-50'
+        },
+        '妇产科系统': {
+            icon: 'ri-women-line',
+            color: 'text-pink-600',
+            bgColor: 'bg-pink-50'
+        },
+        '儿科系统': {
+            icon: 'ri-bear-smile-line',
+            color: 'text-yellow-600',
+            bgColor: 'bg-yellow-50'
+        },
+        '传染病系统': {
+            icon: 'ri-virus-line',
+            color: 'text-red-600',
+            bgColor: 'bg-red-50'
+        },
+        '外科系统': {
+            icon: 'ri-surgical-mask-line',
+            color: 'text-slate-600',
+            bgColor: 'bg-slate-50'
+        },
+        // 扩展系统配置
+        '皮肤科系统': {
+            icon: 'ri-hand-sanitizer-line',
+            color: 'text-orange-600',
+            bgColor: 'bg-orange-50'
+        },
+        '眼科系统': {
+            icon: 'ri-eye-line',
+            color: 'text-blue-600',
+            bgColor: 'bg-blue-50'
+        },
+        '耳鼻喉科系统': {
+            icon: 'ri-ear-line',
+            color: 'text-green-600',
+            bgColor: 'bg-green-50'
+        },
+        '口腔科系统': {
+            icon: 'ri-tooth-line',
+            color: 'text-teal-600',
+            bgColor: 'bg-teal-50'
+        },
+        '精神科系统': {
+            icon: 'ri-mental-health-line',
+            color: 'text-violet-600',
+            bgColor: 'bg-violet-50'
+        },
+        '康复医学系统': {
+            icon: 'ri-wheelchair-line',
+            color: 'text-lime-600',
+            bgColor: 'bg-lime-50'
+        },
+        '急诊医学系统': {
+            icon: 'ri-alarm-warning-line',
+            color: 'text-red-600',
+            bgColor: 'bg-red-50'
+        },
+        '重症医学系统': {
+            icon: 'ri-heart-add-line',
+            color: 'text-gray-600',
+            bgColor: 'bg-gray-50'
+        }
+    };
+    
+    container.innerHTML = systems.map(system => {
+        const diseases = Object.keys(knowledgeBase[system]);
+        const config = systemConfig[system] || {
+            icon: 'ri-stethoscope-line',
+            color: 'text-gray-600',
+            bgColor: 'bg-gray-50'
+        };
+        
+        return `
+            <div class="p-3 hover:${config.bgColor} rounded-lg cursor-pointer transition-all duration-200 group" onclick="selectSystemFromNav('${system}')">
+                <div class="flex items-center gap-3 mb-1">
+                    <div class="w-8 h-8 ${config.bgColor} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="${config.icon} text-sm ${config.color}"></i>
+                    </div>
+                    <div class="font-semibold text-slate-800 group-hover:${config.color} transition-colors">${system}</div>
+                </div>
+                <div class="text-sm text-slate-600 ml-11">${diseases.length} 个疾病</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 选择系统
+function selectSystem(system) {
+    currentSystem = system;
+    showView('diseases');
+}
+
+// 从导航选择系统
+function selectSystemFromNav(system) {
+    selectSystem(system);
+    closeSideNav();
+}
+
+// 渲染疾病列表
+function renderDiseaseList() {
+    const container = document.getElementById('diseaseGrid');
+    const diseases = Object.keys(knowledgeBase[currentSystem]);
+    
+    document.getElementById('currentSystemTitle').textContent = currentSystem;
+    
+    // 更新返回按钮的主题色彩
+    const systemColors = {
+        '呼吸系统': 'group-hover:text-sky-600',
+        '循环系统': 'group-hover:text-red-600',
+        '消化系统': 'group-hover:text-emerald-600',
+        '神经系统': 'group-hover:text-purple-600',
+        '泌尿系统': 'group-hover:text-cyan-600',
+        '内分泌系统': 'group-hover:text-amber-600',
+        '血液系统': 'group-hover:text-rose-600',
+        '风湿免疫系统': 'group-hover:text-indigo-600',
+        '妇产科系统': 'group-hover:text-pink-600',
+        '儿科系统': 'group-hover:text-yellow-600',
+        '传染病系统': 'group-hover:text-red-600',
+        '外科系统': 'group-hover:text-slate-600',
+        // 扩展系统颜色配置
+        '皮肤科系统': 'group-hover:text-orange-600',
+        '眼科系统': 'group-hover:text-blue-600',
+        '耳鼻喉科系统': 'group-hover:text-green-600',
+        '口腔科系统': 'group-hover:text-teal-600',
+        '精神科系统': 'group-hover:text-violet-600',
+        '康复医学系统': 'group-hover:text-lime-600',
+        '急诊医学系统': 'group-hover:text-red-600',
+        '重症医学系统': 'group-hover:text-gray-600'
+    };
+    
+    const backButton = document.getElementById('backToSystems');
+    const icon = backButton.querySelector('i');
+    const span = backButton.querySelector('span');
+    const hoverColor = systemColors[currentSystem] || 'group-hover:text-blue-600';
+    
+    // 移除旧的颜色类
+    icon.className = icon.className.replace(/group-hover:text-\w+-\d+/g, '');
+    span.className = span.className.replace(/group-hover:text-\w+-\d+/g, '');
+    
+    // 添加新的颜色类
+    icon.className += ` ${hoverColor}`;
+    span.className += ` ${hoverColor}`;
+    
+    // 获取当前系统的主题配置
+    const systemThemes = {
+        '呼吸系统': {
+            hoverColor: 'text-sky-600',
+            progressColor: 'from-sky-500 to-blue-600',
+            accentColor: 'text-sky-600'
+        },
+        '循环系统': {
+            hoverColor: 'text-red-600',
+            progressColor: 'from-red-500 to-rose-600',
+            accentColor: 'text-red-600'
+        },
+        '消化系统': {
+            hoverColor: 'text-emerald-600',
+            progressColor: 'from-emerald-500 to-teal-600',
+            accentColor: 'text-emerald-600'
+        },
+        '神经系统': {
+            hoverColor: 'text-purple-600',
+            progressColor: 'from-purple-500 to-violet-600',
+            accentColor: 'text-purple-600'
+        },
+        '泌尿系统': {
+            hoverColor: 'text-cyan-600',
+            progressColor: 'from-cyan-500 to-blue-600',
+            accentColor: 'text-cyan-600'
+        },
+        '内分泌系统': {
+            hoverColor: 'text-amber-600',
+            progressColor: 'from-amber-500 to-orange-600',
+            accentColor: 'text-amber-600'
+        },
+        '血液系统': {
+            hoverColor: 'text-rose-600',
+            progressColor: 'from-rose-500 to-pink-600',
+            accentColor: 'text-rose-600'
+        },
+        '风湿免疫系统': {
+            hoverColor: 'text-indigo-600',
+            progressColor: 'from-indigo-500 to-purple-600',
+            accentColor: 'text-indigo-600'
+        },
+        '妇产科系统': {
+            hoverColor: 'text-pink-600',
+            progressColor: 'from-pink-500 to-rose-600',
+            accentColor: 'text-pink-600'
+        },
+        '儿科系统': {
+            hoverColor: 'text-yellow-600',
+            progressColor: 'from-yellow-500 to-orange-600',
+            accentColor: 'text-yellow-600'
+        },
+        '传染病系统': {
+            hoverColor: 'text-red-600',
+            progressColor: 'from-red-600 to-orange-600',
+            accentColor: 'text-red-600'
+        },
+        '外科系统': {
+            hoverColor: 'text-slate-600',
+            progressColor: 'from-slate-500 to-gray-600',
+            accentColor: 'text-slate-600'
+        },
+        // 扩展系统主题配置
+        '皮肤科系统': {
+            hoverColor: 'text-orange-600',
+            progressColor: 'from-orange-500 to-red-600',
+            accentColor: 'text-orange-600'
+        },
+        '眼科系统': {
+            hoverColor: 'text-blue-600',
+            progressColor: 'from-blue-500 to-cyan-600',
+            accentColor: 'text-blue-600'
+        },
+        '耳鼻喉科系统': {
+            hoverColor: 'text-green-600',
+            progressColor: 'from-green-500 to-emerald-600',
+            accentColor: 'text-green-600'
+        },
+        '口腔科系统': {
+            hoverColor: 'text-teal-600',
+            progressColor: 'from-teal-500 to-cyan-600',
+            accentColor: 'text-teal-600'
+        },
+        '精神科系统': {
+            hoverColor: 'text-violet-600',
+            progressColor: 'from-violet-500 to-purple-600',
+            accentColor: 'text-violet-600'
+        },
+        '康复医学系统': {
+            hoverColor: 'text-lime-600',
+            progressColor: 'from-lime-500 to-green-600',
+            accentColor: 'text-lime-600'
+        },
+        '急诊医学系统': {
+            hoverColor: 'text-red-600',
+            progressColor: 'from-red-500 to-pink-600',
+            accentColor: 'text-red-600'
+        },
+        '重症医学系统': {
+            hoverColor: 'text-gray-600',
+            progressColor: 'from-gray-600 to-slate-700',
+            accentColor: 'text-gray-600'
+        }
+    };
+    
+    const theme = systemThemes[currentSystem] || {
+        hoverColor: 'text-blue-600',
+        progressColor: 'from-blue-500 to-indigo-600',
+        accentColor: 'text-blue-600'
+    };
+    
+    container.innerHTML = diseases.map(disease => {
+        const knowledgeTypes = Object.keys(knowledgeBase[currentSystem][disease]);
+        const totalPoints = Object.values(knowledgeBase[currentSystem][disease]).flat().length;
+        
+        // 计算学习进度
+        const learnedCount = knowledgeTypes.reduce((sum, type) => {
+            return sum + knowledgeBase[currentSystem][disease][type].filter((_, index) => {
+                const pointId = `${currentSystem}-${disease}-${type}-${index}`;
+                return learningStats.learned.has(pointId);
+            }).length;
+        }, 0);
+        
+        const progress = totalPoints > 0 ? Math.round((learnedCount / totalPoints) * 100) : 0;
+        
+        return `
+            <div class="card p-6 cursor-pointer group hover:shadow-xl transition-all duration-300" onclick="selectDisease('${disease}')">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-slate-800 group-hover:${theme.hoverColor} transition-colors">${disease}</h3>
+                    <div class="text-sm font-semibold px-3 py-1 rounded-full ${
+                        progress === 100 ? 'bg-green-100 text-green-800' :
+                        progress > 0 ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-600'
+                    }">
+                        ${progress}%
+                    </div>
+                </div>
+                <p class="text-slate-600 mb-4">${knowledgeTypes.length} 个类型，${totalPoints} 个知识点</p>
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                    <div class="bg-gradient-to-r ${theme.progressColor} h-2 rounded-full transition-all duration-300" style="width: ${progress}%"></div>
+                </div>
+                <div class="flex items-center ${theme.accentColor} font-semibold group-hover:gap-3 transition-all">
+                    <span>查看详情</span>
+                    <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 选择疾病
+function selectDisease(disease) {
+    currentDisease = disease;
+    showView('knowledge');
+}
+
+// 渲染知识点详情
+function renderKnowledgeDetail() {
+    const container = document.getElementById('knowledgeGrid');
+    const knowledgeTypes = knowledgeBase[currentSystem][currentDisease];
+    
+    document.getElementById('currentDiseaseTitle').textContent = currentDisease;
+    
+    // 更新返回按钮的主题色彩
+    const systemColors = {
+        '呼吸系统': 'group-hover:text-sky-600',
+        '循环系统': 'group-hover:text-red-600',
+        '消化系统': 'group-hover:text-emerald-600',
+        '神经系统': 'group-hover:text-purple-600',
+        '泌尿系统': 'group-hover:text-cyan-600',
+        '内分泌系统': 'group-hover:text-amber-600',
+        '血液系统': 'group-hover:text-rose-600',
+        '风湿免疫系统': 'group-hover:text-indigo-600',
+        '妇产科系统': 'group-hover:text-pink-600',
+        '儿科系统': 'group-hover:text-yellow-600',
+        '传染病系统': 'group-hover:text-red-600',
+        '外科系统': 'group-hover:text-slate-600',
+        // 扩展系统颜色配置
+        '皮肤科系统': 'group-hover:text-orange-600',
+        '眼科系统': 'group-hover:text-blue-600',
+        '耳鼻喉科系统': 'group-hover:text-green-600',
+        '口腔科系统': 'group-hover:text-teal-600',
+        '精神科系统': 'group-hover:text-violet-600',
+        '康复医学系统': 'group-hover:text-lime-600',
+        '急诊医学系统': 'group-hover:text-red-600',
+        '重症医学系统': 'group-hover:text-gray-600'
+    };
+    
+    const backButton = document.getElementById('backToDiseases');
+    const icon = backButton.querySelector('i');
+    const span = backButton.querySelector('span');
+    const hoverColor = systemColors[currentSystem] || 'group-hover:text-blue-600';
+    
+    // 移除旧的颜色类
+    icon.className = icon.className.replace(/group-hover:text-\w+-\d+/g, '');
+    span.className = span.className.replace(/group-hover:text-\w+-\d+/g, '');
+    
+    // 添加新的颜色类
+    icon.className += ` ${hoverColor}`;
+    span.className += ` ${hoverColor}`;
+    
+    // 获取当前系统的主题配置
+    const systemThemes = {
+        '呼吸系统': {
+            cardBack: 'from-sky-500 to-blue-600',
+            cardFront: 'from-slate-50 to-sky-50 border-sky-200'
+        },
+        '循环系统': {
+            cardBack: 'from-red-500 to-rose-600',
+            cardFront: 'from-slate-50 to-red-50 border-red-200'
+        },
+        '消化系统': {
+            cardBack: 'from-emerald-500 to-teal-600',
+            cardFront: 'from-slate-50 to-emerald-50 border-emerald-200'
+        },
+        '神经系统': {
+            cardBack: 'from-purple-500 to-violet-600',
+            cardFront: 'from-slate-50 to-purple-50 border-purple-200'
+        },
+        '泌尿系统': {
+            cardBack: 'from-cyan-500 to-blue-600',
+            cardFront: 'from-slate-50 to-cyan-50 border-cyan-200'
+        },
+        '内分泌系统': {
+            cardBack: 'from-amber-500 to-orange-600',
+            cardFront: 'from-slate-50 to-amber-50 border-amber-200'
+        },
+        '血液系统': {
+            cardBack: 'from-rose-500 to-pink-600',
+            cardFront: 'from-slate-50 to-rose-50 border-rose-200'
+        },
+        '风湿免疫系统': {
+            cardBack: 'from-indigo-500 to-purple-600',
+            cardFront: 'from-slate-50 to-indigo-50 border-indigo-200'
+        },
+        '妇产科系统': {
+            cardBack: 'from-pink-500 to-rose-600',
+            cardFront: 'from-slate-50 to-pink-50 border-pink-200'
+        },
+        '儿科系统': {
+            cardBack: 'from-yellow-500 to-orange-600',
+            cardFront: 'from-slate-50 to-yellow-50 border-yellow-200'
+        },
+        '传染病系统': {
+            cardBack: 'from-red-600 to-orange-600',
+            cardFront: 'from-slate-50 to-red-50 border-red-200'
+        },
+        '外科系统': {
+            cardBack: 'from-slate-500 to-gray-600',
+            cardFront: 'from-slate-50 to-gray-50 border-gray-200'
+        }
+    };
+    
+    const systemTheme = systemThemes[currentSystem] || {
+        cardBack: 'from-blue-500 to-indigo-600',
+        cardFront: 'from-slate-50 to-blue-50 border-slate-200'
+    };
+    
+    const typeColors = {
+        '题眼': 'from-red-500 to-rose-600',
+        '诊断要点': 'from-blue-500 to-indigo-600',
+        '鉴别诊断': 'from-purple-500 to-violet-600',
+        '检查': 'from-emerald-500 to-teal-600',
+        '治疗': 'from-amber-500 to-orange-600'
+    };
+    
+    const typeIcons = {
+        '题眼': 'ri-eye-line',
+        '诊断要点': 'ri-stethoscope-line',
+        '鉴别诊断': 'ri-contrast-line',
+        '检查': 'ri-search-line',
+        '治疗': 'ri-medicine-bottle-line'
+    };
+    
+    container.innerHTML = Object.keys(knowledgeTypes).map(type => {
+        const points = knowledgeTypes[type];
+        return `
+            <div class="card p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br ${typeColors[type] || 'from-gray-500 to-gray-600'} rounded-xl flex items-center justify-center">
+                        <i class="${typeIcons[type] || 'ri-information-line'} text-xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800">${type}</h3>
+                </div>
+                <div class="space-y-3">
+                    ${points.map((point, index) => {
+                        const pointId = `${currentSystem}-${currentDisease}-${type}-${index}`;
+                        const isLearned = learningStats.learned.has(pointId);
+                        const isDifficult = learningStats.difficult.has(pointId);
+                        
+                        return `
+                            <div class="flip-card" data-point-id="${pointId}">
+                                <div class="flip-card-inner">
+                                    <div class="flip-card-front bg-gradient-to-br ${systemTheme.cardFront} border cursor-pointer hover:shadow-md transition-all duration-300" onclick="flipCard('${pointId}')">
+                                        <p class="text-slate-700 font-medium text-center">${point}</p>
+                                    </div>
+                                    <div class="flip-card-back bg-gradient-to-br ${systemTheme.cardBack} text-white">
+                                        <div class="text-center">
+                                            <p class="text-sm mb-4">${point}</p>
+                                            <div class="flex justify-center gap-2">
+                                                <button onclick="toggleLearned('${pointId}')" class="learned-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                                                    isLearned ? 'bg-green-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+                                                }">
+                                                    <i class="ri-check-line mr-1"></i>${isLearned ? '已掌握' : '标记掌握'}
+                                                </button>
+                                                <button onclick="toggleDifficult('${pointId}')" class="difficult-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                                                    isDifficult ? 'bg-amber-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+                                                }">
+                                                    <i class="ri-star-line mr-1"></i>${isDifficult ? '已标记' : '标记困难'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 翻转卡片
+function flipCard(pointId) {
+    const card = document.querySelector(`[data-point-id="${pointId}"]`);
+    card.classList.toggle('flipped');
+}
+
+// 切换学习状态
+function toggleLearned(pointId) {
+    if (learningStats.learned.has(pointId)) {
+        learningStats.learned.delete(pointId);
+    } else {
+        learningStats.learned.add(pointId);
+    }
+    saveLearningStats();
+    updateStats();
+    
+    // 更新当前卡片的按钮状态
+    updateCardButtons(pointId);
+    
+    // 标记后自动翻回卡片正面
+    setTimeout(() => {
+        const card = document.querySelector(`[data-point-id="${pointId}"]`);
+        if (card && card.classList.contains('flipped')) {
+            card.classList.remove('flipped');
+        }
+    }, 300); // 延迟300ms让用户看到标记效果
+}
+
+// 切换困难标记
+function toggleDifficult(pointId) {
+    if (learningStats.difficult.has(pointId)) {
+        learningStats.difficult.delete(pointId);
+    } else {
+        learningStats.difficult.add(pointId);
+    }
+    saveLearningStats();
+    updateStats();
+    
+    // 更新当前卡片的按钮状态
+    updateCardButtons(pointId);
+    
+    // 标记后自动翻回卡片正面
+    setTimeout(() => {
+        const card = document.querySelector(`[data-point-id="${pointId}"]`);
+        if (card && card.classList.contains('flipped')) {
+            card.classList.remove('flipped');
+        }
+    }, 300); // 延迟300ms让用户看到标记效果
+}
+
+// 返回系统首页
+function backToSystems() {
+    showView('systems');
+}
+
+// 显示视图
+function showView(view) {
+    currentView = view;
+    
+    // 隐藏所有视图
+    document.getElementById('systemGrid').style.display = 'none';
+    document.getElementById('diseaseList').classList.add('hidden');
+    document.getElementById('knowledgeDetail').classList.add('hidden');
+    const filteredView = document.getElementById('filteredView');
+    if (filteredView) {
+        filteredView.classList.add('hidden');
+    }
+    
+    // 显示对应视图
+    switch (view) {
+        case 'systems':
+            document.getElementById('systemGrid').style.display = 'grid';
+            break;
+        case 'diseases':
+            document.getElementById('diseaseList').classList.remove('hidden');
+            renderDiseaseList();
+            break;
+        case 'knowledge':
+            document.getElementById('knowledgeDetail').classList.remove('hidden');
+            renderKnowledgeDetail();
+            break;
+    }
+    
+    // 滚动到顶部
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 更新统计信息
+function updateStats() {
+    let totalPoints = 0;
+    let learnedCount = 0;
+    let difficultCount = 0;
+    
+    Object.keys(knowledgeBase).forEach(system => {
+        Object.keys(knowledgeBase[system]).forEach(disease => {
+            Object.keys(knowledgeBase[system][disease]).forEach(type => {
+                knowledgeBase[system][disease][type].forEach((_, index) => {
+                    totalPoints++;
+                    const pointId = `${system}-${disease}-${type}-${index}`;
+                    if (learningStats.learned.has(pointId)) learnedCount++;
+                    if (learningStats.difficult.has(pointId)) difficultCount++;
+                });
+            });
+        });
+    });
+    
+    const progress = totalPoints > 0 ? Math.round((learnedCount / totalPoints) * 100) : 0;
+    
+    document.getElementById('totalPoints').textContent = totalPoints;
+    document.getElementById('learnedPoints').textContent = learnedCount;
+    document.getElementById('difficultPoints').textContent = difficultCount;
+    document.getElementById('progressPercent').textContent = progress + '%';
+}
+
+// 保存学习统计
+function saveLearningStats() {
+    localStorage.setItem('medicalKnowledgeStats', JSON.stringify({
+        learned: Array.from(learningStats.learned),
+        difficult: Array.from(learningStats.difficult)
+    }));
+}
+
+// 加载学习统计
+function loadLearningStats() {
+    const saved = localStorage.getItem('medicalKnowledgeStats');
+    if (saved) {
+        const data = JSON.parse(saved);
+        learningStats.learned = new Set(data.learned || []);
+        learningStats.difficult = new Set(data.difficult || []);
+    }
+}
+
+// 重置进度
+function resetProgress() {
+    if (confirm('确定要重置所有学习进度吗？此操作不可撤销。')) {
+        learningStats.learned.clear();
+        learningStats.difficult.clear();
+        saveLearningStats();
+        updateStats();
+        
+        // 如果当前在知识点详情页面，重新渲染
+        if (currentView === 'knowledge') {
+            renderKnowledgeDetail();
+        }
+        
+        // 如果当前在疾病列表页面，重新渲染
+        if (currentView === 'diseases') {
+            renderDiseaseList();
+        }
+        
+        alert('学习进度已重置！');
+    }
+}
+
+// 数据管理功能
+function openDataModal() {
+    document.getElementById('dataModal').classList.remove('hidden');
+    initDataManagement();
+}
+
+function closeDataModal() {
+    document.getElementById('dataModal').classList.add('hidden');
+}
+
+function initDataManagement() {
+    // 初始化选项卡
+    document.querySelectorAll('.data-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchDataTab(tab.dataset.tab));
+    });
+    
+    // 关闭模态框
+    document.getElementById('closeDataModal').addEventListener('click', closeDataModal);
+    
+    // 文件导入事件
+    document.getElementById('mdFileInput').addEventListener('change', handleMdImport);
+    document.getElementById('csvFileInput').addEventListener('change', handleCsvImport);
+    document.getElementById('importJson').addEventListener('click', handleJsonImport);
+    
+    // 编辑功能事件
+    document.getElementById('editSystemSelect').addEventListener('change', handleSystemChange);
+    document.getElementById('editDiseaseSelect').addEventListener('change', handleDiseaseChange);
+    document.getElementById('addSystemBtn').addEventListener('click', addNewSystem);
+    document.getElementById('addDiseaseBtn').addEventListener('click', addNewDisease);
+    document.getElementById('saveKnowledge').addEventListener('click', saveKnowledgeChanges);
+    document.getElementById('deleteDisease').addEventListener('click', deleteDisease);
+    
+    // 导出功能事件
+    document.getElementById('exportJson').addEventListener('click', exportAsJson);
+    document.getElementById('exportMd').addEventListener('click', exportAsMarkdown);
+    document.getElementById('exportCsv').addEventListener('click', exportAsCsv);
+    document.getElementById('exportProgress').addEventListener('click', exportProgress);
+    
+    // 初始化编辑选择器
+    populateSystemSelect();
+    
+    // 添加知识点事件
+    document.querySelectorAll('.add-point-btn').forEach(btn => {
+        btn.addEventListener('click', () => addKnowledgePoint(btn.dataset.type));
+    });
+}
+
+function switchDataTab(tabName) {
+    // 更新选项卡状态
+    document.querySelectorAll('.data-tab').forEach(tab => {
+        tab.classList.remove('active', 'bg-blue-500', 'text-white');
+        tab.classList.add('text-gray-600', 'hover:text-gray-800');
+    });
+    
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active', 'bg-blue-500', 'text-white');
+    document.querySelector(`[data-tab="${tabName}"]`).classList.remove('text-gray-600', 'hover:text-gray-800');
+    
+    // 显示对应面板
+    document.querySelectorAll('.data-panel').forEach(panel => panel.classList.add('hidden'));
+    document.getElementById(`${tabName}Panel`).classList.remove('hidden');
+}
+
+// 文件导入功能
+function handleMdImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const content = e.target.result;
+            const parsedData = parseMdContent(content);
+            mergeKnowledgeBase(parsedData);
+            alert('Markdown文件导入成功！');
+            refreshCurrentView();
+        } catch (error) {
+            alert('Markdown文件格式错误！');
+            console.error('MD导入错误:', error);
+        }
+    };
+    reader.readAsText(file);
+}
+
+function handleCsvImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const content = e.target.result;
+            const parsedData = parseCsvContent(content);
+            const addedCount = mergeKnowledgeBase(parsedData);
+            
+            // 统计导入的系统和疾病数量
+            const systemCount = Object.keys(parsedData).length;
+            let diseaseCount = 0;
+            Object.values(parsedData).forEach(system => {
+                diseaseCount += Object.keys(system).length;
+            });
+            
+            alert(`CSV文件导入成功！\n导入了 ${systemCount} 个系统，${diseaseCount} 个疾病的数据。`);
+            refreshCurrentView();
+            
+            // 重置文件输入
+            event.target.value = '';
+        } catch (error) {
+            alert('CSV文件格式错误：' + error.message);
+            console.error('CSV导入错误:', error);
+        }
+    };
+    reader.readAsText(file, 'UTF-8');
+}
+
+function handleJsonImport() {
+    const jsonContent = document.getElementById('jsonInput').value.trim();
+    if (!jsonContent) {
+        alert('请输入JSON数据！');
+        return;
+    }
+    
+    try {
+        const parsedData = JSON.parse(jsonContent);
+        mergeKnowledgeBase(parsedData);
+        alert('JSON数据导入成功！');
+        document.getElementById('jsonInput').value = '';
+        refreshCurrentView();
+    } catch (error) {
+        alert('JSON格式错误！');
+        console.error('JSON导入错误:', error);
+    }
+}
+
+// 解析MD内容
+function parseMdContent(content) {
+    const lines = content.split('\n');
+    const result = {};
+    let currentSystem = '';
+    let currentDisease = '';
+    let currentKnowledgeType = '';
+    
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        
+        if (trimmed.startsWith('# ')) {
+            currentSystem = trimmed.substring(2).trim();
+            if (!result[currentSystem]) result[currentSystem] = {};
+        } else if (trimmed.startsWith('## ')) {
+            currentDisease = trimmed.substring(3).trim();
+            if (currentSystem && !result[currentSystem][currentDisease]) {
+                result[currentSystem][currentDisease] = {
+                    '题眼': [], '诊断要点': [], '鉴别诊断': [], '检查': [], '治疗': []
+                };
+            }
+        } else if (trimmed.startsWith('### ')) {
+            currentKnowledgeType = trimmed.substring(4).trim();
+        } else if (trimmed.startsWith('- ') && currentSystem && currentDisease && currentKnowledgeType) {
+            const point = trimmed.substring(2).trim();
+            if (result[currentSystem][currentDisease][currentKnowledgeType]) {
+                result[currentSystem][currentDisease][currentKnowledgeType].push(point);
+            }
+        }
+    }
+    
+    return result;
+}
+
+// 解析CSV内容
+function parseCsvContent(content) {
+    const lines = content.split('\n');
+    const result = {};
+    
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        
+        // 处理CSV格式，支持带引号的字段
+        const parts = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let j = 0; j < trimmed.length; j++) {
+            const char = trimmed[j];
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                parts.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        parts.push(current.trim());
+        
+        if (parts.length < 4) continue;
+        
+        const [system, disease, knowledgeType, point] = parts;
+        
+        // 跳过标题行或空数据
+        if (system === '系统' || !system || !disease || !knowledgeType || !point) continue;
+        
+        if (!result[system]) result[system] = {};
+        if (!result[system][disease]) {
+            result[system][disease] = {
+                '题眼': [], '诊断要点': [], '鉴别诊断': [], '检查': [], '治疗': []
+            };
+        }
+        
+        // 映射知识类型到标准类型
+        const typeMapping = {
+            // 题眼类型
+            '核心特征': '题眼',
+            '题眼': '题眼',
+            '临表': '题眼',
+            '临床表现': '题眼',
+            '临床特点': '题眼',
+            '临床特征': '题眼',
+            '体征': '题眼',
+            '症状': '题眼',
+            '表现': '题眼',
+            '特点': '题眼',
+            '特征': '题眼',
+            '高代谢表现': '题眼',
+            
+            // 诊断要点类型
+            '诊断要点': '诊断要点',
+            '注': '诊断要点',
+            '诊断依据': '诊断要点',
+            '诊断标准': '诊断要点',
+            '诊断标准_临床表现': '诊断要点',
+            '诊断标准_症状1': '诊断要点',
+            '诊断标准_症状2': '诊断要点',
+            '诊断标准_症状3': '诊断要点',
+            '诊断标准_症状4': '诊断要点',
+            '诊断标准_症状5': '诊断要点',
+            '诊断标准_症状6': '诊断要点',
+            '说明': '诊断要点',
+            '诱因': '诊断要点',
+            '血尿酸标准': '诊断要点',
+            
+            // 鉴别诊断类型
+            '鉴别': '鉴别诊断',
+            '鉴别诊断': '鉴别诊断',
+            '鉴遍诊断': '鉴别诊断',
+            '鉴别注': '鉴别诊断',
+            '鉴别指标': '鉴别诊断',
+            '良/恶性鉴别要点': '鉴别诊断',
+            
+            // 检查类型
+            '检查': '检查',
+            '实验室检查': '检查',
+            '影像学检查': '检查',
+            '辅助检查': '检查',
+            '骨髓象': '检查',
+            '铁生化': '检查',
+            
+            // 治疗类型
+            '治疗': '治疗',
+            '处理': '治疗',
+            '用药': '治疗'
+        };
+        
+        const mappedType = typeMapping[knowledgeType] || '诊断要点';
+        
+        if (result[system][disease][mappedType]) {
+            result[system][disease][mappedType].push(point);
+        }
+    }
+    
+    return result;
+}
+
+// 合并知识库数据
+function mergeKnowledgeBase(newData) {
+    let addedCount = 0;
+    
+    for (const system in newData) {
+        if (!knowledgeBase[system]) {
+            knowledgeBase[system] = {};
+        }
+        
+        for (const disease in newData[system]) {
+            if (!knowledgeBase[system][disease]) {
+                knowledgeBase[system][disease] = {
+                    '题眼': [], '诊断要点': [], '鉴别诊断': [], '检查': [], '治疗': []
+                };
+            }
+            
+            for (const type in newData[system][disease]) {
+                if (knowledgeBase[system][disease][type]) {
+                    // 记录原始长度
+                    const originalLength = knowledgeBase[system][disease][type].length;
+                    
+                    // 合并数组，去重
+                    const combined = [...knowledgeBase[system][disease][type], ...newData[system][disease][type]];
+                    knowledgeBase[system][disease][type] = [...new Set(combined)];
+                    
+                    // 计算新增的知识点数量
+                    addedCount += knowledgeBase[system][disease][type].length - originalLength;
+                }
+            }
+        }
+    }
+    
+    saveKnowledgeBase();
+    console.log(`成功导入 ${addedCount} 个新知识点`);
+    return addedCount;
+}
+
+// 编辑功能
+function populateSystemSelect() {
+    const select = document.getElementById('editSystemSelect');
+    select.innerHTML = '<option value="">选择系统</option>';
+    
+    Object.keys(knowledgeBase).forEach(system => {
+        const option = document.createElement('option');
+        option.value = system;
+        option.textContent = system;
+        select.appendChild(option);
+    });
+}
+
+function handleSystemChange() {
+    const system = document.getElementById('editSystemSelect').value;
+    const diseaseSelect = document.getElementById('editDiseaseSelect');
+    
+    diseaseSelect.innerHTML = '<option value="">选择疾病</option>';
+    document.getElementById('knowledgeEditArea').classList.add('hidden');
+    
+    if (system && knowledgeBase[system]) {
+        Object.keys(knowledgeBase[system]).forEach(disease => {
+            const option = document.createElement('option');
+            option.value = disease;
+            option.textContent = disease;
+            diseaseSelect.appendChild(option);
+        });
+    }
+}
+
+function handleDiseaseChange() {
+    const system = document.getElementById('editSystemSelect').value;
+    const disease = document.getElementById('editDiseaseSelect').value;
+    
+    if (system && disease && knowledgeBase[system][disease]) {
+        loadKnowledgeForEdit(system, disease);
+        document.getElementById('knowledgeEditArea').classList.remove('hidden');
+    } else {
+        document.getElementById('knowledgeEditArea').classList.add('hidden');
+    }
+}
+
+function loadKnowledgeForEdit(system, disease) {
+    const data = knowledgeBase[system][disease];
+    
+    ['题眼', '诊断要点', '鉴别诊断', '检查', '治疗'].forEach(type => {
+        const container = document.querySelector(`[data-type="${type}"]`);
+        const pointsContainer = container.querySelector('.knowledge-points-container');
+        pointsContainer.innerHTML = '';
+        
+        if (data[type]) {
+            data[type].forEach((point, index) => {
+                addKnowledgePointElement(pointsContainer, point, index);
+            });
+        }
+    });
+}
+
+function addKnowledgePoint(type) {
+    const container = document.querySelector(`[data-type="${type}"] .knowledge-points-container`);
+    const index = container.children.length;
+    addKnowledgePointElement(container, '', index);
+}
+
+function addKnowledgePointElement(container, value, index) {
+    const div = document.createElement('div');
+    div.className = 'flex items-center space-x-2 mb-2';
+    div.innerHTML = `
+        <input type="text" value="${value}" class="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500" placeholder="输入知识点...">
+        <button type="button" class="px-2 py-1 text-red-500 hover:text-red-700" onclick="this.parentElement.remove()">
+            <i class="ri-delete-bin-line"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+function addNewSystem() {
+    const systemName = prompt('请输入新系统名称:');
+    if (systemName && systemName.trim()) {
+        const name = systemName.trim();
+        if (!knowledgeBase[name]) {
+            knowledgeBase[name] = {};
+            saveKnowledgeBase();
+            populateSystemSelect();
+            document.getElementById('editSystemSelect').value = name;
+            handleSystemChange();
+            alert(`系统 "${name}" 添加成功！`);
+        } else {
+            alert('系统已存在！');
+        }
+    }
+}
+
+function addNewDisease() {
+    const system = document.getElementById('editSystemSelect').value;
+    if (!system) {
+        alert('请先选择系统！');
+        return;
+    }
+    
+    const diseaseName = prompt('请输入新疾病名称:');
+    if (diseaseName && diseaseName.trim()) {
+        const name = diseaseName.trim();
+        if (!knowledgeBase[system][name]) {
+            knowledgeBase[system][name] = {
+                '题眼': [], '诊断要点': [], '鉴别诊断': [], '检查': [], '治疗': []
+            };
+            saveKnowledgeBase();
+            handleSystemChange();
+            document.getElementById('editDiseaseSelect').value = name;
+            handleDiseaseChange();
+            alert(`疾病 "${name}" 添加成功！`);
+        } else {
+            alert('疾病已存在！');
+        }
+    }
+}
+
+function saveKnowledgeChanges() {
+    const system = document.getElementById('editSystemSelect').value;
+    const disease = document.getElementById('editDiseaseSelect').value;
+    
+    if (!system || !disease) {
+        alert('请选择系统和疾病！');
+        return;
+    }
+    
+    const updatedData = {
+        '题眼': [], '诊断要点': [], '鉴别诊断': [], '检查': [], '治疗': []
+    };
+    
+    ['题眼', '诊断要点', '鉴别诊断', '检查', '治疗'].forEach(type => {
+        const container = document.querySelector(`[data-type="${type}"] .knowledge-points-container`);
+        const inputs = container.querySelectorAll('input');
+        
+        inputs.forEach(input => {
+            const value = input.value.trim();
+            if (value) {
+                updatedData[type].push(value);
+            }
+        });
+    });
+    
+    knowledgeBase[system][disease] = updatedData;
+    saveKnowledgeBase();
+    refreshCurrentView();
+    alert('知识点保存成功！');
+}
+
+function deleteDisease() {
+    const system = document.getElementById('editSystemSelect').value;
+    const disease = document.getElementById('editDiseaseSelect').value;
+    
+    if (!system || !disease) {
+        alert('请选择系统和疾病！');
+        return;
+    }
+    
+    if (confirm(`确定要删除疾病 "${disease}" 吗？此操作不可撤销。`)) {
+        delete knowledgeBase[system][disease];
+        
+        // 如果系统为空，删除系统
+        if (Object.keys(knowledgeBase[system]).length === 0) {
+            delete knowledgeBase[system];
+        }
+        
+        saveKnowledgeBase();
+        populateSystemSelect();
+        document.getElementById('editDiseaseSelect').innerHTML = '<option value="">选择疾病</option>';
+        document.getElementById('knowledgeEditArea').classList.add('hidden');
+        refreshCurrentView();
+        alert(`疾病 "${disease}" 删除成功！`);
+    }
+}
+
+// 导出功能
+function exportAsJson() {
+    const data = {
+        knowledgeBase: knowledgeBase,
+        exportTime: new Date().toISOString(),
+        version: '1.0'
+    };
+    
+    downloadFile(JSON.stringify(data, null, 2), 'medical-knowledge-base.json', 'application/json');
+}
+
+function exportAsMarkdown() {
+    let content = '# 医学知识库\n\n';
+    content += `导出时间: ${new Date().toLocaleString()}\n\n`;
+    
+    Object.keys(knowledgeBase).forEach(system => {
+        content += `# ${system}\n\n`;
+        
+        Object.keys(knowledgeBase[system]).forEach(disease => {
+            content += `## ${disease}\n\n`;
+            
+            ['题眼', '诊断要点', '鉴别诊断', '检查', '治疗'].forEach(type => {
+                if (knowledgeBase[system][disease][type] && knowledgeBase[system][disease][type].length > 0) {
+                    content += `### ${type}\n\n`;
+                    knowledgeBase[system][disease][type].forEach(point => {
+                        content += `- ${point}\n`;
+                    });
+                    content += '\n';
+                }
+            });
+        });
+    });
+    
+    downloadFile(content, 'medical-knowledge-base.md', 'text/markdown');
+}
+
+function exportAsCsv() {
+    let content = '系统,疾病,知识类型,内容\n';
+    
+    Object.keys(knowledgeBase).forEach(system => {
+        Object.keys(knowledgeBase[system]).forEach(disease => {
+            ['题眼', '诊断要点', '鉴别诊断', '检查', '治疗'].forEach(type => {
+                if (knowledgeBase[system][disease][type]) {
+                    knowledgeBase[system][disease][type].forEach(point => {
+                        content += `"${system}","${disease}","${type}","${point}"\n`;
+                    });
+                }
+            });
+        });
+    });
+    
+    downloadFile(content, 'medical-knowledge-base.csv', 'text/csv');
+}
+
+function exportProgress() {
+    const progressData = {
+        learned: Array.from(learningStats.learned),
+        difficult: Array.from(learningStats.difficult),
+        exportTime: new Date().toISOString(),
+        totalPoints: getTotalKnowledgePoints(),
+        learnedCount: learningStats.learned.size,
+        difficultCount: learningStats.difficult.size
+    };
+    
+    downloadFile(JSON.stringify(progressData, null, 2), 'learning-progress.json', 'application/json');
+}
+
+function downloadFile(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// 保存知识库到本地存储
+function saveKnowledgeBase() {
+    localStorage.setItem('medicalKnowledgeBase', JSON.stringify(knowledgeBase));
+}
+
+// 从本地存储加载知识库
+function loadKnowledgeBase() {
+    const saved = localStorage.getItem('medicalKnowledgeBase');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            // 合并保存的数据和默认数据
+            Object.assign(knowledgeBase, parsed);
+        } catch (error) {
+            console.error('加载知识库失败:', error);
+        }
+    }
+}
+
+// 刷新当前视图
+function refreshCurrentView() {
+    if (currentView === 'systems') {
+        renderSystemGrid();
+        renderSystemList();
+    } else if (currentView === 'diseases') {
+        renderDiseaseList();
+    } else if (currentView === 'knowledge') {
+        renderKnowledgeDetail();
+    }
+    updateStats();
+}
+
+// 更新单个卡片的按钮状态
+function updateCardButtons(pointId) {
+    const card = document.querySelector(`[data-point-id="${pointId}"]`);
+    if (!card) return;
+    
+    const isLearned = learningStats.learned.has(pointId);
+    const isDifficult = learningStats.difficult.has(pointId);
+    
+    const learnedBtn = card.querySelector('.learned-btn');
+    const difficultBtn = card.querySelector('.difficult-btn');
+    
+    if (learnedBtn) {
+        learnedBtn.className = `learned-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+            isLearned ? 'bg-green-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+        }`;
+        learnedBtn.innerHTML = `<i class="ri-check-line mr-1"></i>${isLearned ? '已掌握' : '标记掌握'}`;
+    }
+    
+    if (difficultBtn) {
+        difficultBtn.className = `difficult-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+            isDifficult ? 'bg-amber-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+        }`;
+        difficultBtn.innerHTML = `<i class="ri-star-line mr-1"></i>${isDifficult ? '已标记' : '标记困难'}`;
+    }
+}
+
+// 显示已掌握的知识点
+function showLearnedPoints() {
+    if (learningStats.learned.size === 0) {
+        alert('还没有掌握的知识点，继续加油！');
+        return;
+    }
+    
+    const learnedPoints = [];
+    learningStats.learned.forEach(pointId => {
+        const [system, disease, type, index] = pointId.split('-');
+        if (knowledgeBase[system] && knowledgeBase[system][disease] && knowledgeBase[system][disease][type]) {
+            const point = knowledgeBase[system][disease][type][parseInt(index)];
+            if (point) {
+                learnedPoints.push({
+                    system,
+                    disease,
+                    type,
+                    point,
+                    pointId
+                });
+            }
+        }
+    });
+    
+    showFilteredPoints(learnedPoints, '已掌握的知识点', 'learned');
+}
+
+// 显示标记困难的知识点
+function showDifficultPoints() {
+    if (learningStats.difficult.size === 0) {
+        alert('还没有标记困难的知识点！');
+        return;
+    }
+    
+    const difficultPoints = [];
+    learningStats.difficult.forEach(pointId => {
+        const [system, disease, type, index] = pointId.split('-');
+        if (knowledgeBase[system] && knowledgeBase[system][disease] && knowledgeBase[system][disease][type]) {
+            const point = knowledgeBase[system][disease][type][parseInt(index)];
+            if (point) {
+                difficultPoints.push({
+                    system,
+                    disease,
+                    type,
+                    point,
+                    pointId
+                });
+            }
+        }
+    });
+    
+    showFilteredPoints(difficultPoints, '标记困难的知识点', 'difficult');
+}
+
+// 显示筛选后的知识点列表
+function showFilteredPoints(points, title, filterType) {
+    currentView = 'filtered';
+    currentFilterType = filterType;
+    
+    // 隐藏其他视图
+    document.getElementById('systemGrid').classList.add('hidden');
+    document.getElementById('diseaseList').classList.add('hidden');
+    document.getElementById('knowledgeDetail').classList.add('hidden');
+    
+    // 创建或更新筛选视图
+    let filteredView = document.getElementById('filteredView');
+    if (!filteredView) {
+        filteredView = document.createElement('div');
+        filteredView.id = 'filteredView';
+        document.getElementById('mainContent').appendChild(filteredView);
+    }
+    
+    filteredView.classList.remove('hidden');
+    
+    const systemThemes = {
+        '呼吸系统': { cardFront: 'from-blue-50 to-blue-100', cardBack: 'from-blue-500 to-blue-600' },
+        '循环系统': { cardFront: 'from-red-50 to-red-100', cardBack: 'from-red-500 to-red-600' },
+        '消化系统': { cardFront: 'from-green-50 to-green-100', cardBack: 'from-green-500 to-green-600' },
+        '泌尿系统': { cardFront: 'from-yellow-50 to-yellow-100', cardBack: 'from-yellow-500 to-yellow-600' },
+        '内分泌系统': { cardFront: 'from-purple-50 to-purple-100', cardBack: 'from-purple-500 to-purple-600' },
+        '血液系统': { cardFront: 'from-pink-50 to-pink-100', cardBack: 'from-pink-500 to-pink-600' },
+        '风湿免疫性疾病': { cardFront: 'from-indigo-50 to-indigo-100', cardBack: 'from-indigo-500 to-indigo-600' },
+        '儿科系统': { cardFront: 'from-orange-50 to-orange-100', cardBack: 'from-orange-500 to-orange-600' },
+        '传染病': { cardFront: 'from-teal-50 to-teal-100', cardBack: 'from-teal-500 to-teal-600' }
+    };
+    
+    filteredView.innerHTML = `
+        <div class="flex items-center justify-between mb-6">
+            <button onclick="backToSystems()" class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-all group">
+                <i class="ri-arrow-left-line group-hover:text-blue-600 transition-colors"></i>
+                <span class="group-hover:text-blue-600 transition-colors">返回首页</span>
+            </button>
+            <h2 class="text-2xl font-bold text-slate-800">${title} (${points.length}个)</h2>
+            <div></div>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${points.map(({system, disease, type, point, pointId}) => {
+                const systemTheme = systemThemes[system] || { cardFront: 'from-gray-50 to-gray-100', cardBack: 'from-gray-500 to-gray-600' };
+                const isLearned = learningStats.learned.has(pointId);
+                const isDifficult = learningStats.difficult.has(pointId);
+                
+                return `
+                    <div class="flip-card" data-point-id="${pointId}">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front bg-gradient-to-br ${systemTheme.cardFront} border cursor-pointer hover:shadow-md transition-all duration-300" onclick="flipCard('${pointId}')">
+                                <div class="text-xs text-gray-500 mb-2">${system} > ${disease} > ${type}</div>
+                                <p class="text-slate-700 font-medium text-center">${point}</p>
+                            </div>
+                            <div class="flip-card-back bg-gradient-to-br ${systemTheme.cardBack} text-white">
+                                <div class="text-center">
+                                    <div class="text-xs opacity-75 mb-2">${system} > ${disease} > ${type}</div>
+                                    <div class="text-sm mb-4 text-left">
+                                        <div class="mb-2"><strong>${type}:</strong> ${point}</div>
+                                    </div>
+                                    <div class="flex justify-center gap-2">
+                                        <button onclick="toggleLearned('${pointId}')" class="learned-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                                            isLearned ? 'bg-green-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+                                        }">
+                                            <i class="ri-check-line mr-1"></i>${isLearned ? '已掌握' : '标记掌握'}
+                                        </button>
+                                        <button onclick="toggleDifficult('${pointId}')" class="difficult-btn px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                                            isDifficult ? 'bg-amber-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+                                        }">
+                                            <i class="ri-star-line mr-1"></i>${isDifficult ? '已标记' : '标记困难'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 获取总知识点数量
+function getTotalKnowledgePoints() {
+    let total = 0;
+    Object.keys(knowledgeBase).forEach(system => {
+        Object.keys(knowledgeBase[system]).forEach(disease => {
+            ['题眼', '诊断要点', '鉴别诊断', '检查', '治疗'].forEach(type => {
+                if (knowledgeBase[system][disease][type]) {
+                    total += knowledgeBase[system][disease][type].length;
+                }
+            });
+        });
+    });
+    return total;
+}
+</script>
+
+</body>
+</html>

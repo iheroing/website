@@ -41,6 +41,19 @@
   </script>
 
   <style>
+    /* 滚动进度条 */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #2563eb, #3b82f6, #60a5fa);
+      z-index: 9999;
+      transition: width 0.1s ease-out;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+    }
+    
     /* Apple-style淡入上移 */
     .fade { opacity: 0; transform: translateY(30px); transition: .7s cubic-bezier(.4,0,.2,1); }
     .fade.show { opacity: 1; transform: translateY(0); }
@@ -50,37 +63,65 @@
     .card:hover:not(.cursor-not-allowed) { transform: translateY(-4px) scale(1.02); }
      .card.cursor-not-allowed:hover { transform: none; }
     
-    /* 荧光笔标记效果 - 清新版本 */
-    .highlight-yellow {
-      background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
-      padding: 1px 4px;
-      border-radius: 3px;
+    /* 统一的柔和强调样式 */
+    .highlight-soft {
+      background: linear-gradient(120deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 2px 6px;
+      border-radius: 4px;
       position: relative;
       display: inline-block;
+      font-weight: 500;
+      color: #475569;
+      border: 1px solid #cbd5e1;
     }
     
-    .highlight-pink {
-      background: linear-gradient(120deg, #fdf2f8 0%, #fbcfe8 100%);
-      padding: 1px 4px;
-      border-radius: 3px;
+    /* 重要信息强调样式 */
+    .highlight-important {
+      background: linear-gradient(120deg, #eff6ff 0%, #dbeafe 100%);
+      padding: 2px 6px;
+      border-radius: 4px;
       position: relative;
       display: inline-block;
+      font-weight: 600;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
     }
     
-    .highlight-blue {
-      background: linear-gradient(120deg, #eff6ff 0%, #bfdbfe 100%);
-      padding: 1px 4px;
-      border-radius: 3px;
+    /* 成就数据强调样式 */
+    .highlight-achievement {
+      background: linear-gradient(120deg, #f0fdf4 0%, #dcfce7 100%);
+      padding: 2px 6px;
+      border-radius: 4px;
       position: relative;
       display: inline-block;
+      font-weight: 600;
+      color: #166534;
+      border: 1px solid #86efac;
     }
     
-    .highlight-green {
-      background: linear-gradient(120deg, #f0fdf4 0%, #bbf7d0 100%);
-      padding: 1px 4px;
-      border-radius: 3px;
+    /* 重点方法强调样式 */
+    .highlight-special {
+      background: linear-gradient(120deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+      padding: 3px 8px;
+      border-radius: 8px;
       position: relative;
       display: inline-block;
+      font-weight: 600;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
+      animation: elegant-glow 4s ease-in-out infinite;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    @keyframes elegant-glow {
+      0%, 100% { 
+        box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4), 0 0 16px rgba(59, 130, 246, 0.15);
+        transform: scale(1.02);
+      }
     }
     
     /* 下划线装饰效果 - 清新版本 */
@@ -97,6 +138,25 @@
       width: 100%;
       height: 2px;
       background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+    
+    /* 红色波浪线强调样式 */
+    .underline-red-wavy {
+      position: relative;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .underline-red-wavy::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #dc2626, #ef4444, #dc2626);
       border-radius: 1px;
       opacity: 0.6;
     }
@@ -135,29 +195,44 @@
     ::-webkit-scrollbar-thumb:hover { background: #d4d4d4 }
 
     /* 圆点导航样式 */
-    .dot-nav-item { position: relative; }
-    .dot-nav-item.active > div { background-color: #3b82f6 !important; }
-    .tooltip {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.8);
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
+    .dot-nav-item { 
+      position: relative; 
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .dot-nav-item:hover .tooltip { opacity: 1; }
+    .dot-nav-item.active > div { background-color: #3b82f6 !important; }
+    .dot-nav-item.active .nav-label { color: #3b82f6; opacity: 1; }
+
+    /* 导航标签样式 */
+    .nav-label {
+      font-size: 13px;
+      color: #64748b;
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 4px 8px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .dot-nav-item:hover .nav-label { 
+      opacity: 1; 
+      color: #1e293b;
+      transform: translateX(2px);
+    }
   </style>
 
 </head>
 
 <body class="font-sans text-neutral-800 bg-white">
+
+<!-- 滚动进度条 -->
+<div class="scroll-progress" id="scrollProgress"></div>
 
 <!-- 页面加载动画 -->
 <div id="pageLoader" class="page-loader">
@@ -171,19 +246,23 @@
 <nav id="dotNav" class="fixed left-6 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-4 hidden lg:flex">
   <div class="dot-nav-item active" data-target="home">
     <div class="w-3 h-3 rounded-full bg-brand cursor-pointer transition-all duration-300 hover:scale-125"></div>
-    <span class="tooltip">首页</span>
+    <span class="nav-label">首页</span>
   </div>
   <div class="dot-nav-item" data-target="resources">
     <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
-    <span class="tooltip">备考资料</span>
+    <span class="nav-label">备考资料</span>
   </div>
   <div class="dot-nav-item" data-target="tools">
     <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
-    <span class="tooltip">备考工具</span>
+    <span class="nav-label">备考工具</span>
   </div>
   <div class="dot-nav-item" data-target="updates">
     <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
-    <span class="tooltip">公告真题</span>
+    <span class="nav-label">公告真题</span>
+  </div>
+  <div class="dot-nav-item" data-target="about">
+    <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
+    <span class="nav-label">关于老师</span>
   </div>
 </nav>
 
@@ -192,49 +271,106 @@
   <i class="ri-arrow-up-line text-xl"></i>
 </button>
 
-<section id="home" class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 text-slate-800 flex items-center">
-  <div class="max-w-7xl mx-auto px-8 py-6 flex flex-col md:flex-row items-start gap-8">
-    <div class="md:w-1/2 space-y-8 fade">
-        <h1 class="text-5xl md:text-7xl font-extrabold leading-relaxed text-slate-800 mb-6 tracking-wide">
-          <span class="block mb-4">医学备考</span>
-          <span class="text-slate-600 block">智能加速</span>
-        </h1>
-       <p class="text-slate-600 text-lg leading-relaxed mb-8">笔试/面试资料 + AI 辅助工具，一站式提升通过率。</p>
-       <div class="flex flex-wrap gap-4">
-         <a href="#resources" class="px-8 py-4 bg-brand text-white rounded-lg shadow font-semibold hover:bg-brand-dark transition text-lg">立即浏览资料</a>
-         <a href="#tools" class="px-8 py-4 bg-white border border-brand text-brand rounded-lg font-semibold hover:bg-brand hover:text-white transition text-lg">体验 AI 工具</a>
-       </div>
-     </div>
-
-<!-- 功能板块卡片 -->
-<div class="md:w-1/2 w-full space-y-3 fade">
-  <!-- 卡片：笔试资料 -->
-  <a href="#resources" class="card p-4 flex items-center gap-3 hover:shadow-lg group bg-gradient-to-r from-white to-blue-50/30">
-    <div class="flex-1">
-      <h3 class="text-lg font-black text-slate-800 group-hover:text-brand transition-colors tracking-tight">笔试·面试资料</h3>
-      <p class="text-sm text-slate-600 font-medium">高频考点 / 真题解析 / 模拟卷</p>
+<section id="home" class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-100/30 text-slate-800 flex items-center relative overflow-hidden">
+  <!-- 背景装饰元素 -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-indigo-200/15 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-100/10 to-purple-100/10 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="max-w-7xl mx-auto px-8 py-12 relative z-10">
+    <!-- 主标题区域 -->
+    <div class="text-center mb-16 fade">
+      <div class="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-blue-200/50 mb-8 shadow-sm">
+        <i class="ri-stethoscope-line text-blue-600"></i>
+        <span class="text-sm font-medium text-slate-700">专业医考培训平台</span>
+      </div>
+      
+      <h1 class="text-6xl md:text-8xl font-black leading-tight text-slate-800 mb-8 tracking-tight">
+        <span class="block mb-2 bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">医学备考</span>
+        <span class="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">智能加速</span>
+      </h1>
+      
+      <p class="text-xl text-slate-600 leading-relaxed mb-12 max-w-2xl mx-auto font-medium">
+        笔试/面试资料 + AI 辅助工具，一站式提升通过率。
+      </p>
+      
+      <!-- 主要操作按钮 -->
+      <div class="flex flex-wrap justify-center gap-6 mb-16">
+        <a href="#resources" class="group px-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl shadow-xl font-bold hover:shadow-2xl transition-all duration-300 text-lg transform hover:scale-105">
+          <span class="flex items-center gap-3">
+            <i class="ri-book-open-line text-xl"></i>
+            立即浏览资料
+          </span>
+        </a>
+        <a href="#tools" class="group px-10 py-5 bg-white/90 backdrop-blur-sm border-2 border-blue-200 text-slate-700 rounded-2xl font-bold hover:bg-blue-50 transition-all duration-300 text-lg transform hover:scale-105 shadow-lg">
+          <span class="flex items-center gap-3">
+            <i class="ri-robot-2-line text-xl text-blue-600"></i>
+            体验 AI 工具
+          </span>
+        </a>
+        <a href="#about" class="group px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl shadow-xl font-bold hover:shadow-2xl transition-all duration-300 text-lg transform hover:scale-105">
+          <span class="flex items-center gap-3">
+            <i class="ri-user-star-line text-xl"></i>
+            关于老师
+          </span>
+        </a>
+      </div>
     </div>
-    <i class="ri-book-open-line text-3xl text-brand group-hover:scale-110 transition-transform drop-shadow-sm"></i>
-  </a>
 
-  <!-- 卡片：AI 工具 -->
-  <a href="#tools" class="card p-4 flex items-center gap-3 hover:shadow-lg group bg-gradient-to-r from-white to-emerald-50/30">
-    <div class="flex-1">
-      <h3 class="text-lg font-black text-slate-800 group-hover:text-brand transition-colors tracking-tight">AI 备考工具</h3>
-      <p class="text-sm text-slate-600 font-medium">答题机器人 / 智能抽题</p>
-    </div>
-    <i class="ri-robot-2-line text-3xl text-brand group-hover:scale-110 transition-transform drop-shadow-sm"></i>
-  </a>
+    <!-- 功能特色卡片网格 -->
+    <div class="grid md:grid-cols-3 gap-6 fade">
+      <!-- 卡片：笔试资料 -->
+      <a href="#resources" class="group relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/50 hover:border-blue-200/50 transform hover:-translate-y-2">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/30 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative z-10">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <i class="ri-book-open-line text-2xl text-white"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">笔试·面试资料</h3>
+          <p class="text-slate-600 leading-relaxed mb-4">高频考点 / 真题解析 / 模拟卷</p>
+          <div class="flex items-center text-blue-600 font-semibold group-hover:gap-3 transition-all">
+            <span>立即查看</span>
+            <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </a>
 
-  <!-- 卡片：公告+资料 -->
-  <a href="#updates" class="card p-4 flex items-center gap-3 hover:shadow-lg group bg-gradient-to-r from-white to-amber-50/30">
-    <div class="flex-1">
-      <h3 class="text-lg font-black text-slate-800 group-hover:text-brand transition-colors tracking-tight">公告 · 真题</h3>
-      <p class="text-sm text-slate-600 font-medium">考试动态 & 历年真题</p>
+      <!-- 卡片：AI 工具 -->
+      <a href="#tools" class="group relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/50 hover:border-emerald-200/50 transform hover:-translate-y-2">
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-teal-50/30 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative z-10">
+          <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <i class="ri-robot-2-line text-2xl text-white"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-slate-800 mb-3 group-hover:text-emerald-600 transition-colors">AI 备考工具</h3>
+          <p class="text-slate-600 leading-relaxed mb-4">答题机器人 / 智能抽题</p>
+          <div class="flex items-center text-emerald-600 font-semibold group-hover:gap-3 transition-all">
+            <span>立即体验</span>
+            <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </a>
+
+      <!-- 卡片：公告真题 -->
+      <a href="#updates" class="group relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/50 hover:border-amber-200/50 transform hover:-translate-y-2">
+        <div class="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-orange-50/30 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative z-10">
+          <div class="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <i class="ri-notification-4-line text-2xl text-white"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-slate-800 mb-3 group-hover:text-amber-600 transition-colors">公告 · 真题</h3>
+          <p class="text-slate-600 leading-relaxed mb-4">考试动态 & 历年真题</p>
+          <div class="flex items-center text-amber-600 font-semibold group-hover:gap-3 transition-all">
+            <span>查看更新</span>
+            <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </a>
     </div>
-    <i class="ri-notification-4-line text-3xl text-brand group-hover:scale-110 transition-transform drop-shadow-sm"></i>
-  </a>
-</div>
+    
+
   </div>
 </section>
 
@@ -263,39 +399,69 @@
 </section>
 
 <section id="about" class="py-16 bg-neutral-50">
-  <div class="max-w-6xl mx-auto px-8 text-center space-y-6 fade">
-    <h2 class="text-3xl md:text-4xl font-bold">关于<span class="highlight-blue">李弋老师</span></h2>
-    <div class="max-w-4xl mx-auto space-y-5">
-      <p class="text-lg font-semibold text-slate-700 bg-white/60 rounded-lg py-3 px-4">
-        🎓 <span class="highlight-green">上海交通大学硕士</span> · <span class="highlight-pink">华图医疗研究院院长</span>
-      </p>
+  <div class="max-w-6xl mx-auto px-8 fade">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">关于<span class="highlight-blue">李弋老师</span></h2>
+    
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <!-- 左侧：照片 -->
+      <div class="text-center">
+        <div class="relative inline-block">
+          <img src="teacher-photo.jpg" alt="李弋老师" class="w-80 h-96 object-cover rounded-2xl shadow-2xl mx-auto">
+          <div class="absolute -bottom-4 -right-4 bg-brand text-white px-4 py-2 rounded-lg shadow-lg">
+            <span class="text-sm font-semibold">🏆 华图特等奖</span>
+          </div>
+        </div>
+      </div>
       
-      <div class="text-left space-y-4">
-        <p class="text-neutral-600 leading-relaxed">
-          📚 <span class="highlight-yellow">8年医考培训经验</span>，独创<span class="underline-wavy">"一纵三横"记忆法</span>和AI+大数据驱动的"双频学习法"，让医考不再靠运气，让复习不再靠死记。累计服务学员超<span class="highlight-blue">1万人</span>，主讲医学基础、临床专业等核心课程。
-        </p>
-        
-        <p class="text-neutral-600 leading-relaxed">
-          🌟 以活泼的授课风格和过硬的专业功底著称，善用<span class="underline-wavy">联想记忆法</span>和母题训练法，让深奥的医学知识变得生动易懂。带班笔试通过率多次突破<span class="highlight-green">90%</span>，曾荣获华图教育教师风采大赛特等奖。
-        </p>
-        
-        <div class="bg-white/60 rounded-lg py-4 px-6 mt-6">
-          <p class="text-brand font-medium text-center">
-            💡 坚持<span class="highlight-yellow">"精准教学、高效备考"</span>的理念，帮助每一位医考学员实现职业理想。
+      <!-- 右侧：介绍内容 -->
+      <div class="space-y-6">
+        <div class="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-6 shadow-sm border border-slate-200">
+          <p class="text-lg font-semibold text-slate-700 text-center">
+            🎓 <span class="highlight-important">上海交通大学硕士</span> · <span class="highlight-important">华图医疗研究院院长</span>
           </p>
+        </div>
+        
+        <div class="space-y-5">
+          <div class="bg-white/90 rounded-xl p-5 shadow-sm border border-slate-200">
+            <p class="text-neutral-700 leading-relaxed text-base">
+              📚 <span class="underline-red-wavy">8年医考培训经验</span>，独创<span class="highlight-special">"一纵三横"记忆法</span>和AI+大数据驱动的<span class="highlight-special">"双频学习法"</span>，让医考不再靠运气，让复习不再靠死记。
+            </p>
+          </div>
+          
+          <div class="bg-white/90 rounded-xl p-5 shadow-sm border border-slate-200">
+            <p class="text-neutral-700 leading-relaxed text-base">
+              🎯 累计服务学员超<span class="highlight-achievement">1万人</span>，主讲医学基础、临床专业等核心课程。带班笔试通过率多次突破<span class="highlight-achievement">90%</span>，曾荣获华图教育教师风采大赛特等奖。
+            </p>
+          </div>
+          
+          <div class="bg-white/90 rounded-xl p-5 shadow-sm border border-slate-200">
+            <p class="text-neutral-700 leading-relaxed text-base">
+              🌟 以活泼的授课风格和过硬的专业功底著称，善用<span class="underline-wavy">联想记忆法</span>和<span class="underline-wavy">母题训练法</span>，让深奥的医学知识变得生动易懂。
+            </p>
+          </div>
+          
+          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl py-4 px-6 shadow-sm border border-blue-200">
+            <p class="text-blue-800 font-medium text-center text-base">
+              💡 坚持<span class="highlight-important">"精准教学、高效备考"</span>的理念，帮助每一位医考学员实现职业理想。
+            </p>
+          </div>
         </div>
       </div>
     </div>
+    
+    <!-- 社交链接移到底部居中 -->
+    <div class="flex flex-wrap justify-center gap-6 mt-12">
+      <a href="https://v.douyin.com/KWLNwyhxiSQ/" target="_blank" class="flex items-center gap-2 px-4 py-2 border border-brand rounded-lg text-brand hover:bg-brand hover:text-white transition">
+        <i class="fab fa-tiktok"></i> 抖音
+      </a>
+      <a href="https://www.xiaohongshu.com/user/profile/61d313ec000000001000e0df" target="_blank" class="flex items-center gap-2 px-4 py-2 border border-brand rounded-lg text-brand hover:bg-brand hover:text-white transition">
+        <i class="ri-book-mark-line"></i> 小红书
+      </a>
+    </div>
+  </div>
+</section>
 
-<!-- 社交链接 -->
-<div class="flex flex-wrap justify-center gap-6">
-  <a href="https://v.douyin.com/KWLNwyhxiSQ/" target="_blank" class="flex items-center gap-2 px-4 py-2 border border-brand rounded-lg text-brand hover:bg-brand hover:text-white transition">
-    <i class="fab fa-tiktok"></i> 抖音
-  </a>
-  <a href="https://www.xiaohongshu.com/user/profile/61d313ec000000001000e0df" target="_blank" class="flex items-center gap-2 px-4 py-2 border border-brand rounded-lg text-brand hover:bg-brand hover:text-white transition">
-    <i class="ri-book-mark-line"></i> 小红书
-  </a>
-</div>
+
   </div>
 </section>
 
@@ -313,6 +479,7 @@ const data = {
     { title:'即将上线更多', desc:'更多学习资源正在准备中', icon:'ri-more-line', link:'#', badge:'敬请期待' }
   ],
   tools: [
+    { title:'考点学习卡', desc:'智能学习系统，支持自定义导入', icon:'ri-book-open-line', link:'医学知识库.html' },
     { title:'AI 答题机器人', desc:'基于 GPT 医考模型', icon:'ri-robot-line', link:'chatbot.html' },
     { title:'智能抽题器', desc:'随机/定向题库一键生成', icon:'ri-shuffle-line', link:'面试试题抽取器.html' },
     { title:'学习进度跟踪', desc:'个人学习数据分析', icon:'ri-bar-chart-2-line', link:'#', badge:'即将上线' }
@@ -359,11 +526,26 @@ window.addEventListener('load', () => {
   }, 800);
 });
 
+/* -------------- 滚动进度条功能 -------------- */
+const scrollProgress = document.getElementById('scrollProgress');
+
+// 更新滚动进度条
+function updateScrollProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrollPercent = (scrollTop / docHeight) * 100;
+  scrollProgress.style.width = scrollPercent + '%';
+}
+
 /* -------------- 返回顶部按钮功能 -------------- */
 const backToTopBtn = document.getElementById('backToTop');
 
-// 滚动时显示/隐藏返回顶部按钮
+// 滚动时显示/隐藏返回顶部按钮并更新进度条
 window.addEventListener('scroll', () => {
+  // 更新进度条
+  updateScrollProgress();
+  
+  // 返回顶部按钮显示/隐藏
   if (window.scrollY > 300) {
     backToTopBtn.style.opacity = '1';
     backToTopBtn.style.pointerEvents = 'auto';
@@ -372,6 +554,10 @@ window.addEventListener('scroll', () => {
     backToTopBtn.style.pointerEvents = 'none';
   }
 });
+
+// 页面加载时初始化进度条
+window.addEventListener('load', updateScrollProgress);
+window.addEventListener('resize', updateScrollProgress);
 
 // 点击返回顶部
 backToTopBtn.addEventListener('click', () => {
@@ -408,13 +594,26 @@ dotNavItems.forEach(item => {
 // 滚动时更新圆点导航状态
 window.addEventListener('scroll', () => {
   let current = '';
+  const scrollPosition = window.scrollY + window.innerHeight / 2;
+  
   sections.forEach(section => {
     const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-    if (scrollY >= sectionTop - 200) {
+    const sectionBottom = sectionTop + section.clientHeight;
+    
+    if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
       current = section.getAttribute('id');
     }
   });
+  
+  // 如果滚动到页面底部，激活最后一个section
+  if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
+    current = sections[sections.length - 1].getAttribute('id');
+  }
+  
+  // 如果在页面顶部，激活第一个section
+  if (window.scrollY < 100) {
+    current = 'home';
+  }
   
   dotNavItems.forEach(item => {
     item.classList.remove('active');
