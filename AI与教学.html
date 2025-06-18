@@ -185,21 +185,7 @@
 
         function copyPrompt() {
             const promptText = document.getElementById('promptText').textContent;
-            navigator.clipboard.writeText(promptText).then(() => {
-                // 显示复制成功提示
-                const button = event.target.closest('button');
-                const originalText = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-check mr-2"></i>复制成功！';
-                button.classList.add('bg-green-500');
-                
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.classList.remove('bg-green-500');
-                }, 2000);
-            }).catch(err => {
-                console.error('复制失败:', err);
-                alert('复制失败，请手动选择文本复制');
-            });
+            copyToClipboard(promptText);
         }
 
         // 点击模态框外部关闭
@@ -363,6 +349,45 @@
 
         // 鼠标移动事件
         document.addEventListener('mousemove', updateLaserPosition);
+
+        // 复制到剪贴板功能
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showLaserNotification('提示词已复制到剪贴板', 'success');
+                }).catch(function(err) {
+                    console.error('复制失败:', err);
+                    fallbackCopyTextToClipboard(text);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showLaserNotification('提示词已复制到剪贴板', 'success');
+                } else {
+                    showLaserNotification('复制失败，请手动复制', 'warning');
+                }
+            } catch (err) {
+                console.error('复制失败:', err);
+                showLaserNotification('复制失败，请手动复制', 'warning');
+            }
+            
+            document.body.removeChild(textArea);
+        }
 
         // 页面加载完成后显示激光笔使用提示
         document.addEventListener('DOMContentLoaded', function() {
@@ -967,24 +992,7 @@
                 <p class="text-xl text-gray-600">从"会用"到"精用"的关键跃迁</p>
             </div>
 
-            <!-- RTF Framework -->
-            <div class="grid lg:grid-cols-3 gap-8 mb-16">
-                <div class="bento-card bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-8 scroll-reveal">
-                    <div class="text-4xl font-black text-brand-red mb-4">R</div>
-                    <h3 class="text-2xl font-bold mb-4">Role 角色定义</h3>
-                    <p class="text-gray-600">明确AI扮演的专业身份，让AI理解其在教学场景中的角色定位</p>
-                </div>
-                <div class="bento-card bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.2s;">
-                    <div class="text-4xl font-black text-tech-blue mb-4">T</div>
-                    <h3 class="text-2xl font-bold mb-4">Task 任务描述</h3>
-                    <p class="text-gray-600">清晰表达具体需求和目标，确保AI输出符合教学预期</p>
-                </div>
-                <div class="bento-card bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.4s;">
-                    <div class="text-4xl font-black text-green-600 mb-4">F</div>
-                    <h3 class="text-2xl font-bold mb-4">Format 格式要求</h3>
-                    <p class="text-gray-600">规范输出形式和结构，让AI生成的内容直接可用</p>
-                </div>
-            </div>
+
 
             <!-- Example Case -->
             <div class="bento-card bg-white rounded-3xl p-12 shadow-lg scroll-reveal">
@@ -1038,6 +1046,59 @@
                     <div class="inline-flex items-center bg-gradient-to-r from-brand-red to-pink-500 text-white px-6 py-3 rounded-full">
                         <i class="fas fa-lightbulb mr-2"></i>
                         <span class="font-semibold">点击卡片查看完整提示词</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RTF Framework Section -->
+            <div class="bento-card bg-white rounded-3xl p-12 shadow-lg scroll-reveal mt-16">
+                <h3 class="text-3xl font-bold mb-8 text-center">一个简单的万能提示词生成框架——<strong>RTF模型</strong></h3>
+                
+                <!-- RTF Framework -->
+                <div class="grid lg:grid-cols-3 gap-8 mb-16">
+                    <div class="bento-card bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-8 scroll-reveal">
+                        <div class="text-4xl font-black text-brand-red mb-4">R</div>
+                        <h3 class="text-2xl font-bold mb-4">Role 角色定义</h3>
+                        <p class="text-gray-600">明确AI扮演的专业身份，让AI理解其在教学场景中的角色定位</p>
+                    </div>
+                    <div class="bento-card bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.2s;">
+                        <div class="text-4xl font-black text-tech-blue mb-4">T</div>
+                        <h3 class="text-2xl font-bold mb-4">Task 任务描述</h3>
+                        <p class="text-gray-600">清晰表达具体需求和目标，确保AI输出符合教学预期</p>
+                    </div>
+                    <div class="bento-card bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.4s;">
+                        <div class="text-4xl font-black text-green-600 mb-4">F</div>
+                        <h3 class="text-2xl font-bold mb-4">Format 格式要求</h3>
+                        <p class="text-gray-600">规范输出形式和结构，让AI生成的内容直接可用</p>
+                    </div>
+                </div>
+                
+                <!-- RTF Prompt Generator -->
+                <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-8">
+                    <h4 class="text-2xl font-bold mb-6 text-center">按照RTF框架生成提示词的提示词</h4>
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <pre class="text-sm text-gray-700 whitespace-pre-wrap font-mono leading-relaxed"># 角色 (Role)
+你是一位专业的提示词生成专家，专精于教育培训领域提示词开发。
+
+# 任务 (Task)
+根据以下要求，生成一套中文提示词。
+
+## 要求 (Requirements)
+1. 严格按照RTF（Role-Task-Format）结构化框架生成提示词
+2. 遵循奥卡姆剃刀原理，确保提示词精简高效，去除所有冗余指令
+3. 应用金字塔原理组织指令，确保逻辑清晰、层次分明
+4. 在生成行为建议时，参考福格行为模型（B=MAT），确保建议具有可执行性
+
+# 格式 (Format)
+1. 使用Markdown格式输出完整的RTF框架提示词
+2. 包含明确的Role定义、Task说明和Format要求
+3. 提供必要的实现细节和约束条件</pre>
+                    </div>
+                    <div class="text-center mt-6">
+                        <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all duration-300" onclick="copyToClipboard(this.parentElement.previousElementSibling.querySelector('pre').textContent)">
+                            <i class="fas fa-copy mr-2"></i>
+                            复制提示词
+                        </button>
                     </div>
                 </div>
             </div>
