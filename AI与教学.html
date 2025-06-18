@@ -220,6 +220,118 @@
                 closePromptModal();
             }
         });
+
+        // Apple-style Navigation Functions
+        let isMenuOpen = false;
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.querySelector('.hamburger');
+            
+            isMenuOpen = !isMenuOpen;
+            
+            if (isMenuOpen) {
+                menu.classList.add('show');
+                hamburger.classList.add('active');
+            } else {
+                menu.classList.remove('show');
+                hamburger.classList.remove('active');
+            }
+        }
+
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.querySelector('.hamburger');
+            
+            isMenuOpen = false;
+            menu.classList.remove('show');
+            hamburger.classList.remove('active');
+        }
+
+        // Navigation scroll effects and progress bar
+        document.addEventListener('DOMContentLoaded', function() {
+            const nav = document.querySelector('.apple-nav');
+            const progressBar = document.querySelector('.nav-progress');
+            const navItems = document.querySelectorAll('.nav-item');
+            const anchorDots = document.querySelectorAll('.anchor-dot');
+            const sections = document.querySelectorAll('section[id]');
+            
+            // Scroll event listener
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercent = (scrollTop / docHeight) * 100;
+                
+                // Update progress bar
+                progressBar.style.width = scrollPercent + '%';
+                
+                // Add/remove scrolled class
+                if (scrollTop > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+                
+                // Update active navigation item and anchor dots
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollTop >= sectionTop && scrollTop < sectionTop + sectionHeight) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                // Update navigation items
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === '#' + current) {
+                        item.classList.add('active');
+                    }
+                });
+                
+                // Update anchor dots
+                anchorDots.forEach(dot => {
+                    dot.classList.remove('active');
+                    if (dot.getAttribute('data-target') === current) {
+                        dot.classList.add('active');
+                    }
+                });
+            });
+            
+            // Smooth scroll for navigation links
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        const offsetTop = targetSection.offsetTop - 80;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Smooth scroll for anchor dots
+            anchorDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        const offsetTop = targetSection.offsetTop - 80;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
     </script>
     <style>
         @keyframes float {
@@ -237,6 +349,10 @@
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         .bento-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -263,11 +379,241 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        /* Apple-style Navigation */
+        .apple-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideDown 0.8s ease-out;
+        }
+        
+        .apple-nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 1px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-item {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #E31937, #FF6B6B);
+            border-radius: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+        }
+        
+        .nav-item:hover::before,
+        .nav-item.active::before {
+            width: 100%;
+        }
+        
+        .nav-item:hover {
+            color: #E31937;
+            transform: translateY(-1px);
+        }
+        
+        .nav-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #E31937, #FF6B6B);
+            transition: width 0.1s ease-out;
+            border-radius: 1px;
+        }
+        
+        .mobile-menu {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            margin: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hamburger {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hamburger.active {
+            transform: rotate(90deg);
+        }
+        
+        .hamburger span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: #374151;
+            margin: 4px 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 1px;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu {
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .mobile-menu.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 左侧锚点指示器 */
+        .anchor-dots {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .anchor-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(156, 163, 175, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .anchor-dot:hover {
+            background: rgba(239, 68, 68, 0.6);
+            transform: scale(1.2);
+        }
+
+        .anchor-dot.active {
+            background: #ef4444;
+            transform: scale(1.3);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .anchor-dot::after {
+            content: attr(data-label);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .anchor-dot:hover::after {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .anchor-dots {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900 overflow-x-hidden">
+    <!-- 左侧锚点指示器 -->
+    <div class="anchor-dots">
+        <div class="anchor-dot" data-label="首页" data-target="hero"></div>
+        <div class="anchor-dot" data-label="核心理念" data-target="core-concept"></div>
+        <div class="anchor-dot" data-label="提示词工程" data-target="prompt-engineering"></div>
+        <div class="anchor-dot" data-label="平台选择" data-target="platform-selection"></div>
+        <div class="anchor-dot" data-label="工具生态" data-target="tool-ecosystem"></div>
+        <div class="anchor-dot" data-label="Vibe Coding" data-target="vibe-coding"></div>
+        <div class="anchor-dot" data-label="应用场景" data-target="applications"></div>
+        <div class="anchor-dot" data-label="相关链接" data-target="references"></div>
+        <div class="anchor-dot" data-label="关于作者" data-target="author"></div>
+    </div>
+    
+    <!-- Apple-style Navigation -->
+    <nav class="apple-nav fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-brand-red to-pink-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-brain text-white text-sm"></i>
+                    </div>
+                    <span class="font-bold text-lg">AI与教学：个人思考与实践</span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#hero" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">首页</a>
+                    <a href="#core-concept" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">核心理念</a>
+                    <a href="#prompt-engineering" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">提示词工程</a>
+                    <a href="#platform-selection" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">平台选择</a>
+                    <a href="#tool-ecosystem" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">工具生态</a>
+                    <a href="#vibe-coding" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">Vibe Coding</a>
+                    <a href="#applications" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">应用场景</a>
+                    <a href="#references" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">相关链接</a>
+                    <a href="#author" class="nav-item text-sm font-medium text-gray-700 hover:text-brand-red cursor-pointer">关于作者</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden hamburger" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="nav-progress" style="width: 0%"></div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="md:hidden mobile-menu" id="mobileMenu">
+            <div class="p-6 space-y-4">
+                <a href="#hero" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">首页</a>
+                <a href="#core-concept" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">核心理念</a>
+                <a href="#prompt-engineering" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">提示词工程</a>
+                <a href="#platform-selection" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">平台选择</a>
+                <a href="#tool-ecosystem" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">工具生态</a>
+                <a href="#vibe-coding" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">Vibe Coding</a>
+                <a href="#applications" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">应用场景</a>
+                <a href="#references" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">相关链接</a>
+                <a href="#author" class="block text-gray-700 hover:text-brand-red font-medium transition-colors" onclick="closeMobileMenu()">关于作者</a>
+            </div>
+        </div>
+    </nav>
     <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
         <div class="absolute inset-0 tech-gradient"></div>
         <div class="container mx-auto px-6 relative z-10">
             <div class="text-center animate-fade-in">
@@ -293,7 +639,7 @@
     </section>
 
     <!-- Core Concept Section -->
-    <section class="py-20 bg-soft-gray">
+    <section id="core-concept" class="py-20 bg-soft-gray">
         <div class="container mx-auto px-6">
             <div class="bento-card bg-white rounded-3xl p-12 shadow-lg scroll-reveal">
                 <div class="text-center mb-12">
@@ -345,7 +691,7 @@
     </section>
 
     <!-- Chapter 1: Prompt Engineering -->
-    <section class="py-20">
+    <section id="prompt-engineering" class="py-20">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16 scroll-reveal">
                 <div class="text-8xl font-black text-brand-red opacity-20 mb-4">01</div>
@@ -452,7 +798,7 @@
     </div>
 
     <!-- Chapter 2: Platform Selection -->
-    <section class="py-20 bg-soft-gray">
+    <section id="platform-selection" class="py-20 bg-soft-gray">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16 scroll-reveal">
                 <div class="text-8xl font-black text-brand-red opacity-20 mb-4">02</div>
@@ -548,7 +894,7 @@
     </section>
 
     <!-- Chapter 3: Tool Ecosystem -->
-    <section class="py-20">
+    <section id="tool-ecosystem" class="py-20">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16 scroll-reveal">
                 <div class="text-8xl font-black text-brand-red opacity-20 mb-4">03</div>
@@ -624,7 +970,7 @@
     </section>
 
     <!-- Chapter 4: Vibe Coding -->
-    <section class="py-20 bg-soft-gray">
+    <section id="vibe-coding" class="py-20 bg-soft-gray">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16 scroll-reveal">
                 <div class="text-8xl font-black text-brand-red opacity-20 mb-4">04</div>
@@ -736,7 +1082,7 @@
     </section>
 
     <!-- Application Scenarios -->
-    <section class="py-20">
+    <section id="applications" class="py-20">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16 scroll-reveal">
                 <h2 class="text-5xl font-black mb-6">AI工具在实际教学中的综合应用</h2>
@@ -832,7 +1178,7 @@
     </section>
     
     <!-- References Section -->
-    <section class="py-20 bg-soft-gray">
+    <section id="references" class="py-20 bg-soft-gray">
         <div class="container mx-auto px-6">
             <div class="bento-card bg-white rounded-3xl p-12 scroll-reveal">
                 <div class="text-center mb-12">
@@ -985,7 +1331,7 @@
     </section>
 
     <!-- Author Info -->
-    <section class="py-20">
+    <section id="author" class="py-20">
         <div class="container mx-auto px-6">
             <div class="bento-card bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-12 scroll-reveal">
                 <div class="text-center mb-8">
