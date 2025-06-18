@@ -256,6 +256,10 @@
     <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
     <span class="nav-label">备考工具</span>
   </div>
+  <div class="dot-nav-item" data-target="thinking">
+    <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
+    <span class="nav-label">教学与思考</span>
+  </div>
   <div class="dot-nav-item" data-target="updates">
     <div class="w-3 h-3 rounded-full bg-gray-400 cursor-pointer transition-all duration-300 hover:scale-125"></div>
     <span class="nav-label">公告真题</span>
@@ -389,7 +393,15 @@
   </div>
 </section>
 
-<section id="updates" class="py-16">
+<section id="thinking" class="py-16">
+  <div class="max-w-7xl mx-auto px-8">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">教学与思考</h2>
+
+<div id="thinkingGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </div>
+</section>
+
+<section id="updates" class="py-16 bg-neutral-50">
   <div class="max-w-7xl mx-auto px-8">
     <h2 class="text-3xl md:text-4xl font-bold mb-10 text-center">公告 / 真题 / 其他</h2>
 
@@ -397,7 +409,7 @@
   </div>
 </section>
 
-<section id="about" class="py-16 bg-neutral-50">
+<section id="about" class="py-16">
   <div class="max-w-6xl mx-auto px-8 fade">
     <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">关于<span class="highlight-blue">李弋老师</span></h2>
     
@@ -482,6 +494,10 @@ const data = {
     { title:'医疗结构化面试热点', desc:'结构化面试时政热点解读', icon:'ri-chat-quote-line', link:'医疗结构化时政热点.html' },
     { title:'即将上线更多', desc:'更多学习资源正在准备中', icon:'ri-more-line', link:'#', badge:'敬请期待' }
   ],
+  thinking: [
+    { title:'AI与教学：个人思考与实践', desc:'重新定义教学效率的时代密码', icon:'ri-brain-line', link:'AI与教学.html' },
+    { title:'更多思考文章', desc:'教学方法与理念探索', icon:'ri-lightbulb-line', link:'#', badge:'筹备中' }
+  ],
   tools: [
     { title:'智能学习卡片', desc:'智能知识卡片，让薄弱环节无处遁形', icon:'ri-book-open-line', link:'医学知识库.html' },
     { title:'AI智能答题助手', desc:'千万题库+大模型加持，秒解各类难题', icon:'ri-robot-line', link:'https://bailian.console.aliyun.com/share/f1f2dffa685043b0843174a4235510b2' },
@@ -522,6 +538,7 @@ function renderCards(arr, target) {
 }
 renderCards(data.resources, 'resourceGrid');
 renderCards(data.tools,     'toolGrid');
+renderCards(data.thinking,  'thinkingGrid');
 renderCards(data.updates,   'updateGrid');
 
 /* -------------- 页面加载完成后隐藏加载动画 -------------- */

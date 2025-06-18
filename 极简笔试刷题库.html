@@ -1,0 +1,3721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医学知识 - 极简智能刷题库</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Tailwind JIT needs this for dynamic classes sometimes */
+        .knowledge-tree-level-1 {}
+        .knowledge-tree-level-2 {}
+        .knowledge-tree-level-3 {}
+        .weakness-high {}
+        .weakness-medium {}
+        .weakness-low {}
+
+        /* 保持原有样式不变 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        :root {
+            --primary-color: #E31937;
+            --secondary-color: #FF6B6B;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --correct-bg: #f0fdf4;
+            --wrong-bg: #fef2f2;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #E31937, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 浮动导航样式 */
+        .floating-nav { 
+            position: fixed; 
+            left: 0; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            z-index: 1000; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
+        .nav-trigger { 
+            position: absolute; 
+            left: 0; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            width: 50px; 
+            height: 50px; 
+            background: linear-gradient(135deg, #E31937, #FF6B6B); 
+            border-radius: 0 25px 25px 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            box-shadow: 4px 0 20px rgba(227, 25, 55, 0.3); 
+            transition: all 0.3s ease; 
+            z-index: 1001; 
+        }
+        
+        .nav-trigger:hover { 
+            transform: translateY(-50%) translateX(5px); 
+            box-shadow: 6px 0 25px rgba(227, 25, 55, 0.4); 
+        }
+        
+        .nav-trigger i { 
+            color: white; 
+            font-size: 1.2rem; 
+            transition: transform 0.3s ease; 
+        }
+        
+        .floating-nav.collapsed .nav-trigger { 
+            left: 20px; 
+        }
+        
+        .nav-panel { 
+            position: absolute; 
+            left: 0; 
+            top: 50%; 
+            transform: translateY(-50%) translateX(-100%); 
+            width: 420px; 
+            max-height: 90vh; 
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); 
+            border-radius: 0 20px 20px 0; 
+            box-shadow: 8px 0 40px rgba(0, 0, 0, 0.15); 
+            opacity: 0; 
+            visibility: hidden; 
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s; 
+            overflow-y: auto; 
+            border: 1px solid #e2e8f0; 
+            border-left: none; 
+        }
+        
+        .floating-nav.expanded .nav-panel { 
+            transform: translateY(-50%) translateX(50px); 
+            opacity: 1; 
+            visibility: visible; 
+        }
+        
+        .floating-nav.expanded .nav-trigger i { 
+            transform: rotate(180deg); 
+        }
+        
+        .nav-header { 
+            padding: 1.25rem; 
+            background: linear-gradient(135deg, #E31937, #FF6B6B); 
+            color: white; 
+            border-radius: 0 18px 0 0; 
+        }
+        
+        .nav-title { 
+            font-size: 1rem; 
+            font-weight: 700; 
+            margin-bottom: 0.3rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        
+        .nav-subtitle { 
+            font-size: 0.75rem; 
+            opacity: 0.9; 
+        }
+        
+        .nav-content { 
+            padding: 0.75rem 0; 
+        }
+        
+        .nav-section { 
+            margin-bottom: 1rem; 
+        }
+        
+        .nav-section-title { 
+            padding: 0 1.25rem 0.5rem; 
+            font-size: 0.65rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            color: #64748b; 
+            border-bottom: 1px solid #f1f5f9; 
+            margin-bottom: 0.5rem; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 0.6rem 1.25rem; 
+            color: #374151; 
+            text-decoration: none; 
+            font-weight: 500; 
+            font-size: 0.8rem; 
+            transition: all 0.2s ease; 
+            border-left: 3px solid transparent; 
+            position: relative; 
+            cursor: pointer; 
+        }
+        
+        .nav-item:hover, .nav-item.active { 
+            background: linear-gradient(90deg, rgba(227, 25, 55, 0.08) 0%, rgba(227, 25, 55, 0.02) 100%); 
+            color: #E31937; 
+            border-left-color: #E31937; 
+        }
+        
+        .nav-item.active { 
+            font-weight: 600; 
+        }
+        
+        .nav-item-icon { 
+            margin-right: 0.75rem; 
+            font-size: 0.9rem; 
+            width: 18px; 
+            text-align: center; 
+            color: #E31937; 
+        }
+        
+        .nav-item-content { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        .nav-item-name { 
+            font-weight: 600; 
+            margin-bottom: 0.15rem; 
+        }
+        
+        .nav-item-progress { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            font-size: 0.65rem; 
+            color: #64748b; 
+        }
+        
+        .mini-progress-bar { 
+            flex: 1; 
+            height: 4px; 
+            background: #e2e8f0; 
+            border-radius: 2px; 
+            overflow: hidden; 
+        }
+        
+        .mini-progress-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, #10b981, #059669); 
+            border-radius: 2px; 
+            transition: width 0.3s ease; 
+        }
+        
+        .nav-item-count { 
+            font-size: 0.65rem; 
+            color: #64748b; 
+            white-space: nowrap; 
+        }
+
+        /* 知识树层级样式 */
+        .knowledge-tree-level {
+            margin-left: 0;
+        }
+        
+        .knowledge-tree-level-1 {
+            margin-left: 0;
+            background: rgba(227, 25, 55, 0.05);
+        }
+        
+        .knowledge-tree-level-2 {
+            margin-left: 1rem;
+            background: rgba(227, 25, 55, 0.03);
+            font-size: 0.75rem;
+        }
+        
+        .knowledge-tree-level-3 {
+            margin-left: 2rem;
+            background: rgba(227, 25, 55, 0.02);
+            font-size: 0.7rem;
+        }
+
+        .knowledge-tree-toggle {
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .knowledge-tree-toggle:hover {
+            background: rgba(227, 25, 55, 0.1);
+            color: #E31937;
+        }
+
+        .knowledge-tree-children {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .knowledge-tree-children.expanded {
+            max-height: 2000px;
+        }
+
+        /* 统计分析面板 */
+        .analysis-panel {
+            background: linear-gradient(135deg, #ffffff, #fdfdff);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border: 1px solid #f1f5f9;
+        }
+
+        .analysis-chart {
+            height: 120px;
+            margin: 0.5rem 0;
+        }
+
+        .weakness-indicator {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .weakness-high {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .weakness-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .weakness-low {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        /* 筛选器样式 */
+        .filter-controls {
+            padding: 0.75rem 1.25rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .filter-tag {
+            background: #E31937;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tag:hover {
+            background: #c41e3a;
+        }
+
+        /* 知识点分布图表 */
+        .knowledge-distribution {
+            margin: 0.5rem 0;
+        }
+
+        .distribution-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .distribution-item:hover {
+            background: rgba(227, 25, 55, 0.05);
+        }
+
+        .distribution-bar {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 0 0.5rem;
+            overflow: hidden;
+        }
+
+        .distribution-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #E31937, #FF6B6B);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .distribution-label {
+            font-size: 0.65rem;
+            color: #374151;
+            min-width: 80px;
+        }
+
+        .distribution-value {
+            font-size: 0.65rem;
+            color: #64748b;
+            min-width: 30px;
+            text-align: right;
+        }
+
+        /* 其他原有样式保持不变 */
+        .nav-controls { 
+            padding: 0.75rem 1.25rem; 
+            border-top: 1px solid #f1f5f9; 
+            background: #f8fafc; 
+            display: flex; 
+            gap: 0.5rem; 
+            margin-top: 0.5rem; 
+        }
+        
+        .nav-controls:last-child { 
+            border-radius: 0 0 18px 0; 
+            border-top: none; 
+            padding-top: 0.25rem; 
+        }
+        
+        .nav-control-btn { 
+            flex: 1; 
+            padding: 0.5rem 0.75rem; 
+            border-radius: 6px; 
+            font-weight: 600; 
+            font-size: 0.75rem; 
+            transition: all 0.2s ease; 
+            border: none; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 0.3rem; 
+        }
+        
+        .nav-control-btn i { 
+            font-size: 0.7rem; 
+        }
+        
+        .nav-control-primary { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: white; 
+        }
+        
+        .nav-control-primary:hover { 
+            background: linear-gradient(135deg, #059669, #047857); 
+            transform: translateY(-1px); 
+        }
+        
+        .nav-control-secondary { 
+            background: linear-gradient(135deg, #6b7280, #4b5563); 
+            color: white; 
+        }
+        
+        .nav-control-secondary:hover { 
+            background: linear-gradient(135deg, #4b5563, #374151); 
+            transform: translateY(-1px); 
+        }
+        
+        .nav-control-danger { 
+            background: linear-gradient(135deg, #f87171, #ef4444); 
+            color: white; 
+        }
+        
+        .nav-control-danger:hover { 
+            background: linear-gradient(135deg, #ef4444, #dc2626); 
+            transform: translateY(-1px); 
+        }
+        
+        .nav-stats { 
+            padding: 1rem 0; 
+            background: linear-gradient(135deg, #fdfdff, #f7f9fc); 
+            border-radius: 8px; 
+            margin: 0.5rem 1.25rem; 
+        }
+        
+        .nav-stats-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 0.6rem; 
+            padding: 0 0.75rem; 
+        }
+        
+        .nav-stats-item:last-child { 
+            margin-bottom: 0; 
+        }
+        
+        .nav-stats-label { 
+            font-size: 0.75rem; 
+            color: #64748b; 
+            font-weight: 500; 
+        }
+        
+        .nav-stats-value { 
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            color: #1e293b; 
+            background: linear-gradient(135deg, #E31937, #FF6B6B); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .nav-overall-progress-bar { 
+            height: 6px; 
+            background: #e2e8f0; 
+            border-radius: 3px; 
+            overflow: hidden; 
+            margin: 0.5rem 0.75rem 0; 
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05); 
+        }
+        
+        .nav-overall-progress-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, #E31937, #FF8E8E); 
+            transition: width 0.3s ease; 
+            border-radius: 3px; 
+            box-shadow: 0 1px 2px rgba(227, 25, 55, 0.2); 
+        }
+        
+        .mobile-nav-toggle { 
+            display: none; 
+            position: fixed; 
+            top: 1rem; 
+            left: 1rem; 
+            z-index: 1002; 
+            background: #E31937; 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            width: 44px; 
+            height: 44px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(227, 25, 55, 0.3); 
+            align-items: center; 
+            justify-content: center; 
+        }
+        
+        .mobile-nav-toggle i { 
+            font-size: 1rem; 
+        }
+        
+        .mobile-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.5); 
+            z-index: 999; 
+        }
+        
+        .question-card { 
+            background: linear-gradient(135deg, #ffffff, #fdfdff); 
+            border-radius: 16px; 
+            padding: 2rem; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); 
+            transition: all 0.3s ease; 
+            border: 1px solid #f1f5f9; 
+        }
+        
+        .question-card:hover { 
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); 
+            transform: translateY(-2px); 
+        }
+        
+        .question-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 1.5rem; 
+            padding-bottom: 1rem; 
+            border-bottom: 2px solid #f1f5f9; 
+            flex-wrap: wrap; 
+        } 
+        
+        .question-type-badge { 
+            background: linear-gradient(135deg, #E31937, #FF6B6B); 
+            color: white; 
+            padding: 0.5rem 1rem; 
+            border-radius: 20px; 
+            font-size: 0.875rem; 
+            font-weight: 600; 
+            margin-bottom: 0.5rem; 
+        } 
+        
+        .question-number { 
+            font-size: 1.125rem; 
+            font-weight: 700; 
+            color: #374151; 
+            margin-bottom: 0.5rem; 
+        } 
+        
+        .question-difficulty { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            color: #f59e0b; 
+            font-size: 0.875rem; 
+            font-weight: 500; 
+            margin-bottom: 0.5rem;
+        } 
+        
+        .question-content { 
+            margin-bottom: 2rem; 
+        }
+        
+        .question-text { 
+            font-size: 1.125rem; 
+            line-height: 1.7; 
+            color: #1f2937; 
+            margin-bottom: 1.5rem; 
+            font-weight: 500; 
+            white-space: pre-wrap; 
+        } 
+        
+        .options-container { 
+            display: grid; 
+            gap: 1rem; 
+        }
+        
+        .option { 
+            padding: 1rem 1.25rem; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 1rem; 
+            background: #ffffff; 
+        }
+        
+        .option:hover:not(.disabled) { 
+            border-color: var(--primary-color); 
+            background: #fef7f7; 
+            transform: translateX(4px); 
+        }
+        
+        .option.selected { 
+            border-color: var(--primary-color); 
+            background: linear-gradient(135deg, #fef7f7, #fff5f5); 
+            box-shadow: 0 4px 12px rgba(227, 25, 55, 0.15); 
+        }
+        
+        .option.correct { 
+            border-color: var(--success-color); 
+            background: var(--correct-bg); 
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); 
+        }
+        
+        .option.wrong { 
+            border-color: var(--error-color); 
+            background: var(--wrong-bg); 
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); 
+        }
+        
+        .option.disabled { 
+            cursor: not-allowed; 
+            opacity: 0.7; 
+        }
+        
+        .option-label { 
+            font-weight: 700; 
+            font-size: 1.125rem; 
+            color: var(--primary-color); 
+            min-width: 2rem; 
+            text-align: center; 
+            margin-top: 0.125rem;  
+        }
+        
+        .option.correct .option-label { 
+            color: var(--success-color); 
+        }
+        
+        .option.wrong .option-label { 
+            color: var(--error-color); 
+        }
+        
+        .option-text { 
+            flex: 1; 
+            font-size: 1rem; 
+            line-height: 1.5; 
+            color: #374151; 
+            white-space: pre-wrap; 
+        } 
+        
+        .option input[type="checkbox"], .option input[type="radio"] { 
+            margin-right: 0.75rem; 
+            width: 1.25rem; 
+            height: 1.25rem; 
+            accent-color: var(--primary-color); 
+            margin-top: 0.25rem;  
+        }
+        
+        .question-actions { 
+            display: flex; 
+            gap: 1rem; 
+            justify-content: center; 
+            margin-top: 2rem; 
+        }
+        
+        .btn { 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            font-size: 0.875rem; 
+            transition: all 0.2s ease; 
+            border: none; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, #E31937, #FF6B6B); 
+            color: white; 
+        }
+        
+        .btn-primary:hover { 
+            background: linear-gradient(135deg, #c41e3a, #E31937); 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(227, 25, 55, 0.3); 
+        }
+        
+        .btn-secondary { 
+            background: linear-gradient(135deg, #6b7280, #4b5563); 
+            color: white; 
+        }
+        
+        .btn-secondary:hover { 
+            background: linear-gradient(135deg, #4b5563, #374151); 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3); 
+        }
+        
+        .btn-success { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: white; 
+        }
+        
+        .btn-success:hover { 
+            background: linear-gradient(135deg, #059669, #047857); 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); 
+        }
+        
+        .btn:disabled { 
+            opacity: 0.5; 
+            cursor: not-allowed; 
+            transform: none !important; 
+        }
+        
+        .answer-explanation { 
+            margin-top: 2rem; 
+            padding: 1.5rem; 
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9); 
+            border-radius: 12px; 
+            border-left: 4px solid var(--primary-color); 
+            display: none; 
+        }
+        
+        .answer-explanation.show { 
+            display: block; 
+            animation: slideDown 0.3s ease-out; 
+        }
+        
+        @keyframes slideDown { 
+            from { 
+                opacity: 0; 
+                transform: translateY(-10px); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+        }
+        
+        .correct-answer { 
+            margin-bottom: 1rem; 
+        }
+        
+        .correct-answer h4 { 
+            color: var(--success-color); 
+            font-size: 1.125rem; 
+            font-weight: 700; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .correct-answer h5 { 
+            font-size: 1rem; 
+            font-weight: 600; 
+            margin-bottom: 0.5rem; 
+        } 
+        
+        .explanation-content h5 { 
+            color: #374151; 
+            font-size: 1rem; 
+            font-weight: 600; 
+            margin-bottom: 0.75rem; 
+        }
+        
+        .explanation-content p { 
+            color: #4b5563; 
+            line-height: 1.6; 
+            margin-bottom: 1rem; 
+            white-space: pre-wrap; 
+        } 
+        
+        .knowledge-points { 
+            margin-top: 1rem; 
+            padding-top: 1rem; 
+            border-top: 1px solid #e5e7eb; 
+        }
+        
+        .knowledge-points h6 { 
+            color: #374151; 
+            font-size: 0.875rem; 
+            font-weight: 600; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .tag { 
+            display: inline-block; 
+            background: linear-gradient(135deg, #E31937, #FF6B6B); 
+            color: white; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 15px; 
+            font-size: 0.75rem; 
+            font-weight: 500; 
+            margin-right: 0.5rem; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .stats-panel { 
+            background: linear-gradient(135deg, #ffffff, #fdfdff); 
+            border-radius: 1rem; 
+            padding: 1.25rem; 
+            margin-bottom: 1.5rem; 
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05); 
+            border: 1px solid #f1f5f9; 
+        }
+        
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            gap: 1rem; 
+        }
+        
+        .stat-card { 
+            background: #f8fafc; 
+            border-radius: 0.75rem; 
+            padding: 1rem; 
+            text-align: center; 
+            border: 1px solid #eef2f7; 
+            transition: all 0.2s ease; 
+        }
+        
+        .stat-card.clickable { 
+            cursor: pointer; 
+        }
+        
+        .stat-card:hover:not(.clickable) { 
+            transform: none; 
+            box-shadow: none; 
+            border-color: #eef2f7; 
+        }
+        
+        .stat-card.clickable:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07); 
+            border-color: #E31937; 
+        }
+        
+        .stat-number { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #E31937; 
+            margin-bottom: 0.25rem; 
+        }
+        
+        .stat-label { 
+            font-size: 0.75rem; 
+            color: #64748b; 
+            font-weight: 500; 
+        }
+        
+        .mode-selector { 
+            display: flex; 
+            gap: 1rem; 
+            margin-bottom: 2rem; 
+            flex-wrap: wrap; 
+        }
+        
+        .mode-btn { 
+            padding: 0.75rem 1.5rem; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 10px; 
+            background: white; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            font-weight: 500; 
+            color: #374151; 
+        }
+        
+        .mode-btn.active { 
+            border-color: var(--primary-color); 
+            background: linear-gradient(135deg, #fef7f7, #fff5f5); 
+            color: var(--primary-color); 
+        }
+        
+        .mode-btn:hover { 
+            border-color: var(--primary-color); 
+            background: #fef7f7; 
+        }
+        
+        .nav-panel::-webkit-scrollbar, body::-webkit-scrollbar { 
+            width: 6px; 
+        }
+        
+        .nav-panel::-webkit-scrollbar-track, body::-webkit-scrollbar-track { 
+            background: #f1f5f9; 
+            border-radius: 3px; 
+        }
+        
+        .nav-panel::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb { 
+            background: linear-gradient(135deg, #E31937, #FF6B6B); 
+            border-radius: 3px; 
+        }
+        
+        .nav-panel::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover { 
+            background: linear-gradient(135deg, #c41e3a, #E31937); 
+        }
+        
+        #scrollToTopBtn { 
+            position: fixed; 
+            bottom: 30px; 
+            right: 30px; 
+            z-index: 1000; 
+            background-color: #E31937; 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            width: 50px; 
+            height: 50px; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            transition: opacity 0.3s, transform 0.3s; 
+        }
+        
+        #scrollToTopBtn:hover { 
+            background-color: #c41e3a; 
+            transform: scale(1.1); 
+        }
+        
+        /* 键盘快捷键提示 */
+        .keyboard-hints {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .keyboard-hints.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .keyboard-hints h6 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .keyboard-hints div {
+            margin-bottom: 0.25rem;
+        }
+        
+        .keyboard-hints kbd {
+            background: #374151;
+            padding: 0.125rem 0.25rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        @media (max-width: 1024px) {
+            .floating-nav {
+                display: none;
+            }
+            .mobile-nav-toggle {
+                display: flex;
+            }
+            .nav-panel.mobile-open {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                max-width: 420px;
+                height: 100vh;
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                border-radius: 0;
+                z-index: 1000;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .mode-selector {
+                flex-direction: column;
+            }
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .keyboard-hints {
+                display: none;
+            }
+        }
+        
+        #loading-indicator { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(243, 244, 246, 0.98); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 9999; 
+            font-size: 1.25rem; 
+            color: #E31937; 
+            font-weight: 600; 
+            text-align: center; 
+        }
+        
+        #loading-indicator i { 
+            font-size: 2.5rem; 
+            margin-bottom: 1rem; 
+        }
+        
+        main.hidden-initial { 
+            visibility: hidden; 
+        }
+
+        .upload-section-hidden { 
+            display: none; 
+        }
+        
+        #trigger-upload-area { 
+            cursor: pointer; 
+            text-align: center; 
+            color: var(--primary-color); 
+            font-weight: 500; 
+            padding: 2rem; 
+            border: 2px dashed #ccc; 
+            border-radius: 0.5rem; 
+            margin-bottom: 2rem; 
+            transition: all 0.2s ease; 
+        }
+        
+        #trigger-upload-area:hover { 
+            border-color: var(--primary-color); 
+            background-color: #fef7f7; 
+        }
+        
+        #upload-status-main { 
+            text-align: center; 
+            margin-bottom: 1rem; 
+            font-weight: 500; 
+            min-height: 1.5em; 
+        }
+        
+        .footer-upload-trigger { 
+            text-align: center; 
+            padding: 1rem; 
+            font-size: 0.9rem; 
+            color: #666; 
+        }
+        
+        .footer-upload-trigger a { 
+            color: var(--primary-color); 
+            text-decoration: underline; 
+            cursor: pointer; 
+        }
+
+        /* 错误提示样式 */
+        .error-prompt {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px dashed #fca5a5;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .error-prompt h3 {
+            color: #dc2626;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .error-prompt .error-details {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        .error-prompt .error-details ul {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .error-prompt .error-details li {
+            margin-bottom: 0.25rem;
+            color: #374151;
+        }
+
+        /* 加载状态样式 */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 12px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #f3f4f6;
+            border-radius: 50%;
+            border-top-color: #E31937;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 调试信息样式 */
+        .debug-info {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .debug-info h6 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .debug-info pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    
+    <div id="loading-indicator">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>加载中，请稍候...</span>
+    </div>
+
+    <input type="file" id="csv-upload-input" accept=".csv" class="hidden">
+
+    <button id="mobile-nav-toggle" class="mobile-nav-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div id="mobile-overlay" class="mobile-overlay"></div>
+
+    <!-- 键盘快捷键提示 -->
+    <div id="keyboard-hints" class="keyboard-hints">
+        <h6><i class="fas fa-keyboard"></i> 键盘快捷键</h6>
+        <div><kbd>↑</kbd> <kbd>↓</kbd> 上一题/下一题</div>
+        <div><kbd>Enter</kbd> 提交答案</div>
+        <div><kbd>Space</kbd> 显示解析</div>
+        <div><kbd>1-4</kbd> <kbd>A-D</kbd> 选择选项</div>
+        <div><kbd>H</kbd> 显示/隐藏此提示</div>
+    </div>
+
+    <div id="floating-nav" class="floating-nav collapsed">
+        <div id="nav-trigger" class="nav-trigger">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div id="nav-panel" class="nav-panel">
+            <div class="nav-header">
+                <div class="nav-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    题集导航
+                </div>
+                <div class="nav-subtitle">智能练习系统</div>
+            </div>
+
+            <!-- 知识树筛选器 -->
+            <div class="filter-controls">
+                <select id="knowledge-level-filter" class="filter-select">
+                    <option value="">选择知识树层级</option>
+                    <option value="1">一级知识树</option>
+                    <option value="2">二级知识树</option>
+                    <option value="3">三级知识树</option>
+                </select>
+                <select id="knowledge-point-filter" class="filter-select">
+                    <option value="">选择知识点</option>
+                </select>
+                <div class="filter-tags" id="active-filters"></div>
+            </div>
+
+            <div class="nav-content">
+                <div class="nav-section">
+                    <div class="nav-section-title">练习模式</div>
+                    <div id="nav-mode-list">
+                        <a href="#" class="nav-item" data-mode="sequential">
+                            <div class="nav-item-icon">📚</div>
+                            <div class="nav-item-content">
+                                <div class="nav-item-name">顺序练习</div>
+                            </div>
+                        </a>
+                        <a href="#" class="nav-item" data-mode="random">
+                            <div class="nav-item-icon">🎲</div>
+                            <div class="nav-item-content">
+                                <div class="nav-item-name">随机练习</div>
+                            </div>
+                        </a>
+                        <a href="#" class="nav-item" data-mode="wrong">
+                            <div class="nav-item-icon">❌</div>
+                            <div class="nav-item-content">
+                                <div class="nav-item-name">错题重做</div>
+                            </div>
+                        </a>
+                        <a href="#" class="nav-item" data-mode="knowledge">
+                            <div class="nav-item-icon">🧠</div>
+                            <div class="nav-item-content">
+                                <div class="nav-item-name">按知识点练习</div>
+                            </div>
+                        </a>
+                         <a href="#" class="nav-item" data-mode="subject">
+                            <div class="nav-item-icon">🗂️</div>
+                            <div class="nav-item-content">
+                                <div class="nav-item-name">按科目练习</div>
+                            </div>
+                        </a>
+                        <a href="#" class="nav-item" data-mode="type">
+                            <div class="nav-item-icon">📝</div>
+                            <div class="nav-item-content">
+                                <div class="nav-item-name">按题型练习</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">科目分类</div>
+                     <div id="dynamic-subject-list">
+                        <!-- 动态生成科目列表 -->
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">题型分类</div>
+                    <div id="dynamic-type-list">
+                        <!-- 动态生成题型列表 -->
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">
+                        知识树导航
+                        <button id="toggle-analysis" class="knowledge-tree-toggle">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
+                    </div>
+
+                    <!-- 薄弱点分析面板 -->
+                    <div id="weakness-analysis" class="analysis-panel" style="display: none;">
+                        <h6 style="font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">
+                            <i class="fas fa-exclamation-triangle"></i> 薄弱点分析
+                        </h6>
+                        <div id="weakness-list"></div>
+                    </div>
+
+                    <!-- 知识点分布分析 -->
+                    <div id="knowledge-distribution" class="analysis-panel">
+                        <h6 style="font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; color: #374151;">
+                            <i class="fas fa-pie-chart"></i> 知识点分布
+                        </h6>
+                        <div id="distribution-chart"></div>
+                    </div>
+
+                    <div id="dynamic-knowledge-tree">
+                        <!-- 动态生成知识树 -->
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">学习统计</div>
+                    <div class="nav-stats">
+                        <div class="nav-stats-item">
+                            <span class="nav-stats-label">已完成</span>
+                            <span class="nav-stats-value" id="nav-completed">0</span>
+                        </div>
+                        <div class="nav-stats-item">
+                            <span class="nav-stats-label">正确率</span>
+                            <span class="nav-stats-value" id="nav-accuracy">0%</span>
+                        </div>
+                        <div class="nav-stats-item">
+                            <span class="nav-stats-label">总题数</span>
+                            <span class="nav-stats-value" id="nav-total">0</span>
+                        </div>
+                        <div class="nav-overall-progress-bar">
+                            <div class="nav-overall-progress-fill" id="nav-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-controls">
+                        <button class="nav-control-btn nav-control-primary" id="export-wrong-questions">
+                            <i class="fas fa-download"></i>
+                            导出错题
+                        </button>
+                        <button class="nav-control-btn nav-control-secondary" id="nav-review-mode">
+                            <i class="fas fa-redo"></i>
+                            错题重做
+                        </button>
+                    </div>
+                    <div class="nav-controls">
+                        <button class="nav-control-btn nav-control-danger" id="reset-progress-btn" style="flex-basis: 100%;">
+                            <i class="fas fa-undo"></i>
+                            重置进度
+                        </button>
+                    </div>
+                     <div class="nav-controls">
+                        <button class="nav-control-btn nav-control-secondary" id="trigger-upload-from-nav" style="flex-basis: 100%;">
+                            <i class="fas fa-file-upload"></i>
+                            加载/更换题库
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="min-h-screen bg-gray-100">
+        <div class="bg-gradient-to-br from-red-700 via-red-600 to-pink-600 text-white relative overflow-hidden shadow-lg">
+            <div class="absolute inset-0 bg-black opacity-10"></div>
+            <div class="container mx-auto px-6 py-16 md:py-24 relative z-10">
+                <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tight text-center md:text-left">
+                    <span class="gradient-text" style="background: linear-gradient(135deg, #fff7f7, #ffebeb); -webkit-background-clip: text; background-clip: text;">医学知识</span>
+                    <span class="block text-white">极简智能刷题库</span>
+                </h1>
+                <p class="text-lg md:text-xl mb-8 text-red-100 max-w-2xl leading-relaxed text-center md:text-left">
+                    专注、高效、智能。多种练习模式，实时统计学习进度，助您轻松备考。
+                </p>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 md:px-6 -mt-10 md:-mt-12 relative z-20">
+            <div class="stats-panel">
+                <div class="stats-grid">
+                    <div class="stat-card" id="total-questions-card">
+                        <div class="stat-number" id="total-questions">0</div>
+                        <div class="stat-label">总题数</div>
+                    </div>
+                    <div class="stat-card clickable" id="completed-questions-card">
+                        <div class="stat-number" id="completed-questions">0</div>
+                        <div class="stat-label">已完成</div>
+                    </div>
+                    <div class="stat-card clickable" id="correct-questions-card">
+                        <div class="stat-number" id="correct-questions">0</div>
+                        <div class="stat-label">答对题数</div>
+                    </div>
+                    <div class="stat-card" id="accuracy-card">
+                        <div class="stat-number" id="accuracy-rate">0%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                    <div class="stat-card clickable" id="wrong-questions-card">
+                        <div class="stat-number" id="wrong-questions">0</div>
+                        <div class="stat-label">错题数</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main id="main-content-wrapper" class="container mx-auto px-4 md:px-6 py-8 hidden-initial">
+            <div class="max-w-4xl mx-auto">
+                <div id="upload-status-main"></div> 
+
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="sequential">顺序练习</button>
+                    <button class="mode-btn" data-mode="random">随机练习</button>
+                    <button class="mode-btn" data-mode="wrong">错题重做</button>
+                    <button class="mode-btn" data-mode="knowledge">按知识点练习</button>
+                    <button class="mode-btn" data-mode="subject">按科目练习</button>
+                    <button class="mode-btn" data-mode="type">按题型练习</button>
+                </div>
+
+                <div id="question-container">
+                </div>
+
+                <div class="flex justify-between items-center mt-8">
+                    <button id="prev-btn" class="btn btn-secondary" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                        上一题
+                    </button>
+                    <span id="question-counter" class="text-gray-600 font-medium">0 / 0</span>
+                    <button id="next-btn" class="btn btn-primary" disabled>
+                        下一题
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+        <footer class="text-center p-6 text-gray-500 text-sm">
+            <p>© 2024 极简智能刷题库. <span id="footer-upload-trigger-container"></span></p>
+        </footer>
+    </div>
+
+    <button id="scrollToTopBtn" title="回到顶部">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // 初始化空题目数据
+        let questionsData = [];
+        const STORED_QUESTIONS_KEY = 'storedMedicalQuestions';
+        const STORED_FILE_HASH_KEY = 'storedMedicalFileHash';
+
+        // QuizSystem 类
+        class QuizSystem {
+            constructor() {
+                this.questions = []; 
+                this.currentQuestionIndex = 0;
+                this.userAnswers = {}; 
+                this.currentMode = 'sequential';
+                this.filteredQuestions = [];
+                this.knowledgeTreeData = {};
+                this.activeFilters = [];
+                this.statistics = {
+                    total: 0,
+                    completed: 0,
+                    correct: 0,
+                    wrong: 0,
+                    accuracy: 0
+                };
+                
+                this.LOCAL_STORAGE_KEY_PREFIX = 'medicalQuizProg_'; 
+                this.currentFileHash = null; 
+                this.eventsBound = false;
+                this.keyboardHintsVisible = false;
+            }
+
+            initializeQuiz(loadedQuestions, fileHash, fromLocalStorage = false) {
+                console.log('开始初始化题库:', {
+                    questionsCount: loadedQuestions.length,
+                    fileHash: fileHash,
+                    fromLocalStorage: fromLocalStorage
+                });
+
+                this.questions = loadedQuestions;
+                this.userAnswers = {}; 
+                this.currentQuestionIndex = 0;
+                this.currentFileHash = fileHash;
+                
+                if (!fromLocalStorage) { 
+                    localStorage.setItem(STORED_QUESTIONS_KEY, JSON.stringify(loadedQuestions));
+                    localStorage.setItem(STORED_FILE_HASH_KEY, fileHash);
+                }
+
+                this.loadProgress(); 
+                this.buildKnowledgeTree();
+                this.filterQuestions(); // Filter before rendering
+                this.updateStatistics(); // Update stats after loading progress
+                this.renderQuestion();
+                this.updateNavigation();
+                this.bindEventsOnce(); 
+                this.setupKeyboardShortcuts();
+                document.getElementById('upload-status-main').textContent = `题库已加载 (${loadedQuestions.length}题).`;
+                document.getElementById('upload-status-main').className = 'text-green-500 text-center mb-4';
+                this.updateFooterUploadTrigger(true); 
+
+                console.log('题库初始化完成');
+            }
+
+            // 构建知识树数据结构
+            buildKnowledgeTree() {
+                this.knowledgeTreeData = {};
+                
+                this.questions.forEach(q => {
+                    const level1 = q.originalData?.知识树1 || q.subject || '综合';
+                    const level2 = q.originalData?.知识树2 || '';
+                    const level3 = q.originalData?.知识树3 || '';
+                    
+                    if (!this.knowledgeTreeData[level1]) {
+                        this.knowledgeTreeData[level1] = {
+                            name: level1,
+                            questions: [],
+                            children: {},
+                            stats: { total: 0, answered: 0, correct: 0 },
+                            expanded: false
+                        };
+                    }
+                    
+                    this.knowledgeTreeData[level1].questions.push(q);
+                    this.knowledgeTreeData[level1].stats.total++;
+                    
+                    if (level2) {
+                        if (!this.knowledgeTreeData[level1].children[level2]) {
+                            this.knowledgeTreeData[level1].children[level2] = {
+                                name: level2,
+                                questions: [],
+                                children: {},
+                                stats: { total: 0, answered: 0, correct: 0 },
+                                expanded: false
+                            };
+                        }
+                        
+                        this.knowledgeTreeData[level1].children[level2].questions.push(q);
+                        this.knowledgeTreeData[level1].children[level2].stats.total++;
+                        
+                        if (level3) {
+                            if (!this.knowledgeTreeData[level1].children[level2].children[level3]) {
+                                this.knowledgeTreeData[level1].children[level2].children[level3] = {
+                                    name: level3,
+                                    questions: [],
+                                    children: {}, // Level 3 nodes don't have children in this model
+                                    stats: { total: 0, answered: 0, correct: 0 },
+                                    expanded: false // Not really applicable but consistent
+                                };
+                            }
+                            
+                            this.knowledgeTreeData[level1].children[level2].children[level3].questions.push(q);
+                            this.knowledgeTreeData[level1].children[level2].children[level3].stats.total++;
+                        }
+                    }
+                });
+                
+                this.updateKnowledgeTreeStats();
+                this.updateKnowledgePointFilter();
+                this.renderKnowledgeTree();
+                this.renderKnowledgeDistribution();
+            }
+
+            // 渲染知识树
+            renderKnowledgeTree() {
+                const container = document.getElementById('dynamic-knowledge-tree');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                Object.values(this.knowledgeTreeData).sort((a,b) => a.name.localeCompare(b.name)).forEach(level1Node => {
+                    this.renderKnowledgeNode(container, level1Node, 1);
+                });
+            }
+
+            // 渲染知识树节点
+            renderKnowledgeNode(container, node, level) {
+                const progress = node.stats.total > 0 ? Math.round((node.stats.answered / node.stats.total) * 100) : 0;
+                const accuracy = node.stats.answered > 0 ? Math.round((node.stats.correct / node.stats.answered) * 100) : 0;
+                
+                // 计算薄弱程度
+                let weaknessLevel = '';
+                if (node.stats.answered >= 3) { // Only show indicator if enough questions answered
+                    if (accuracy < 40) weaknessLevel = 'high';
+                    else if (accuracy < 60) weaknessLevel = 'medium';
+                    // else if (accuracy < 80) weaknessLevel = 'low'; // Optional: show for "low" weakness too
+                }
+                
+                const hasChildren = Object.keys(node.children).length > 0;
+                const nodeElement = document.createElement('div');
+                
+                const navItem = document.createElement('a');
+                navItem.href = '#';
+                navItem.className = `nav-item knowledge-tree-level-${level}`;
+                navItem.dataset.knowledgeNode = JSON.stringify({
+                    name: node.name,
+                    level: level
+                });
+                
+                navItem.innerHTML = `
+                    <div class="nav-item-icon">
+                        ${hasChildren ? 
+                            `<button class="knowledge-tree-toggle" data-node-name="${node.name.replace(/"/g, '&quot;')}" data-level="${level}">
+                                <i class="fas fa-chevron-${node.expanded ? 'down' : 'right'}"></i>
+                            </button>` : 
+                            level === 1 ? '📚' : level === 2 ? '📖' : '📄'
+                        }
+                    </div>
+                    <div class="nav-item-content">
+                        <div class="nav-item-name">
+                            ${node.name}
+                            ${weaknessLevel ? `<span class="weakness-indicator weakness-${weaknessLevel}">${accuracy}%</span>` : ''}
+                        </div>
+                        <div class="nav-item-progress">
+                            <div class="mini-progress-bar">
+                                <div class="mini-progress-fill" style="width: ${progress}%;"></div>
+                            </div>
+                            <span class="nav-item-count">${node.stats.total}题</span>
+                        </div>
+                    </div>
+                `;
+                
+                nodeElement.appendChild(navItem);
+                
+                // 添加子节点容器
+                if (hasChildren) {
+                    const childrenContainer = document.createElement('div');
+                    childrenContainer.className = `knowledge-tree-children ${node.expanded ? 'expanded' : ''}`;
+                    childrenContainer.id = `children-${node.name.replace(/[^a-zA-Z0-9]/g, '-')}-${level}`; // Ensure valid ID
+                    
+                    Object.values(node.children).sort((a,b) => a.name.localeCompare(b.name)).forEach(childNode => {
+                        this.renderKnowledgeNode(childrenContainer, childNode, level + 1);
+                    });
+                    
+                    nodeElement.appendChild(childrenContainer);
+                }
+                
+                container.appendChild(nodeElement);
+            }
+
+            // 渲染知识点分布图表
+            renderKnowledgeDistribution() {
+                const container = document.getElementById('distribution-chart');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                // 获取一级知识点数据
+                const level1Data = Object.values(this.knowledgeTreeData).map(node => ({
+                    name: node.name,
+                    total: node.stats.total,
+                    answered: node.stats.answered,
+                    correct: node.stats.correct
+                })).sort((a, b) => b.total - a.total); // Sort by total questions descending
+                
+                if (level1Data.length === 0) return;
+
+                const maxTotal = Math.max(...level1Data.map(d => d.total));
+                
+                level1Data.forEach(data => {
+                    const item = document.createElement('div');
+                    item.className = 'distribution-item';
+                    
+                    const percentage = maxTotal > 0 ? (data.total / maxTotal) * 100 : 0;
+                    // const accuracy = data.answered > 0 ? Math.round((data.correct / data.answered) * 100) : 0;
+                    
+                    item.innerHTML = `
+                        <div class="distribution-label" title="${data.name}">${data.name.length > 10 ? data.name.substring(0,10)+'...' : data.name}</div>
+                        <div class="distribution-bar">
+                            <div class="distribution-fill" style="width: ${percentage}%;"></div>
+                        </div>
+                        <div class="distribution-value">${data.total}</div>
+                    `;
+                    
+                    item.onclick = () => {
+                        this.addFilter('1', data.name);
+                        this.closeFloatingNav();
+                    };
+                    
+                    container.appendChild(item);
+                });
+            }
+
+            // 更新知识树统计数据
+            updateKnowledgeTreeStats() {
+                const updateNodeStats = (node) => {
+                    node.stats.answered = 0;
+                    node.stats.correct = 0;
+                    
+                    node.questions.forEach(q => {
+                        if (this.userAnswers[q.id]) {
+                            node.stats.answered++;
+                            if (this.userAnswers[q.id].isCorrect) {
+                                node.stats.correct++;
+                            }
+                        }
+                    });
+                    
+                    Object.values(node.children).forEach(child => {
+                        updateNodeStats(child);
+                    });
+                };
+                
+                Object.values(this.knowledgeTreeData).forEach(node => {
+                    updateNodeStats(node);
+                });
+            }
+
+            // 切换知识树节点展开状态
+            toggleKnowledgeNode(nodeName, level) {
+                const findAndToggleNode = (currentNodes, targetName, currentLevel) => {
+                    for (const key in currentNodes) {
+                        const node = currentNodes[key];
+                        if (node.name === targetName && currentLevel === level) {
+                            node.expanded = !node.expanded;
+                            return true;
+                        }
+                        if (Object.keys(node.children).length > 0) {
+                           if (findAndToggleNode(node.children, targetName, currentLevel + 1)) {
+                               return true;
+                           }
+                        }
+                    }
+                    return false;
+                };
+                
+                findAndToggleNode(this.knowledgeTreeData, nodeName, 1);
+                this.renderKnowledgeTree();
+            }
+
+            // 更新知识点筛选器
+            updateKnowledgePointFilter() {
+                const levelFilter = document.getElementById('knowledge-level-filter');
+                const pointFilter = document.getElementById('knowledge-point-filter');
+                
+                if (!levelFilter || !pointFilter) return;
+                
+                const selectedLevel = levelFilter.value;
+                pointFilter.innerHTML = '<option value="">选择知识点</option>';
+                
+                if (!selectedLevel) return;
+                
+                const getNodesAtLevel = (level) => {
+                    const nodes = [];
+                    
+                    if (level === '1') {
+                        return Object.values(this.knowledgeTreeData).map(n => n.name);
+                    } else if (level === '2') {
+                        Object.values(this.knowledgeTreeData).forEach(node => {
+                            nodes.push(...Object.values(node.children).map(n => n.name));
+                        });
+                    } else if (level === '3') {
+                        Object.values(this.knowledgeTreeData).forEach(node => {
+                            Object.values(node.children).forEach(child => {
+                                nodes.push(...Object.values(child.children).map(n => n.name));
+                            });
+                        });
+                    }
+                    
+                    return [...new Set(nodes)].filter(Boolean).sort((a,b) => a.localeCompare(b));
+                };
+                
+                const points = getNodesAtLevel(selectedLevel);
+                points.forEach(point => {
+                    const option = document.createElement('option');
+                    option.value = point;
+                    option.textContent = point;
+                    pointFilter.appendChild(option);
+                });
+            }
+
+            // 添加筛选器
+            addFilter(level, point) {
+                const filterId = `${level}-${point}`;
+                if (this.activeFilters.find(f => f.id === filterId)) return;
+                
+                this.activeFilters.push({ id: filterId, level, point });
+                this.updateFilterTags();
+                this.switchMode('knowledge'); // Switch to knowledge mode when filter is added
+            }
+
+            // 移除筛选器
+            removeFilter(filterId) {
+                this.activeFilters = this.activeFilters.filter(f => f.id !== filterId);
+                this.updateFilterTags();
+                if (this.activeFilters.length === 0 && this.currentMode === 'knowledge') {
+                    this.switchMode('sequential'); // Or some default mode
+                } else {
+                    this.filterQuestions();
+                    this.currentQuestionIndex = 0;
+                    this.renderQuestion();
+                    this.updateNavigation();
+                }
+            }
+
+            // 更新筛选标签显示
+            updateFilterTags() {
+                const container = document.getElementById('active-filters');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                this.activeFilters.forEach(filter => {
+                    const tag = document.createElement('div');
+                    tag.className = 'filter-tag';
+                    tag.innerHTML = `${filter.point} <i class="fas fa-times ml-1"></i>`;
+                    tag.onclick = () => this.removeFilter(filter.id);
+                    container.appendChild(tag);
+                });
+            }
+
+            // 分析薄弱点
+            analyzeWeaknesses() {
+                const weaknesses = [];
+                
+                const analyzeNode = (node, path = []) => {
+                    if (node.stats.answered > 0) {
+                        const accuracy = (node.stats.correct / node.stats.answered) * 100;
+                        const fullPath = [...path, node.name].join(' > ');
+                        
+                        if (accuracy < 60 && node.stats.answered >= 3) { // Thresholds for weakness
+                            weaknesses.push({
+                                path: fullPath,
+                                accuracy: accuracy,
+                                answered: node.stats.answered,
+                                total: node.stats.total,
+                                level: accuracy < 40 ? 'high' : 'medium' // Simplified to high/medium
+                            });
+                        }
+                    }
+                    
+                    Object.values(node.children).forEach(child => {
+                        analyzeNode(child, [...path, node.name]);
+                    });
+                };
+                
+                Object.values(this.knowledgeTreeData).forEach(node => {
+                    analyzeNode(node);
+                });
+                
+                return weaknesses.sort((a, b) => a.accuracy - b.accuracy); // Sort by lowest accuracy first
+            }
+
+            // 更新薄弱点分析显示
+            updateWeaknessAnalysis() {
+                const container = document.getElementById('weakness-list');
+                if (!container) return;
+                
+                const weaknesses = this.analyzeWeaknesses();
+                
+                if (weaknesses.length === 0) {
+                    container.innerHTML = '<div style="font-size: 0.7rem; color: #10b981;">暂无明显薄弱点</div>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                weaknesses.slice(0, 5).forEach(weakness => { // Show top 5 weaknesses
+                    const item = document.createElement('div');
+                    item.style.cssText = 'margin-bottom: 0.5rem; font-size: 0.7rem; cursor: pointer;';
+                    item.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="flex: 1; margin-right: 0.5rem;" title="${weakness.path}">${weakness.path.length > 35 ? weakness.path.substring(0,35)+'...' : weakness.path}</span>
+                            <span class="weakness-indicator weakness-${weakness.level}">
+                                ${Math.round(weakness.accuracy)}%
+                            </span>
+                        </div>
+                    `;
+                    
+                    item.onclick = () => {
+                        const pathParts = weakness.path.split(' > ');
+                        this.activeFilters = []; // Clear existing filters for focused practice
+                        pathParts.forEach((part, index) => {
+                            this.addFilter((index + 1).toString(), part);
+                        });
+                        this.closeFloatingNav();
+                    };
+                    
+                    container.appendChild(item);
+                });
+            }
+            
+            bindEventsOnce() {
+                if (this.eventsBound) return;
+                this.bindEvents();
+                this.eventsBound = true;
+            }
+
+            bindEvents() {
+                // Main mode buttons
+                document.querySelectorAll('.mode-selector .mode-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if (!this.questions.length) {
+                            alert('请先加载题库！');
+                            document.getElementById('csv-upload-input').click();
+                            return;
+                        }
+                        this.switchMode(e.target.dataset.mode);
+                    });
+                });
+
+                // Nav panel mode buttons
+                document.querySelectorAll('#nav-mode-list .nav-item').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const mode = e.currentTarget.dataset.mode;
+                        if (!this.questions.length && mode !== 'upload') { // Allow upload even without questions
+                            alert('请先加载题库！');
+                            document.getElementById('csv-upload-input').click();
+                            this.closeFloatingNav();
+                            return;
+                        }
+                        this.switchMode(mode);
+                        this.closeFloatingNav();
+                    });
+                });
+
+                // Knowledge tree filter events
+                const levelFilter = document.getElementById('knowledge-level-filter');
+                const pointFilter = document.getElementById('knowledge-point-filter');
+                
+                if (levelFilter) {
+                    levelFilter.addEventListener('change', () => {
+                        this.updateKnowledgePointFilter();
+                    });
+                }
+                
+                if (pointFilter) {
+                    pointFilter.addEventListener('change', () => {
+                        const level = levelFilter.value;
+                        const point = pointFilter.value;
+                        if (level && point) {
+                            this.addFilter(level, point);
+                            pointFilter.value = ''; // Reset after selection
+                        }
+                    });
+                }
+
+                // Weakness analysis toggle
+                const toggleAnalysis = document.getElementById('toggle-analysis');
+                const weaknessAnalysis = document.getElementById('weakness-analysis');
+                
+                if (toggleAnalysis && weaknessAnalysis) {
+                    toggleAnalysis.addEventListener('click', () => {
+                        const isVisible = weaknessAnalysis.style.display !== 'none';
+                        weaknessAnalysis.style.display = isVisible ? 'none' : 'block';
+                        if (!isVisible) {
+                            this.updateWeaknessAnalysis();
+                        }
+                    });
+                }
+
+                // Prev/Next buttons
+                document.getElementById('prev-btn').addEventListener('click', () => this.previousQuestion());
+                document.getElementById('next-btn').addEventListener('click', () => this.nextQuestion());
+                
+                // Nav panel control buttons
+                document.getElementById('reset-progress-btn').addEventListener('click', () => this.resetProgress());
+                document.getElementById('trigger-upload-from-nav').addEventListener('click', () => {
+                    document.getElementById('csv-upload-input').click();
+                });
+                document.getElementById('export-wrong-questions').addEventListener('click', () => this.exportWrongQuestions());
+
+                const navReviewBtn = document.getElementById('nav-review-mode');
+                if (navReviewBtn) {
+                     navReviewBtn.addEventListener('click', () => {
+                         if (!this.questions.length) {
+                            alert('请先加载题库！');
+                            document.getElementById('csv-upload-input').click();
+                            this.closeFloatingNav();
+                            return;
+                        }
+                        this.switchMode('wrong');
+                        this.closeFloatingNav();
+                    });
+                }
+
+                // Clickable stat cards
+                const completedCard = document.getElementById('completed-questions-card');
+                if (completedCard) completedCard.addEventListener('click', () => { this.showCompletedQuestions(); });
+                
+                const correctCard = document.getElementById('correct-questions-card');
+                if (correctCard) correctCard.addEventListener('click', () => { this.showCorrectQuestions(); });
+
+                const wrongCard = document.getElementById('wrong-questions-card');
+                if (wrongCard) wrongCard.addEventListener('click', () => { this.switchMode('wrong'); });
+
+
+                this.bindFloatingNavEvents(); 
+                this.bindMobileNavEvents();
+                this.bindScrollToTopEvents();
+            }
+
+            // 显示已完成的题目
+            showCompletedQuestions() {
+                if (!this.questions.length) { alert('请先加载题库！'); return; }
+                if (this.statistics.completed === 0) { alert('当前没有已完成的题目。'); return; }
+                
+                this.currentMode = 'completed';
+                this.updateModeButtonsUI();
+                this.filterQuestions();
+                this.currentQuestionIndex = 0;
+                this.renderQuestion();
+                this.updateNavigation();
+            }
+
+            // 显示答对的题目
+            showCorrectQuestions() {
+                if (!this.questions.length) { alert('请先加载题库！'); return; }
+                if (this.statistics.correct === 0) { alert('当前没有答对的题目。'); return; }
+
+                this.currentMode = 'correct';
+                this.updateModeButtonsUI();
+                this.filterQuestions();
+                this.currentQuestionIndex = 0;
+                this.renderQuestion();
+                this.updateNavigation();
+            }
+
+            updateModeButtonsUI() {
+                 // Update main mode buttons
+                document.querySelectorAll('.mode-selector .mode-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.mode === this.currentMode);
+                });
+                // Update nav panel mode buttons
+                document.querySelectorAll('#nav-mode-list .nav-item').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.mode === this.currentMode);
+                });
+            }
+
+
+            // 设置键盘快捷键
+            setupKeyboardShortcuts() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                        return;
+                    }
+
+                    switch(e.key.toUpperCase()) { // Use toUpperCase for A-D keys
+                        case 'ARROWUP':
+                            e.preventDefault();
+                            this.previousQuestion();
+                            break;
+                        case 'ARROWDOWN':
+                            e.preventDefault();
+                            this.nextQuestion();
+                            break;
+                        case 'ENTER':
+                            e.preventDefault();
+                            this.submitCurrentAnswer();
+                            break;
+                        case ' ': // Spacebar
+                            e.preventDefault();
+                            this.showCurrentExplanation();
+                            break;
+                        case '1': this.selectOption(0); break;
+                        case '2': this.selectOption(1); break;
+                        case '3': this.selectOption(2); break;
+                        case '4': this.selectOption(3); break;
+                        case 'A': this.selectOptionByKey('A'); break;
+                        case 'B': this.selectOptionByKey('B'); break;
+                        case 'C': this.selectOptionByKey('C'); break;
+                        case 'D': this.selectOptionByKey('D'); break;
+                        case 'E': this.selectOptionByKey('E'); break; // For X type with more options
+                        case 'F': this.selectOptionByKey('F'); break;
+                        case 'G': this.selectOptionByKey('G'); break;
+                        case 'H':
+                            e.preventDefault();
+                            this.toggleKeyboardHints();
+                            break;
+                    }
+                });
+
+                setTimeout(() => {
+                    this.showKeyboardHints();
+                }, 2000);
+            }
+
+            // 选择选项（通过索引）
+            selectOption(index) {
+                const currentQuestionCard = document.querySelector(`.question-card[data-question-id="${this.filteredQuestions[this.currentQuestionIndex]?.id}"]`);
+                if (!currentQuestionCard) return;
+
+                const options = currentQuestionCard.querySelectorAll('.option input');
+                if (options[index] && !options[index].disabled) {
+                    if (options[index].type === 'radio') {
+                        options[index].checked = true;
+                    } else {
+                        options[index].checked = !options[index].checked;
+                    }
+                    options[index].dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+
+            // 选择选项（通过键值）
+            selectOptionByKey(key) {
+                const currentQuestionCard = document.querySelector(`.question-card[data-question-id="${this.filteredQuestions[this.currentQuestionIndex]?.id}"]`);
+                if (!currentQuestionCard) return;
+
+                const option = currentQuestionCard.querySelector(`.option input[value="${key}"]`);
+                if (option && !option.disabled) {
+                    if (option.type === 'radio') {
+                        option.checked = true;
+                    } else {
+                        option.checked = !option.checked;
+                    }
+                    option.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+
+            // 提交当前答案
+            submitCurrentAnswer() {
+                const currentQuestionCard = document.querySelector(`.question-card[data-question-id="${this.filteredQuestions[this.currentQuestionIndex]?.id}"]`);
+                if (!currentQuestionCard) return;
+                const submitBtn = currentQuestionCard.querySelector('#submit-answer');
+                if (submitBtn && !submitBtn.disabled) {
+                    submitBtn.click();
+                }
+            }
+
+            // 显示当前题目解析
+            showCurrentExplanation() {
+                const currentQuestionCard = document.querySelector(`.question-card[data-question-id="${this.filteredQuestions[this.currentQuestionIndex]?.id}"]`);
+                if (!currentQuestionCard) return;
+                const showExplanationBtn = currentQuestionCard.querySelector('#show-explanation');
+                if (showExplanationBtn) {
+                    showExplanationBtn.click();
+                }
+            }
+
+            // 切换键盘提示显示
+            toggleKeyboardHints() {
+                const hints = document.getElementById('keyboard-hints');
+                if (this.keyboardHintsVisible) {
+                    hints.classList.remove('show');
+                    this.keyboardHintsVisible = false;
+                } else {
+                    hints.classList.add('show');
+                    this.keyboardHintsVisible = true;
+                }
+            }
+
+            // 显示键盘提示
+            showKeyboardHints() {
+                const hints = document.getElementById('keyboard-hints');
+                hints.classList.add('show');
+                this.keyboardHintsVisible = true;
+                
+                setTimeout(() => {
+                    hints.classList.remove('show');
+                    this.keyboardHintsVisible = false;
+                }, 3000);
+            }
+
+            // 关闭浮动导航
+            closeFloatingNav() {
+                const floatingNav = document.getElementById('floating-nav');
+                if (floatingNav && floatingNav.classList.contains('expanded')) {
+                    floatingNav.classList.remove('expanded');
+                    floatingNav.classList.add('collapsed');
+                }
+                this.closeMobileNav();
+            }
+
+            // 导出错题功能
+            exportWrongQuestions() {
+                const wrongQuestions = this.questions.filter(q => {
+                    const answer = this.userAnswers[q.id];
+                    return answer && !answer.isCorrect;
+                });
+
+                if (wrongQuestions.length === 0) {
+                    alert('当前没有错题可导出！');
+                    return;
+                }
+
+                const csvContent = this.generateWrongQuestionsCSV(wrongQuestions);
+                
+                const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); // Add BOM for Excel
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `错题集_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                alert(`已导出 ${wrongQuestions.length} 道错题！`);
+            }
+
+            // 生成错题CSV内容
+            generateWrongQuestionsCSV(wrongQuestions) {
+                const headers = ['试卷名称', '年份', '月日', '省', '市', '县/区', '题型标签', '原始题号', '题干', '答案', '你的答案', '解析', '知识树1', '知识树2', '知识树3', '知识树4', '知识树5'];
+                let csvString = headers.map(h => `"${h.replace(/"/g, '""')}"`).join(',') + '\n'; // Quote headers
+
+                wrongQuestions.forEach(q => {
+                    const userAnswer = this.userAnswers[q.id];
+                    
+                    // Reconstruct the original '题干' format for export if options were split
+                    let originalStemWithOptions = q.question;
+                    if (q.type !== 'judge' && q.options.length > 0) {
+                        const optionsString = q.options.map(opt => `\n${opt.key}.${opt.text}`).join('');
+                        originalStemWithOptions += optionsString;
+                    }
+
+                    const rowValues = [
+                        q.originalData?.paperName || '',
+                        q.originalData?.year || '',
+                        q.originalData?.date || '',
+                        q.originalData?.省 || '', // Add these if they exist in originalData
+                        q.originalData?.市 || '',
+                        q.originalData?.['县/区'] || '',
+                        this.getQuestionTypeOriginalLabel(q.type, q.originalData?.题型标签),
+                        q.id,
+                        originalStemWithOptions, // Use reconstructed stem
+                        Array.isArray(q.correctAnswer) ? q.correctAnswer.join('') : q.correctAnswer,
+                        Array.isArray(userAnswer.answer) ? userAnswer.answer.join('') : userAnswer.answer,
+                        q.explanation,
+                        q.originalData?.知识树1 || '',
+                        q.originalData?.知识树2 || '',
+                        q.originalData?.知识树3 || '',
+                        q.originalData?.知识树4 || '',
+                        q.originalData?.知识树5 || ''
+                    ];
+                    
+                    csvString += rowValues.map(val => `"${String(val || '').replace(/"/g, '""')}"`).join(',') + '\n';
+                });
+
+                return csvString;
+            }
+
+            getQuestionTypeOriginalLabel(internalType, originalLabel) {
+                if (originalLabel) return originalLabel; // Prefer original if available
+                if (internalType === 'single') return 'A1'; // Default for single
+                if (internalType === 'multiple') return 'X';
+                if (internalType === 'judge') return 'E';
+                return '';
+            }
+            
+            bindFloatingNavEvents() {
+                const floatingNav = document.getElementById('floating-nav');
+                const navTrigger = document.getElementById('nav-trigger');
+                const navPanel = document.getElementById('nav-panel');
+
+                if (navTrigger && floatingNav) {
+                    navTrigger.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        floatingNav.classList.toggle('expanded');
+                        floatingNav.classList.toggle('collapsed');
+                    });
+                }
+
+                // Close nav panel when clicking outside
+                document.addEventListener('click', (event) => {
+                    if (floatingNav && navPanel && floatingNav.classList.contains('expanded')) {
+                        // Check if the click is outside the navPanel and not on the trigger
+                        if (!navPanel.contains(event.target) && event.target !== navTrigger && !navTrigger.contains(event.target)) {
+                            floatingNav.classList.remove('expanded');
+                            floatingNav.classList.add('collapsed');
+                        }
+                    }
+                });
+                
+                // Knowledge tree toggle event delegation
+                navPanel.addEventListener('click', (e) => {
+                    const toggleBtn = e.target.closest('.knowledge-tree-toggle');
+                    if (toggleBtn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const nodeName = toggleBtn.dataset.nodeName;
+                        const level = parseInt(toggleBtn.dataset.level);
+                        this.toggleKnowledgeNode(nodeName, level);
+                    }
+
+                    const navItem = e.target.closest('.nav-item[data-knowledge-node]');
+                    if (navItem && !e.target.closest('.knowledge-tree-toggle')) {
+                        e.preventDefault();
+                        const nodeData = JSON.parse(navItem.dataset.knowledgeNode);
+                        this.addFilter(nodeData.level.toString(), nodeData.name);
+                        this.closeFloatingNav();
+                    }
+                });
+                
+                // Subject nav event delegation
+                const dynamicSubjectList = document.getElementById('dynamic-subject-list');
+                if (dynamicSubjectList) {
+                    dynamicSubjectList.addEventListener('click', (e) => {
+                        const link = e.target.closest('.nav-item[data-subject-nav]');
+                        if (link) {
+                            e.preventDefault();
+                            if (!this.questions.length) {
+                                alert('请先加载题库！');
+                                this.closeFloatingNav();
+                                document.getElementById('csv-upload-input').click();
+                                return;
+                            }
+                            const subject = link.dataset.subjectNav;
+                            this.jumpToSubject(subject);
+                            this.closeFloatingNav();
+                        }
+                    });
+                }
+
+                // Type nav event delegation
+                const dynamicTypeList = document.getElementById('dynamic-type-list');
+                if (dynamicTypeList) {
+                    dynamicTypeList.addEventListener('click', (e) => {
+                        const link = e.target.closest('.nav-item[data-type-nav]');
+                        if (link) {
+                            e.preventDefault();
+                            if (!this.questions.length) {
+                                alert('请先加载题库！');
+                                this.closeFloatingNav();
+                                document.getElementById('csv-upload-input').click();
+                                return;
+                            }
+                            const type = link.dataset.typeNav;
+                            this.jumpToType(type);
+                            this.closeFloatingNav();
+                        }
+                    });
+                }
+            }
+
+             bindMobileNavEvents() {
+                const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+                const navPanel = document.getElementById('nav-panel');
+                const mobileOverlay = document.getElementById('mobile-overlay');
+
+                if (mobileNavToggle && navPanel && mobileOverlay) {
+                    mobileNavToggle.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        navPanel.classList.toggle('mobile-open');
+                        mobileOverlay.style.display = navPanel.classList.contains('mobile-open') ? 'block' : 'none';
+                        const icon = mobileNavToggle.querySelector('i');
+                        icon.className = navPanel.classList.contains('mobile-open') ? 'fas fa-times' : 'fas fa-bars';
+                    });
+
+                    mobileOverlay.addEventListener('click', () => {
+                        this.closeMobileNav();
+                    });
+                }
+            }
+
+            closeMobileNav() {
+                const navPanel = document.getElementById('nav-panel');
+                const mobileOverlay = document.getElementById('mobile-overlay');
+                const mobileNavToggle = document.getElementById('mobile-nav-toggle');
+                if (navPanel) navPanel.classList.remove('mobile-open');
+                if (mobileOverlay) mobileOverlay.style.display = 'none';
+                if (mobileNavToggle) mobileNavToggle.querySelector('i').className = 'fas fa-bars';
+            }
+
+            bindScrollToTopEvents() {
+                const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+                if (!scrollToTopBtn) return;
+                window.addEventListener('scroll', () => {
+                    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                        scrollToTopBtn.style.display = "flex";
+                    } else {
+                        scrollToTopBtn.style.display = "none";
+                    }
+                });
+                scrollToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                });
+            }
+
+            switchMode(mode) {
+                this.currentMode = mode;
+                this.updateModeButtonsUI(); // Centralized UI update for mode buttons
+                
+                this.filterQuestions();
+                this.currentQuestionIndex = 0;
+                this.renderQuestion();
+                this.updateNavigation();
+            }
+
+            filterQuestions() {
+                let filtered = [...this.questions];
+                
+                // Apply knowledge tree filters first if in 'knowledge' mode or if any filters are active
+                if (this.currentMode === 'knowledge' || this.activeFilters.length > 0) {
+                    if (this.activeFilters.length > 0) {
+                         filtered = filtered.filter(q => {
+                            return this.activeFilters.some(filter => {
+                                const level1 = q.originalData?.知识树1 || q.subject || '综合';
+                                const level2 = q.originalData?.知识树2 || '';
+                                const level3 = q.originalData?.知识树3 || '';
+                                
+                                if (filter.level === '1') return level1 === filter.point;
+                                if (filter.level === '2') return level2 === filter.point;
+                                if (filter.level === '3') return level3 === filter.point;
+                                return false;
+                            });
+                        });
+                    } else if (this.currentMode === 'knowledge') {
+                         // If in knowledge mode but no filter selected, show no questions or a prompt
+                        filtered = []; 
+                    }
+                }
+                
+                // Then, apply mode-specific filtering on the (potentially already filtered) list
+                switch (this.currentMode) {
+                    case 'random':
+                        filtered = filtered.filter(q => !this.userAnswers[q.id]);
+                        filtered = filtered.sort(() => Math.random() - 0.5);
+                        break;
+                    case 'sequential':
+                        filtered = filtered.filter(q => !this.userAnswers[q.id]);
+                        break;
+                    case 'wrong':
+                        filtered = this.questions.filter(q => { // Filter from original questions for wrong mode
+                            const answer = this.userAnswers[q.id];
+                            return answer && !answer.isCorrect;
+                        });
+                        if (filtered.length === 0 && this.questions.length > 0) { 
+                           // Alert moved to renderQuestion for better UX
+                        }
+                        break;
+                    case 'completed':
+                        filtered = this.questions.filter(q => this.userAnswers[q.id]); // Filter from original
+                        break;
+                    case 'correct':
+                         filtered = this.questions.filter(q => { // Filter from original
+                            const answer = this.userAnswers[q.id];
+                            return answer && answer.isCorrect;
+                        });
+                        break;
+                    case 'knowledge':
+                        // Already handled above. If no activeFilters, filtered will be empty.
+                        // If activeFilters exist, filtered will be based on them.
+                        // Then, filter out answered questions for practice.
+                        filtered = filtered.filter(q => !this.userAnswers[q.id]);
+                        break;
+                    case 'subject':
+                        const activeSubjectLink = document.querySelector('#dynamic-subject-list .nav-item.active[data-subject-nav]');
+                        if (activeSubjectLink) {
+                            const subjectName = activeSubjectLink.dataset.subjectNav;
+                            filtered = this.questions.filter(q => (q.subject || '综合') === subjectName);
+                        } else {
+                             // If no subject explicitly selected via nav, could show all or a prompt.
+                             // For now, assume it's handled by switchMode if called from nav.
+                        }
+                        filtered = filtered.filter(q => !this.userAnswers[q.id]); // Practice un-answered in subject
+                        break;
+                    case 'type':
+                        const activeTypeLink = document.querySelector('#dynamic-type-list .nav-item.active[data-type-nav]');
+                        if (activeTypeLink) {
+                            const typeName = activeTypeLink.dataset.typeNav;
+                            filtered = this.questions.filter(q => q.type === typeName);
+                        }
+                        filtered = filtered.filter(q => !this.userAnswers[q.id]); // Practice un-answered in type
+                        break;
+                }
+                
+                this.filteredQuestions = filtered;
+                
+                // Fallback if filtered list is empty but shouldn't be (e.g. not wrong mode and all questions answered)
+                if (this.filteredQuestions.length === 0 && 
+                    this.questions.length > 0 && 
+                    (this.currentMode === 'sequential' || this.currentMode === 'random' || this.currentMode === 'knowledge' || this.currentMode === 'subject' || this.currentMode === 'type' ) &&
+                    this.questions.every(q => this.userAnswers[q.id])) {
+                    // All questions are answered in this mode/filter, so allow review
+                    // This part needs careful consideration: what to show if all done?
+                    // For now, let renderQuestion handle the empty message.
+                }
+            }
+
+            jumpToSubject(subjectName) {
+                this.currentMode = 'subject'; 
+                this.updateModeButtonsUI();
+
+                document.querySelectorAll('#dynamic-subject-list .nav-item[data-subject-nav]').forEach(item => item.classList.remove('active'));
+                const navLink = document.querySelector(`#dynamic-subject-list .nav-item[data-subject-nav="${subjectName}"]`);
+                if (navLink) navLink.classList.add('active');
+
+                this.activeFilters = []; // Clear knowledge tree filters when switching to subject mode
+                this.updateFilterTags();
+
+                this.filterQuestions(); // filterQuestions will use currentMode 'subject'
+                this.currentQuestionIndex = 0;
+                
+                if (this.filteredQuestions.length === 0 && this.questions.length > 0) {
+                    // Message handled in renderQuestion
+                }
+                this.renderQuestion();
+                this.updateNavigation();
+            }
+
+            jumpToType(typeName) {
+                this.currentMode = 'type'; 
+                this.updateModeButtonsUI();
+
+                document.querySelectorAll('#dynamic-type-list .nav-item[data-type-nav]').forEach(item => item.classList.remove('active'));
+                const navLink = document.querySelector(`#dynamic-type-list .nav-item[data-type-nav="${typeName}"]`);
+                if (navLink) navLink.classList.add('active');
+                
+                this.activeFilters = []; // Clear knowledge tree filters
+                this.updateFilterTags();
+
+                this.filterQuestions(); // filterQuestions will use currentMode 'type'
+                this.currentQuestionIndex = 0;
+
+                if (this.filteredQuestions.length === 0 && this.questions.length > 0) {
+                    // Message handled in renderQuestion
+                }
+                this.renderQuestion();
+                this.updateNavigation();
+            }
+
+            renderQuestion() {
+                const container = document.getElementById('question-container');
+                if (!this.filteredQuestions || this.filteredQuestions.length === 0) {
+                    let message = '请先加载题库开始练习。';
+                    if (this.questions.length > 0) { 
+                         message = '当前模式/筛选条件下没有题目。';
+                         if (this.currentMode === 'wrong') message = '太棒了！当前没有错题。';
+                         else if (this.currentMode === 'knowledge' && this.activeFilters.length === 0) message = '请先从左侧导航选择知识点进行练习。';
+                         else if (this.currentMode === 'knowledge' && this.activeFilters.length > 0) message = '该知识点下已无未练习题目，或已全部完成。';
+                         else if (this.currentMode === 'completed') message = '当前没有已完成的题目。';
+                         else if (this.currentMode === 'correct') message = '当前没有答对的题目。';
+                         else if (this.currentMode === 'subject' || this.currentMode === 'type') message = '该分类下已无未练习题目，或已全部完成。';
+                         else if (this.currentMode === 'sequential' || this.currentMode === 'random') {
+                             if (this.questions.every(q => this.userAnswers[q.id])) {
+                                message = '恭喜！所有题目都已完成。可以尝试错题重做或重置进度。';
+                             } else {
+                                message = '当前模式下已无未练习题目。';
+                             }
+                         }
+                    }
+                    container.innerHTML = `
+                        <div id="trigger-upload-area" class="text-center text-gray-500 p-8 border-2 border-dashed border-gray-300 rounded-lg">
+                            <i class="fas ${this.questions.length ? 'fa-book-reader' : 'fa-book-open'} fa-3x text-gray-400 mb-4"></i>
+                            <p>${message}</p>
+                            ${!this.questions.length ? '<p class="mt-2 text-sm">点击此处或通过导航栏/页脚链接上传您的CSV题库文件。</p>' : ''}
+                        </div>`;
+                    
+                    if (!this.questions.length) {
+                        const triggerUpload = document.getElementById('trigger-upload-area');
+                        if(triggerUpload) {
+                            triggerUpload.onclick = () => document.getElementById('csv-upload-input').click();
+                        }
+                    }
+
+                    this.updateQuestionCounter(); 
+                    this.updateNavigation(); 
+                    return;
+                }
+                const question = this.filteredQuestions[this.currentQuestionIndex];
+                 if (!question) { 
+                    container.innerHTML = '<div class="text-center text-gray-500">题目加载错误。</div>';
+                    return;
+                }
+
+                const userAnswer = this.userAnswers[question.id];
+                // In 'wrong', 'completed', 'correct' modes, we are reviewing, so isAnsweredForDisplay is true.
+                // For other modes, it's true if an answer exists.
+                let isAnsweredForDisplay = !!userAnswer; 
+                let allowReanswer = (this.currentMode === 'wrong' || this.currentMode === 'completed' || this.currentMode === 'correct');
+
+                let optionsHtml = '';
+                if (question.type === 'judge') {
+                     optionsHtml = question.options.map(option => `
+                        <label class="option ${this.getOptionClass(option.key, question, userAnswer, isAnsweredForDisplay, allowReanswer)}" 
+                               data-value="${option.key}">
+                            <input type="radio" name="option-${question.id}" value="${option.key}" 
+                                   ${userAnswer && userAnswer.answer === option.key ? 'checked' : ''} 
+                                   ${(isAnsweredForDisplay && !allowReanswer) ? 'disabled' : ''}>
+                            <span class="option-label">${option.key}</span>
+                            <span class="option-text">${option.text}</span>
+                        </label>
+                    `).join('');
+                } else if (question.type === 'multiple') {
+                    optionsHtml = question.options.map(option => `
+                        <label class="option ${this.getOptionClass(option.key, question, userAnswer, isAnsweredForDisplay, allowReanswer)}" 
+                               data-value="${option.key}">
+                            <input type="checkbox" name="option-${question.id}-${option.key}" value="${option.key}"
+                                   ${userAnswer && userAnswer.answer && Array.isArray(userAnswer.answer) && userAnswer.answer.includes(option.key) ? 'checked' : ''}
+                                   ${(isAnsweredForDisplay && !allowReanswer) ? 'disabled' : ''}>
+                            <span class="option-label">${option.key}</span>
+                            <span class="option-text">${option.text}</span>
+                        </label>
+                    `).join('');
+                } else { // single
+                    optionsHtml = question.options.map(option => `
+                        <label class="option ${this.getOptionClass(option.key, question, userAnswer, isAnsweredForDisplay, allowReanswer)}" 
+                               data-value="${option.key}">
+                            <input type="radio" name="option-${question.id}" value="${option.key}"
+                                   ${userAnswer && userAnswer.answer === option.key ? 'checked' : ''}
+                                   ${(isAnsweredForDisplay && !allowReanswer) ? 'disabled' : ''}>
+                            <span class="option-label">${option.key}</span>
+                            <span class="option-text">${option.text}</span>
+                        </label>
+                    `).join('');
+                }
+
+                container.innerHTML = `
+                    <div class="question-card" data-question-id="${question.id}">
+                        <div class="question-header">
+                            <span class="question-type-badge">${this.getQuestionTypeText(question.type)}</span>
+                            <span class="question-number">第 ${this.currentQuestionIndex + 1} 题 (ID: ${question.id})</span>
+                        </div>
+                        
+                        <div class="question-content">
+                            <p class="question-text">${question.question}</p>
+                            <div class="options-container">${optionsHtml}</div>
+                        </div>
+                        
+                        <div class="question-actions">
+                            ${ (!isAnsweredForDisplay || allowReanswer) ? `
+                                <button class="btn btn-primary" id="submit-answer">
+                                    <i class="fas fa-check"></i> 提交答案
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-secondary" id="show-explanation">
+                                <i class="fas fa-lightbulb"></i> 查看解析
+                            </button>
+                        </div>
+                        
+                        <div class="answer-explanation" id="explanation-${question.id}" style="${(isAnsweredForDisplay && !allowReanswer) ? 'display:block;' : 'display:none;'}">
+                            <div class="correct-answer">
+                                <h4>正确答案：${Array.isArray(question.correctAnswer) ? question.correctAnswer.join('') : question.correctAnswer}</h4>
+                                ${userAnswer && userAnswer.answer !== undefined ? `<h5>你的答案：${Array.isArray(userAnswer.answer) ? userAnswer.answer.join('') : userAnswer.answer} ${userAnswer.isCorrect ? "<span class='text-green-500 font-semibold'> (正确)</span>" : "<span class='text-red-500 font-semibold'> (错误)</span>"}</h5>` : ''}
+                            </div>
+                            <div class="explanation-content">
+                                <h5>解析：</h5>
+                                <p>${question.explanation}</p>
+                            </div>
+                            <div class="knowledge-points">
+                                <h6>相关考点：</h6>
+                                ${question.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                this.bindQuestionEvents(question);
+                this.updateQuestionCounter();
+
+                // If reviewing an already answered question (and not in a re-answer mode), show explanation and style options.
+                if (isAnsweredForDisplay && !allowReanswer) {
+                    this.showExplanation(question.id, true); // silent = true to avoid animation
+                    this.styleAnsweredOptions(question, userAnswer, false); // isReanswering = false
+                } else if (allowReanswer && isAnsweredForDisplay) {
+                     // In re-answer modes, pre-fill if an answer exists but don't style correct/wrong yet.
+                     // This is mostly handled by the 'checked' attribute in the HTML generation.
+                     // We might need to re-apply 'selected' class based on pre-filled inputs.
+                     const questionCard = document.querySelector(`.question-card[data-question-id="${question.id}"]`);
+                     if (questionCard) {
+                         questionCard.querySelectorAll('.option input:checked').forEach(inputEl => {
+                            inputEl.closest('.option').classList.add('selected');
+                         });
+                     }
+                     this.showExplanation(question.id, true); // Show explanation directly in review modes
+                     this.styleAnsweredOptions(question, userAnswer, true); // isReanswering = true
+                }
+            }
+            
+            bindQuestionEvents(question) {
+                const questionCard = document.querySelector(`.question-card[data-question-id="${question.id}"]`);
+                if (!questionCard) return;
+                
+                const isAnswered = !!this.userAnswers[question.id];
+                const allowReanswer = (this.currentMode === 'wrong' || this.currentMode === 'completed' || this.currentMode === 'correct');
+
+                questionCard.querySelectorAll('.option input').forEach(inputEl => {
+                    // If already answered and not in a re-answer mode, disable inputs
+                    if (isAnswered && !allowReanswer) {
+                        inputEl.disabled = true;
+                    }
+
+                    inputEl.addEventListener('change', () => {
+                        // If already answered and not in re-answer mode, do nothing on change
+                        if (isAnswered && !allowReanswer) return;
+
+                        // Clear previous correct/wrong styling if re-answering
+                        if (allowReanswer) {
+                            questionCard.querySelectorAll('.option').forEach(opt => {
+                                opt.classList.remove('correct', 'wrong', 'selected');
+                                // opt.querySelector('input').disabled = false; // Ensure inputs are enabled for re-answer
+                            });
+                        }
+
+                        if (question.type !== 'multiple') { 
+                            questionCard.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                            inputEl.closest('.option').classList.add('selected');
+                        } else { 
+                            inputEl.closest('.option').classList.toggle('selected', inputEl.checked);
+                        }
+                        
+                        const submitBtn = questionCard.querySelector('#submit-answer');
+                        if (submitBtn) {
+                            const anySelected = !!questionCard.querySelector('.option input:checked');
+                            submitBtn.disabled = !anySelected;
+                        }
+                    });
+                });
+                
+                questionCard.querySelectorAll('.option').forEach(optionLabel => {
+                    optionLabel.addEventListener('click', (e) => {
+                        if (e.target.tagName === 'INPUT' || (isAnswered && !allowReanswer)) return;
+                        
+                        const input = optionLabel.querySelector('input');
+                        if (input && !input.disabled) { // Check if input is not disabled
+                            if (question.type === 'multiple') {
+                                input.checked = !input.checked;
+                            } else {
+                                input.checked = true;
+                            }
+                            input.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    });
+                });
+
+                const submitBtn = questionCard.querySelector('#submit-answer');
+                if (submitBtn) {
+                    // Initial state of submit button
+                    const anySelectedInitially = !!questionCard.querySelector('.option input:checked');
+                    submitBtn.disabled = !anySelectedInitially;
+                    
+                    if (isAnswered && !allowReanswer) { // Hide if already answered and not re-answering
+                        submitBtn.style.display = 'none';
+                    }
+
+                    submitBtn.addEventListener('click', () => {
+                        let selectedAnswer;
+                        if (question.type === 'multiple') {
+                            selectedAnswer = Array.from(questionCard.querySelectorAll('.option input:checked'))
+                                                .map(cb => cb.value)
+                                                .sort(); 
+                        } else {
+                            const selectedRadio = questionCard.querySelector('.option input:checked');
+                            selectedAnswer = selectedRadio ? selectedRadio.value : null;
+                        }
+
+                        if (selectedAnswer !== null && ( (typeof selectedAnswer === 'string' && selectedAnswer.length > 0) || (Array.isArray(selectedAnswer) && selectedAnswer.length > 0) ) ) {
+                             this.submitAnswer(question, selectedAnswer);
+                        } else {
+                            alert('请选择一个答案！');
+                        }
+                    });
+                }
+
+                const showExplanationBtn = questionCard.querySelector('#show-explanation');
+                if (showExplanationBtn) {
+                    showExplanationBtn.addEventListener('click', () => this.showExplanation(question.id));
+                }
+            }
+
+            submitAnswer(question, selectedAnswer) { 
+                let isCorrect;
+                let correctAnswerNormalized = Array.isArray(question.correctAnswer) ? 
+                                              question.correctAnswer.map(String).sort().join('') : 
+                                              String(question.correctAnswer);
+                let selectedAnswerNormalized = Array.isArray(selectedAnswer) ? 
+                                             selectedAnswer.map(String).sort().join('') : 
+                                             String(selectedAnswer);
+
+                isCorrect = selectedAnswerNormalized === correctAnswerNormalized;
+                
+                // If in 'wrong' mode and answer is now correct, mark it specially or remove from wrong list on next filter
+                // For now, just update the answer
+                this.userAnswers[question.id] = {
+                    answer: selectedAnswer, 
+                    isCorrect: isCorrect,
+                    timestamp: Date.now()
+                };
+                
+                this.styleAnsweredOptions(question, this.userAnswers[question.id], false); // Not re-answering after submit
+
+                const submitBtn = document.querySelector(`.question-card[data-question-id="${question.id}"] #submit-answer`);
+                if (submitBtn) submitBtn.style.display = 'none'; // Hide submit button after submission
+
+                this.showExplanation(question.id);
+                this.updateStatistics();
+                this.saveProgress();
+            }
+            
+            styleAnsweredOptions(question, userAnswer, isReanswering) {
+                const questionCard = document.querySelector(`.question-card[data-question-id="${question.id}"]`);
+                if (!questionCard) return;
+
+                questionCard.querySelectorAll('.option').forEach(optionDiv => {
+                    const inputEl = optionDiv.querySelector('input');
+                    const optionKey = inputEl.value;
+                    
+                    if (!isReanswering) { // Disable inputs only if not in a re-answer scenario
+                        inputEl.disabled = true; 
+                        optionDiv.classList.add('disabled'); 
+                    } else {
+                        inputEl.disabled = false; // Ensure enabled if re-answering
+                        optionDiv.classList.remove('disabled');
+                    }
+
+                    let isSelectedByUser = false;
+                    if (question.type === 'multiple') {
+                        isSelectedByUser = userAnswer.answer && Array.isArray(userAnswer.answer) && userAnswer.answer.includes(optionKey);
+                    } else {
+                        isSelectedByUser = userAnswer.answer === optionKey;
+                    }
+
+                    let isActuallyCorrect = false;
+                     if (question.type === 'multiple') {
+                        isActuallyCorrect = question.correctAnswer && Array.isArray(question.correctAnswer) && question.correctAnswer.includes(optionKey);
+                    } else {
+                        isActuallyCorrect = question.correctAnswer === optionKey;
+                    }
+
+                    // Clear previous styling before applying new ones, important for re-answer
+                    optionDiv.classList.remove('correct', 'wrong', 'selected');
+
+                    if (isActuallyCorrect) {
+                        optionDiv.classList.add('correct');
+                    }
+                    if (isSelectedByUser && !isActuallyCorrect) {
+                        optionDiv.classList.add('wrong');
+                    }
+                    if (isSelectedByUser) { // Always mark what user selected
+                         optionDiv.classList.add('selected');
+                    }
+                });
+            }
+
+            showExplanation(questionId, silent = false) {
+                const explanation = document.getElementById(`explanation-${questionId}`);
+                if (explanation) {
+                    explanation.style.display = 'block'; 
+                    if (!silent) explanation.classList.add('show'); 
+                }
+                const userAnswer = this.userAnswers[questionId];
+                if (userAnswer && explanation) {
+                    const correctAnswerDiv = explanation.querySelector('.correct-answer');
+                    if (correctAnswerDiv) {
+                        let yourAnswerH5 = correctAnswerDiv.querySelector('h5');
+                        if (!yourAnswerH5) {
+                            yourAnswerH5 = document.createElement('h5');
+                            correctAnswerDiv.appendChild(yourAnswerH5);
+                        }
+                        const userAnswerText = Array.isArray(userAnswer.answer) ? userAnswer.answer.join('') : userAnswer.answer;
+                        const correctnessText = userAnswer.isCorrect ? "<span class='text-green-500 font-semibold'> (正确)</span>" : "<span class='text-red-500 font-semibold'> (错误)</span>";
+                        yourAnswerH5.innerHTML = `你的答案：${userAnswerText} ${correctnessText}`;
+                    }
+                }
+            }
+            
+            getOptionClass(optionKey, question, userAnswer, isAnsweredForDisplay, allowReanswer) {
+                let classes = '';
+                // If we are allowing re-answer, don't apply correct/wrong classes until submission
+                if (allowReanswer && isAnsweredForDisplay) {
+                    // For re-answer modes, we might pre-select but not pre-judge
+                    if (question.type === 'multiple') {
+                        if (userAnswer && userAnswer.answer && userAnswer.answer.includes(optionKey)) classes += ' selected';
+                    } else {
+                        if (userAnswer && userAnswer.answer === optionKey) classes += ' selected';
+                    }
+                    return classes;
+                }
+
+                if (!isAnsweredForDisplay || !userAnswer) return classes; 
+
+                let isSelectedByUser = false;
+                if (question.type === 'multiple') {
+                    isSelectedByUser = userAnswer.answer && Array.isArray(userAnswer.answer) && userAnswer.answer.includes(optionKey);
+                } else {
+                    isSelectedByUser = userAnswer.answer === optionKey;
+                }
+
+                let isActuallyCorrect = false;
+                 if (question.type === 'multiple') {
+                    isActuallyCorrect = question.correctAnswer && Array.isArray(question.correctAnswer) && question.correctAnswer.includes(optionKey);
+                } else {
+                    isActuallyCorrect = question.correctAnswer === optionKey;
+                }
+
+                if (isActuallyCorrect) classes += ' correct';
+                if (isSelectedByUser && !isActuallyCorrect) classes += ' wrong';
+                if (isSelectedByUser) classes += ' selected'; // Keep selected style for what user chose
+                if (isAnsweredForDisplay) classes += ' disabled'; 
+                
+                return classes;
+            }
+
+            getQuestionTypeText(type) {
+                // Map internal type to display text
+                const typeMap = { 
+                    'single': '单选题', 
+                    'multiple': '多选题', 
+                    'judge': '判断题'
+                };
+                return typeMap[type] || '未知题型';
+            }
+            
+            previousQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.currentQuestionIndex--;
+                    this.renderQuestion();
+                    this.updateNavigation();
+                }
+            }
+
+            nextQuestion() {
+                if (this.filteredQuestions && this.currentQuestionIndex < this.filteredQuestions.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.renderQuestion();
+                    this.updateNavigation();
+                }
+            }
+
+            updateNavigation() {
+                const prevBtn = document.getElementById('prev-btn');
+                const nextBtn = document.getElementById('next-btn');
+                if (!prevBtn || !nextBtn) return;
+
+                const hasQuestions = this.filteredQuestions && this.filteredQuestions.length > 0;
+                prevBtn.disabled = !hasQuestions || this.currentQuestionIndex === 0;
+                nextBtn.disabled = !hasQuestions || this.currentQuestionIndex === this.filteredQuestions.length - 1;
+            }
+
+            updateQuestionCounter() {
+                const counter = document.getElementById('question-counter');
+                if (counter) {
+                     counter.textContent = (this.filteredQuestions && this.filteredQuestions.length > 0) ?
+                                     `${this.currentQuestionIndex + 1} / ${this.filteredQuestions.length}` :
+                                     '0 / 0';
+                }
+            }
+
+            updateStatistics() {
+                const answeredQuestionIds = Object.keys(this.userAnswers);
+                
+                let completedCount = 0;
+                let correctCount = 0;
+
+                this.questions.forEach(q => {
+                    if (this.userAnswers.hasOwnProperty(q.id)) {
+                        completedCount++;
+                        if (this.userAnswers[q.id].isCorrect) {
+                            correctCount++;
+                        }
+                    }
+                });
+                
+                const wrongCount = completedCount - correctCount;
+                
+                this.statistics = {
+                    total: this.questions.length,
+                    completed: completedCount,
+                    correct: correctCount,
+                    wrong: wrongCount,
+                    accuracy: completedCount > 0 ? Math.round((correctCount / completedCount) * 100) : 0
+                };
+
+                // Update main stats display
+                const totalEl = document.getElementById('total-questions');
+                const completedEl = document.getElementById('completed-questions');
+                const correctEl = document.getElementById('correct-questions');
+                const wrongEl = document.getElementById('wrong-questions');
+                const accuracyEl = document.getElementById('accuracy-rate');
+
+                if(totalEl) totalEl.textContent = this.statistics.total;
+                if(completedEl) completedEl.textContent = this.statistics.completed;
+                if(correctEl) correctEl.textContent = this.statistics.correct;
+                if(wrongEl) wrongEl.textContent = this.statistics.wrong;
+                if(accuracyEl) accuracyEl.textContent = this.statistics.accuracy + '%';
+
+                // Update nav panel stats
+                const navCompletedEl = document.getElementById('nav-completed');
+                const navAccuracyEl = document.getElementById('nav-accuracy');
+                const navTotalEl = document.getElementById('nav-total');
+                const navProgressFill = document.getElementById('nav-progress');
+
+                if(navCompletedEl) navCompletedEl.textContent = this.statistics.completed;
+                if(navAccuracyEl) navAccuracyEl.textContent = this.statistics.accuracy + '%';
+                if(navTotalEl) navTotalEl.textContent = this.statistics.total;
+                
+                if (navProgressFill) {
+                    const progressPercent = this.statistics.total > 0 ? Math.round((this.statistics.completed / this.statistics.total) * 100) : 0;
+                    navProgressFill.style.width = progressPercent + '%';
+                }
+
+                this.updateSubjectProgressInNav();
+                this.updateTypeProgressInNav();
+                this.updateKnowledgeTreeStats(); // This will internally update node stats
+                this.renderKnowledgeTree();      // Re-render tree with new stats
+                this.renderKnowledgeDistribution();
+            }
+            
+            updateSubjectProgressInNav() {
+                const dynamicSubjectList = document.getElementById('dynamic-subject-list');
+                if (!dynamicSubjectList) return;
+                dynamicSubjectList.innerHTML = ''; 
+
+                const subjectData = {};
+                const subjectIcons = { 
+                    "医学基础知识": "📚", "系统解剖学": "🫀", "生理学": "⚡",
+                    "药理学": "💊", "病理学": "🔬", "临床专业知识": "🩺", "公共卫生知识": "🌍",
+                    "综合": "🧩" // Default/fallback
+                };
+
+                this.questions.forEach(q => {
+                    const subj = q.subject || '综合';
+                    if (!subjectData[subj]) {
+                        subjectData[subj] = { total: 0, answered: 0, correct: 0, icon: subjectIcons[subj] || '📖' }; 
+                    }
+                    subjectData[subj].total++;
+                    if (this.userAnswers[q.id]) {
+                        subjectData[subj].answered++;
+                        if (this.userAnswers[q.id].isCorrect) {
+                            subjectData[subj].correct++;
+                        }
+                    }
+                });
+                
+                const sortedSubjects = Object.keys(subjectData).sort((a,b) => a.localeCompare(b));
+
+                sortedSubjects.forEach(subjectName => {
+                    const data = subjectData[subjectName];
+                    const progress = data.total > 0 ? Math.round((data.answered / data.total) * 100) : 0;
+                    const accuracy = data.answered > 0 ? Math.round((data.correct / data.answered) * 100) : 0;
+                    
+                    let weaknessLevel = '';
+                    if (data.answered >= 3) {
+                        if (accuracy < 40) weaknessLevel = 'high';
+                        else if (accuracy < 60) weaknessLevel = 'medium';
+                    }
+                    
+                    const navItem = document.createElement('a');
+                    navItem.href = `#${subjectName.replace(/\s+/g, '-')}`; 
+                    navItem.className = `nav-item`; // Removed knowledge-tree-level-1, subjects are distinct
+                    navItem.dataset.subjectNav = subjectName;
+                    navItem.innerHTML = `
+                        <div class="nav-item-icon">${data.icon}</div>
+                        <div class="nav-item-content">
+                            <div class="nav-item-name">
+                                ${subjectName}
+                                ${weaknessLevel ? `<span class="weakness-indicator weakness-${weaknessLevel}">${accuracy}%</span>` : ''}
+                            </div>
+                            <div class="nav-item-progress">
+                                <div class="mini-progress-bar"><div class="mini-progress-fill" style="width: ${progress}%;"></div></div>
+                                <span class="nav-item-count">${data.total}题</span>
+                            </div>
+                        </div>`;
+                    dynamicSubjectList.appendChild(navItem);
+                });
+            }
+
+            updateTypeProgressInNav() {
+                const dynamicTypeList = document.getElementById('dynamic-type-list');
+                if (!dynamicTypeList) return;
+                dynamicTypeList.innerHTML = ''; 
+
+                const typeData = {};
+                 const typeIcons = { 
+                    "single": "1️⃣",   // A1, A2, A3, A4, A3/A4
+                    "multiple": "🔢", // X
+                    "judge": "⚖️"     // E
+                };
+
+                this.questions.forEach(q => {
+                    const type = q.type; // internal type: single, multiple, judge
+                    if (!typeData[type]) {
+                        typeData[type] = { total: 0, answered: 0, correct: 0, icon: typeIcons[type] || '❓' }; 
+                    }
+                    typeData[type].total++;
+                    if (this.userAnswers[q.id]) {
+                        typeData[type].answered++;
+                        if (this.userAnswers[q.id].isCorrect) {
+                            typeData[type].correct++;
+                        }
+                    }
+                });
+                
+                const sortedTypes = Object.keys(typeData).sort((a,b) => a.localeCompare(b));
+
+                sortedTypes.forEach(typeName => { // typeName is 'single', 'multiple', 'judge'
+                    const data = typeData[typeName];
+                    const progress = data.total > 0 ? Math.round((data.answered / data.total) * 100) : 0;
+                    const accuracy = data.answered > 0 ? Math.round((data.correct / data.answered) * 100) : 0;
+                    
+                    let weaknessLevel = '';
+                    if (data.answered >= 3) {
+                        if (accuracy < 40) weaknessLevel = 'high';
+                        else if (accuracy < 60) weaknessLevel = 'medium';
+                    }
+                    
+                    const navItem = document.createElement('a');
+                    navItem.href = `#${typeName}`; 
+                    navItem.className = 'nav-item';
+                    navItem.dataset.typeNav = typeName; // Use internal type for dataset
+                    navItem.innerHTML = `
+                        <div class="nav-item-icon">${data.icon}</div>
+                        <div class="nav-item-content">
+                            <div class="nav-item-name">
+                                ${this.getQuestionTypeText(typeName)}
+                                ${weaknessLevel ? `<span class="weakness-indicator weakness-${weaknessLevel}">${accuracy}%</span>` : ''}
+                            </div>
+                            <div class="nav-item-progress">
+                                <div class="mini-progress-bar"><div class="mini-progress-fill" style="width: ${progress}%;"></div></div>
+                                <span class="nav-item-count">${data.total}题</span>
+                            </div>
+                        </div>`;
+                    dynamicTypeList.appendChild(navItem);
+                });
+            }
+
+            resetProgress() {
+                if (confirm('确定要重置当前题库的所有学习进度吗？此操作无法撤销。')) {
+                    this.userAnswers = {};
+                    this.activeFilters = [];
+                    if (this.currentFileHash) {
+                        localStorage.removeItem(this.LOCAL_STORAGE_KEY_PREFIX + this.currentFileHash);
+                    }
+                    this.updateFilterTags(); // Clear filter tags from UI
+                    this.updateStatistics(); // Recalculate and update all stats to zero
+                    
+                    // Reset to default mode and re-filter/render
+                    this.currentMode = 'sequential'; 
+                    this.updateModeButtonsUI();
+                    
+                    if (this.questions.length > 0) {
+                         this.currentQuestionIndex = 0; 
+                         this.filterQuestions(); // Re-filter based on the new (empty) progress
+                         this.renderQuestion();
+                         this.updateNavigation();
+                    } else {
+                         this.renderInitialPrompt(); // If no questions loaded, show upload prompt
+                         this.updateQuestionCounter();
+                         this.updateNavigation(); 
+                    }
+                    alert('学习进度已重置。');
+                }
+            }
+            
+            renderInitialPrompt() {
+                const container = document.getElementById('question-container');
+                container.innerHTML = `
+                    <div id="trigger-upload-area" class="text-center text-gray-500 p-8 border-2 border-dashed border-gray-300 rounded-lg">
+                        <i class="fas fa-book-open fa-3x text-gray-400 mb-4"></i>
+                        <p>欢迎使用极简智能刷题库！</p>
+                        <p class="mt-2 text-sm">点击此处或通过导航栏/页脚链接上传您的CSV题库文件开始练习。</p>
+                    </div>`;
+                const triggerUpload = document.getElementById('trigger-upload-area');
+                if(triggerUpload) {
+                    triggerUpload.onclick = () => document.getElementById('csv-upload-input').click();
+                }
+                 this.updateFooterUploadTrigger(false);
+            }
+            
+            updateFooterUploadTrigger(hasQuestions) {
+                const footerTriggerContainer = document.getElementById('footer-upload-trigger-container');
+                if (footerTriggerContainer) {
+                    if (hasQuestions) {
+                         footerTriggerContainer.innerHTML = `<a id="footer-upload-link" href="#">加载/更换题库</a>`;
+                         const footerLink = document.getElementById('footer-upload-link');
+                         if (footerLink) {
+                            footerLink.onclick = (e) => {
+                                e.preventDefault();
+                                document.getElementById('csv-upload-input').click();
+                            };
+                         }
+                    } else {
+                        footerTriggerContainer.innerHTML = `<a id="footer-initial-upload-link" href="#">点此加载题库</a>`;
+                        const footerInitialLink = document.getElementById('footer-initial-upload-link');
+                        if(footerInitialLink) {
+                             footerInitialLink.onclick = (e) => {
+                                e.preventDefault();
+                                document.getElementById('csv-upload-input').click();
+                             };
+                        }
+                    }
+                }
+            }
+
+            saveProgress() {
+                if (!this.currentFileHash) return; 
+
+                const progressData = {
+                    userAnswers: this.userAnswers,
+                    activeFilters: this.activeFilters, // Save active filters
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(this.LOCAL_STORAGE_KEY_PREFIX + this.currentFileHash, JSON.stringify(progressData));
+            }
+
+            loadProgress() {
+                if (!this.currentFileHash) {
+                    this.userAnswers = {};
+                    this.activeFilters = [];
+                    return;
+                }
+                const savedData = localStorage.getItem(this.LOCAL_STORAGE_KEY_PREFIX + this.currentFileHash);
+                if (savedData) {
+                    try {
+                        const progressData = JSON.parse(savedData);
+                        const currentQuestionIds = new Set(this.questions.map(q => String(q.id))); // Ensure IDs are strings
+                        const loadedUserAnswers = progressData.userAnswers || {};
+                        this.userAnswers = {};
+                        for (const qid in loadedUserAnswers) {
+                            if (currentQuestionIds.has(String(qid))) { // Compare as strings
+                                this.userAnswers[qid] = loadedUserAnswers[qid];
+                            }
+                        }
+                        this.activeFilters = progressData.activeFilters || [];
+                        this.updateFilterTags();
+                    } catch (error) {
+                        console.error('加载进度数据失败:', error);
+                        this.userAnswers = {};
+                        this.activeFilters = [];
+                    }
+                } else {
+                     this.userAnswers = {};
+                     this.activeFilters = [];
+                }
+            }
+        } 
+
+        // 改进的CSV解析函数
+        function parseCSVLine(line) {
+            const result = [];
+            let currentField = '';
+            let inQuotes = false;
+            
+            // 添加空行检查
+            if (!line || line.trim() === '') {
+                return [];
+            }
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+                        currentField += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    result.push(currentField.trim());
+                    currentField = '';
+                } else {
+                    currentField += char;
+                }
+            }
+            result.push(currentField.trim());
+            return result;
+        }
+
+        // 改进的选项提取函数
+        function extractOptionsFromStem(fullStem, questionTypeLabel) {
+            let questionText = fullStem;
+            const options = [];
+
+            if (questionTypeLabel === 'E') { // Judge questions have fixed options
+                return { stem: questionText, options: [{ key: "A", text: "正确" }, { key: "B", text: "错误" }] };
+            }
+
+            // 处理多种换行符格式
+            fullStem = String(fullStem || '')
+                .replace(/\\r\\n|\\r|\\n/g, '\n')  // 处理转义的换行符
+                .replace(/\r\n/g, '\n')           // 处理Windows换行符
+                .replace(/\r/g, '\n');            // 处理Mac换行符
+            
+            const lines = fullStem.split('\n');
+            let stemLines = [];
+            let optionStartIndex = -1;
+            
+            // 寻找第一个选项的位置
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                const optionMatch = line.match(/^([A-G])\.\s*(.*)$/);
+                
+                if (optionMatch && optionStartIndex === -1) {
+                    optionStartIndex = i;
+                    break;
+                }
+            }
+            
+            if (optionStartIndex !== -1) {
+                // 分离题干和选项
+                stemLines = lines.slice(0, optionStartIndex);
+                questionText = stemLines.join('\n').trim();
+                
+                // 提取选项
+                for (let i = optionStartIndex; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    const optionMatch = line.match(/^([A-G])\.\s*(.*)$/);
+                    
+                    if (optionMatch) {
+                        options.push({
+                            key: optionMatch[1],
+                            text: optionMatch[2].trim()
+                        });
+                    } else if (line && options.length > 0) {
+                        // 如果不是新选项但有内容，可能是上一个选项的续行
+                        const lastOption = options[options.length - 1];
+                        lastOption.text += ' ' + line;
+                    }
+                }
+            } else {
+                // 如果没有找到标准格式的选项，尝试其他解析方法
+                const inlineOptionRegex = /([A-G])\.\s*([^A-G]*?)(?=\s*[A-G]\.|$)/g;
+                let match;
+                let hasInlineOptions = false;
+                
+                while ((match = inlineOptionRegex.exec(fullStem)) !== null) {
+                    if (!hasInlineOptions) {
+                        // 第一次找到选项，分离题干
+                        questionText = fullStem.substring(0, match.index).trim();
+                        hasInlineOptions = true;
+                    }
+                    
+                    options.push({
+                        key: match[1],
+                        text: match[2].trim()
+                    });
+                }
+                
+                if (!hasInlineOptions) {
+                    // 完全没有找到选项，整个作为题干
+                    questionText = fullStem.trim();
+                }
+            }
+            
+            // 验证选项完整性
+            if (options.length === 0 && (questionTypeLabel.startsWith('A') || questionTypeLabel === 'X')) {
+                console.warn(`No options extracted for ${questionTypeLabel}. Stem: "${fullStem.substring(0,100)}..."`);
+            }
+
+            return { stem: questionText, options: options };
+        }
+
+        // 分离题目行解析逻辑
+        function parseQuestionRow(row, lineNumber) {
+            try {
+                const questionTypeLabel = row['题型标签'];
+                let questionType, options, correctAnswer;
+                const rawQuestionText = row['题干'];
+                
+                if (!rawQuestionText) {
+                    console.warn(`第${lineNumber+1}行题干为空`);
+                    return null;
+                }
+                
+                // 根据题型标签解析
+                if (questionTypeLabel === 'E') {
+                    questionType = 'judge';
+                    const optionParseResult = extractOptionsFromStem(rawQuestionText, questionTypeLabel);
+                    options = optionParseResult.options;
+                    correctAnswer = String(row['答案']).toUpperCase();
+                } else if (['A1', 'A2', 'A3', 'A4', 'A3/A4'].includes(questionTypeLabel)) {
+                    questionType = 'single';
+                    const optionParseResult = extractOptionsFromStem(rawQuestionText, questionTypeLabel);
+                    options = optionParseResult.options;
+                    correctAnswer = String(row['答案']).toUpperCase();
+                } else if (questionTypeLabel === 'X') {
+                    questionType = 'multiple';
+                    const optionParseResult = extractOptionsFromStem(rawQuestionText, questionTypeLabel);
+                    options = optionParseResult.options;
+                    correctAnswer = row['答案'] ? String(row['答案']).toUpperCase().split('').sort() : [];
+                } else {
+                    console.warn(`未知题型标签: ${questionTypeLabel}, 第${lineNumber+1}行`);
+                    return null;
+                }
+
+                // 验证选项
+                if (options.length === 0 && (questionTypeLabel.startsWith('A') || questionTypeLabel === 'X')) {
+                    console.warn(`第${lineNumber+1}行未能解析出选项`);
+                }
+
+                const tags = [row['知识树1'], row['知识树2'], row['知识树3'], row['知识树4'], row['知识树5']].filter(Boolean);
+
+                return {
+                    id: row['原始题号'] || `gen_id_${lineNumber}`,
+                    subject: row['知识树1'] || '综合',
+                    type: questionType,
+                    question: extractOptionsFromStem(rawQuestionText, questionTypeLabel).stem,
+                    options: options,
+                    correctAnswer: correctAnswer,
+                    explanation: row['解析'] ? String(row['解析']).replace(/\\n/g, '\n') : "暂无解析",
+                    tags: tags,
+                    originalData: { ...row, 题型标签: questionTypeLabel }
+                };
+                
+            } catch (error) {
+                console.error(`解析第${lineNumber+1}行题目时出错:`, error);
+                return null;
+            }
+        }
+
+        // 验证和修复题目数据
+        function validateAndFixQuestionData(questions) {
+            const fixedQuestions = [];
+            
+            questions.forEach((question, index) => {
+                if (!question) return;
+                
+                // 修复缺失的选项
+                if (question.type !== 'judge' && question.options.length === 0) {
+                    console.warn(`题目 ${question.id} 缺少选项，尝试从题干重新解析`);
+                    const reParseResult = extractOptionsFromStem(question.originalData['题干'], question.originalData['题型标签']);
+                    if (reParseResult.options.length > 0) {
+                        question.options = reParseResult.options;
+                        question.question = reParseResult.stem;
+                        console.log(`题目 ${question.id} 选项修复成功`);
+                    }
+                }
+                
+                // 验证答案有效性
+                if (question.type === 'single' || question.type === 'judge') {
+                    if (!question.correctAnswer || typeof question.correctAnswer !== 'string') {
+                        console.warn(`题目 ${question.id} 答案格式错误`);
+                        return;
+                    }
+                } else if (question.type === 'multiple') {
+                    if (!Array.isArray(question.correctAnswer) || question.correctAnswer.length === 0) {
+                        console.warn(`题目 ${question.id} 多选题答案格式错误`);
+                        return;
+                    }
+                }
+                
+                fixedQuestions.push(question);
+            });
+            
+            return fixedQuestions;
+        }
+
+        // 改进的CSV解析主函数
+        function parseCSV(csvText) {
+            try {
+                // 添加文件内容验证
+                if (!csvText || typeof csvText !== 'string') {
+                    throw new Error('CSV内容为空或格式无效');
+                }
+                
+                // 处理不同的换行符
+                const lines = csvText.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+                
+                if (lines.length < 2) {
+                    throw new Error("CSV文件至少需要包含表头和一行数据");
+                }
+
+                const headerLine = lines[0].trim();
+                if (!headerLine) {
+                    throw new Error("CSV表头为空");
+                }
+                
+                const header = parseCSVLine(headerLine);
+                
+                // 验证必需的列
+                const requiredHeaders = ['题型标签', '原始题号', '题干', '答案', '解析', '知识树1'];
+                const missingHeaders = requiredHeaders.filter(reqHeader => !header.includes(reqHeader));
+                
+                if (missingHeaders.length > 0) {
+                    throw new Error(`CSV文件缺失必需列: ${missingHeaders.join(', ')}`);
+                }
+
+                const questions = [];
+                let successCount = 0;
+                let errorCount = 0;
+                
+                for (let i = 1; i < lines.length; i++) {
+                    try {
+                        const line = lines[i];
+                        if (!line || line.trim() === '') continue;
+
+                        const rawFields = parseCSVLine(line);
+                        if (rawFields.length === 0 || rawFields.every(f => f === '')) continue;
+
+                        // 补齐缺失的字段
+                        while(rawFields.length < header.length) {
+                            rawFields.push('');
+                        }
+                        
+                        const row = {};
+                        header.forEach((colName, index) => {
+                            row[colName] = rawFields[index] || '';
+                        });
+
+                        // 验证关键字段
+                        if (!row['题型标签'] || !row['原始题号'] || !row['题干']) {
+                            console.warn(`第${i+1}行数据不完整，跳过: 题型标签="${row['题型标签']}", 原始题号="${row['原始题号']}", 题干="${row['题干']?.substring(0,50)}..."`);
+                            errorCount++;
+                            continue;
+                        }
+
+                        const question = parseQuestionRow(row, i);
+                        if (question) {
+                            questions.push(question);
+                            successCount++;
+                        } else {
+                            errorCount++;
+                        }
+                        
+                    } catch (rowError) {
+                        console.error(`解析第${i+1}行时出错:`, rowError);
+                        errorCount++;
+                    }
+                }
+                
+                // 验证和修复数据
+                const validatedQuestions = validateAndFixQuestionData(questions);
+                
+                console.log(`CSV解析完成: 成功${validatedQuestions.length}题, 错误${errorCount}题`);
+                
+                if (validatedQuestions.length === 0) {
+                    throw new Error('未能解析出任何有效题目');
+                }
+                
+                return validatedQuestions;
+                
+            } catch (error) {
+                console.error('CSV解析失败:', error);
+                throw error;
+            }
+        }
+
+        // 生成文件哈希
+        async function generateFileHash(fileContent) {
+            try {
+                const encoder = new TextEncoder();
+                const buffer = encoder.encode(fileContent);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                return hashHex.substring(0, 16); // Shortened hash
+            } catch (error) {
+                console.error('生成文件哈希失败:', error);
+                return Date.now().toString(); // Fallback to timestamp
+            }
+        }
+
+        // 显示错误提示函数
+        function showErrorPrompt(errorMessage) {
+            document.getElementById('question-container').innerHTML = `
+                <div class="error-prompt">
+                    <i class="fas fa-exclamation-triangle fa-3x text-red-400 mb-4"></i>
+                    <h3>题库加载失败</h3>
+                    <p class="text-red-500 mb-4">${errorMessage}</p>
+                    <div class="error-details">
+                        <p><strong>请检查：</strong></p>
+                        <ul>
+                            <li>文件是否为CSV格式</li>
+                            <li>文件编码是否为UTF-8</li>
+                            <li>是否包含必需的列：题型标签、原始题号、题干、答案、解析、知识树1</li>
+                            <li>数据格式是否正确</li>
+                            <li>文件是否损坏</li>
+                        </ul>
+                    </div>
+                    <p class="text-blue-600 cursor-pointer hover:underline" onclick="document.getElementById('csv-upload-input').click()">
+                        <i class="fas fa-upload"></i> 点击此处重新上传
+                    </p>
+                </div>`;
+        }
+
+        // DOMContentLoaded 和上传处理
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面开始加载...');
+            
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const mainContentWrapper = document.getElementById('main-content-wrapper');
+            const csvUploadInput = document.getElementById('csv-upload-input');
+            const uploadStatusDisplay = document.getElementById('upload-status-main');
+
+            // 确保加载指示器被正确隐藏
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+                loadingIndicator.style.visibility = 'hidden';
+                loadingIndicator.style.opacity = '0';
+            }
+            
+            if (mainContentWrapper) {
+                mainContentWrapper.style.visibility = 'visible';
+                mainContentWrapper.classList.remove('hidden-initial');
+            }
+            
+            console.log('初始化题库系统...');
+            window.quizSystem = new QuizSystem(); // Initialize quiz system instance
+
+            // 尝试从本地存储加载题库
+            const storedQs = localStorage.getItem(STORED_QUESTIONS_KEY);
+            const storedHash = localStorage.getItem(STORED_FILE_HASH_KEY);
+            
+            if (storedQs && storedHash) {
+                try {
+                    console.log('发现本地缓存的题库，正在加载...');
+                    const parsedQs = JSON.parse(storedQs);
+                    if (parsedQs && parsedQs.length > 0) {
+                        questionsData = parsedQs;
+                        window.quizSystem.initializeQuiz(questionsData, storedHash, true);
+                        uploadStatusDisplay.textContent = `已从缓存加载 ${questionsData.length} 道题目。`;
+                        uploadStatusDisplay.className = 'text-blue-500 text-center mb-4';
+                    } else {
+                        console.log('缓存的题库为空，显示初始提示');
+                        window.quizSystem.renderInitialPrompt();
+                    }
+                } catch (e) {
+                    console.error("解析存储的题库数据失败:", e);
+                    localStorage.removeItem(STORED_QUESTIONS_KEY);
+                    localStorage.removeItem(STORED_FILE_HASH_KEY);
+                    window.quizSystem.renderInitialPrompt();
+                }
+            } else {
+                console.log('没有找到缓存的题库，显示初始提示');
+                window.quizSystem.renderInitialPrompt();
+            }
+
+            // 改进的文件上传处理
+            if (csvUploadInput) {
+                csvUploadInput.addEventListener('change', async function(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    console.log('开始处理上传的文件:', file.name, '大小:', file.size);
+                    
+                    // 验证文件类型
+                    if (!file.name.toLowerCase().endsWith('.csv')) {
+                        uploadStatusDisplay.textContent = '请选择CSV格式的文件！';
+                        uploadStatusDisplay.className = 'text-red-500 text-center mb-4';
+                        event.target.value = null;
+                        return;
+                    }
+                    
+                    // 验证文件大小 (例如限制10MB)
+                    if (file.size > 10 * 1024 * 1024) {
+                        uploadStatusDisplay.textContent = '文件过大，请选择小于10MB的文件！';
+                        uploadStatusDisplay.className = 'text-red-500 text-center mb-4';
+                        event.target.value = null;
+                        return;
+                    }
+                    
+                    uploadStatusDisplay.textContent = '正在读取文件...';
+                    uploadStatusDisplay.className = 'text-blue-500 text-center mb-4';
+                    
+                    const reader = new FileReader();
+                    
+                    reader.onload = async function(e) {
+                        try {
+                            uploadStatusDisplay.textContent = '正在解析题库...';
+                            
+                            const fileContent = e.target.result;
+                            
+                            // 检测文件编码问题
+                            if (fileContent.includes('�')) {
+                                uploadStatusDisplay.textContent = '文件编码可能有问题，请确保使用UTF-8编码保存CSV文件！';
+                                uploadStatusDisplay.className = 'text-orange-500 text-center mb-4';
+                                console.warn('检测到文件编码问题');
+                            }
+                            
+                            const fileHash = await generateFileHash(fileContent);
+                            console.log('文件哈希:', fileHash);
+
+                            // 检查是否已加载相同文件
+                            if (window.quizSystem.currentFileHash === fileHash && window.quizSystem.questions.length > 0) {
+                                if (!confirm('这个题库文件似乎已经加载过了。是否要重新加载并可能丢失当前进度？')) {
+                                    uploadStatusDisplay.textContent = '操作已取消。';
+                                    uploadStatusDisplay.className = 'text-gray-500 text-center mb-4';
+                                    event.target.value = null;
+                                    return;
+                                }
+                            }
+
+                            console.log('开始解析CSV内容...');
+                            questionsData = parseCSV(fileContent);
+                            
+                            if (questionsData.length > 0) {
+                                console.log(`成功解析 ${questionsData.length} 道题目`);
+                                window.quizSystem.initializeQuiz(questionsData, fileHash, false);
+                            } else {
+                                throw new Error('未能解析出任何题目');
+                            }
+                            
+                        } catch (parseError) {
+                            console.error("CSV解析错误:", parseError);
+                            uploadStatusDisplay.textContent = `解析失败: ${parseError.message}`;
+                            uploadStatusDisplay.className = 'text-red-500 text-center mb-4';
+                            
+                            // 显示友好的错误提示
+                            showErrorPrompt(parseError.message);
+                        }
+                    };
+                    
+                    reader.onerror = function() {
+                        console.error('文件读取失败');
+                        uploadStatusDisplay.textContent = '读取文件失败！请检查文件是否损坏。';
+                        uploadStatusDisplay.className = 'text-red-500 text-center mb-4';
+                    };
+                    
+                    // 设置超时
+                    const timeoutId = setTimeout(() => {
+                        if (uploadStatusDisplay.textContent.includes('正在')) {
+                            console.warn('文件处理超时');
+                            uploadStatusDisplay.textContent = '文件处理超时，请检查文件大小和内容！';
+                            uploadStatusDisplay.className = 'text-red-500 text-center mb-4';
+                        }
+                    }, 30000); // 30秒超时
+                    
+                    reader.readAsText(file, 'UTF-8');
+                    event.target.value = null; // Reset file input to allow re-uploading the same file
+                    
+                    // 清除超时
+                    reader.addEventListener('loadend', () => {
+                        clearTimeout(timeoutId);
+                    });
+                });
+            }
+            
+            console.log('页面初始化完成');
+        });
+    </script>
+</body>
+</html>

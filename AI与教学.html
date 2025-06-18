@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI与教学：个人思考与实践</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@11.0.24/dist/framer-motion.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-red': '#E31937',
+                        'tech-blue': '#0066FF',
+                        'soft-gray': '#F8F9FA'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'fade-in': 'fadeIn 1s ease-out'
+                    }
+                }
+            }
+        }
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all scroll-reveal elements
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Add some interactive hover effects
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.bento-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // Dynamic background particles (optional enhancement)
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'fixed w-2 h-2 bg-brand-red opacity-20 rounded-full pointer-events-none';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = window.innerHeight + 'px';
+            particle.style.animation = `float ${3 + Math.random() * 4}s linear infinite`;
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 7000);
+        }
+
+        // Create particles periodically
+        document.addEventListener('DOMContentLoaded', function() {
+            setInterval(createParticle, 2000);
+        });
+
+        // Prompt modal functionality
+        const promptData = {
+            structured: {
+                title: '结构化输出提示词',
+                color: 'purple',
+                scenario: '适用场景：日常教学备课、学员答疑解惑',
+                content: `你是一位资深的事业单位考试常识讲师。请为以下题目设计完整的解题思路框架：
+
+1. 题目类型分析
+2. 各选项核心知识点梳理  
+3. 逐项分析正误及原理解释
+4. 正确答案及完整解题思路
+5. 易错点提醒和记忆技巧
+6. 相关拓展知识点`
+            },
+            svg: {
+                title: 'SVG卡片化提示词',
+                color: 'orange',
+                scenario: '适用场景：课堂投影展示、学习资料制作',
+                content: `请生成一个SVG格式的知识卡片，展示这道题目的核心知识点。要求：
+
+- 用四个色块分别展示ABCD四个选项
+- 每个区块包含：选项内容+对错标识+核心原理图示
+- 信息结构：按照【问题→过程→解决方案】的逻辑，用图像化方式呈现信息
+- 配色设计：保持专业现代感，让颜色更丰富
+- 图示风格：选用【扁平化设计】图示，统一风格且直观易懂，适度加上图标`
+            },
+            interactive: {
+                title: '交互式网页提示词',
+                color: 'teal',
+                scenario: '适用场景：在线学习平台、互动教学工具',
+                content: `创建一个HTML网页，制作这道物理题目的交互式学习工具：
+
+- 题目展示区域，选项可点击选择
+- 点击每个选项后显示详细的物理原理解释
+- 答题完成后显示正确答案和完整解析
+- 包含"知识拓展"按钮，展示相关物理原理
+- 响应式设计，支持手机和电脑端使用`
+            }
+        };
+
+        function openPromptModal(type) {
+            const modal = document.getElementById('promptModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            const data = promptData[type];
+            const colorClasses = {
+                purple: 'from-purple-500 to-purple-600',
+                orange: 'from-orange-500 to-orange-600',
+                teal: 'from-teal-500 to-teal-600'
+            };
+            
+            title.innerHTML = `<i class="fas fa-magic text-brand-red mr-3"></i>${data.title}`;
+            
+            content.innerHTML = `
+                <div class="mb-6">
+                    <div class="inline-flex items-center bg-gradient-to-r ${colorClasses[data.color]} text-white px-4 py-2 rounded-full text-sm">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        ${data.scenario}
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-2xl p-6">
+                    <h4 class="font-bold mb-4 text-lg">完整提示词：</h4>
+                    <pre class="whitespace-pre-wrap font-mono text-sm leading-relaxed bg-white rounded-xl p-6 border border-gray-200" id="promptText">${data.content}</pre>
+                </div>
+                <div class="mt-6 bg-blue-50 rounded-xl p-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                        <div>
+                            <h5 class="font-semibold text-blue-800 mb-2">使用提示：</h5>
+                            <p class="text-blue-700 text-sm">将上述提示词复制到任意AI工具中，然后粘贴您要处理的题目内容，即可获得相应格式的输出结果。</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePromptModal() {
+            const modal = document.getElementById('promptModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function copyPrompt() {
+            const promptText = document.getElementById('promptText').textContent;
+            navigator.clipboard.writeText(promptText).then(() => {
+                // 显示复制成功提示
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>复制成功！';
+                button.classList.add('bg-green-500');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('bg-green-500');
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动选择文本复制');
+            });
+        }
+
+        // 点击模态框外部关闭
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('promptModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closePromptModal();
+                    }
+                });
+            }
+        });
+
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePromptModal();
+            }
+        });
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(227, 25, 55, 0.3); }
+            to { box-shadow: 0 0 30px rgba(227, 25, 55, 0.6); }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .bento-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #E31937, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tech-gradient {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(227, 25, 55, 0.1));
+        }
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 overflow-x-hidden">
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 tech-gradient"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center animate-fade-in">
+                <h1 class="text-6xl md:text-8xl font-black mb-6">
+                    <span class="gradient-text">AI</span>
+                    <span class="text-gray-900">与教学</span>
+                </h1>
+                <p class="text-2xl md:text-3xl text-gray-600 mb-8 font-light">
+                    个人思考与实践
+                </p>
+                <div class="text-lg text-gray-500 mb-12">
+                    重新定义教学效率的时代密码
+                </div>
+                <div class="animate-float">
+                    <i class="fas fa-chevron-down text-brand-red text-3xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 w-20 h-20 bg-brand-red opacity-10 rounded-full animate-float"></div>
+        <div class="absolute bottom-20 right-10 w-32 h-32 bg-tech-blue opacity-10 rounded-full animate-float" style="animation-delay: -2s;"></div>
+    </section>
+
+    <!-- Core Concept Section -->
+    <section class="py-20 bg-soft-gray">
+        <div class="container mx-auto px-6">
+            <div class="bento-card bg-white rounded-3xl p-12 shadow-lg scroll-reveal">
+                <div class="text-center mb-12">
+                    <h2 class="text-5xl font-black mb-6">
+                        <span class="gradient-text">核心理念</span>
+                    </h2>
+                    <div class="w-24 h-1 bg-brand-red mx-auto mb-8"></div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="text-8xl font-black text-brand-red mb-6 opacity-20">01</div>
+                        <h3 class="text-3xl font-bold mb-6">Garbage In, Garbage Out</h3>
+                        <p class="text-lg text-gray-600 leading-relaxed mb-6">
+                            这不仅是AI工具使用的黄金法则，更是我们重塑教学模式的思维起点。在招录类教育考试培训这个精准度要求极高的领域，AI不是来替代我们的，而是来放大我们专业能力的。
+                        </p>
+                        <div class="flex items-center text-brand-red">
+                            <i class="fas fa-lightbulb mr-3"></i>
+                            <span class="font-semibold">技术只是工具，教育的本质仍然是人与人之间的连接和启发</span>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="bg-gradient-to-br from-brand-red to-pink-500 rounded-2xl p-8 text-white">
+                            <i class="fas fa-brain text-6xl mb-4 opacity-80"></i>
+                            <h4 class="text-2xl font-bold mb-4">四个维度</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3"></i>
+                                    <span>提示词工程</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3"></i>
+                                    <span>平台选择</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3"></i>
+                                    <span>工具生态</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3"></i>
+                                    <span>Vibe Coding</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 1: Prompt Engineering -->
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <div class="text-8xl font-black text-brand-red opacity-20 mb-4">01</div>
+                <h2 class="text-5xl font-black mb-6">提示词工程</h2>
+                <p class="text-xl text-gray-600">从"会用"到"精用"的关键跃迁</p>
+            </div>
+
+            <!-- RTF Framework -->
+            <div class="grid lg:grid-cols-3 gap-8 mb-16">
+                <div class="bento-card bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-8 scroll-reveal">
+                    <div class="text-4xl font-black text-brand-red mb-4">R</div>
+                    <h3 class="text-2xl font-bold mb-4">Role 角色定义</h3>
+                    <p class="text-gray-600">明确AI扮演的专业身份，让AI理解其在教学场景中的角色定位</p>
+                </div>
+                <div class="bento-card bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.2s;">
+                    <div class="text-4xl font-black text-tech-blue mb-4">T</div>
+                    <h3 class="text-2xl font-bold mb-4">Task 任务描述</h3>
+                    <p class="text-gray-600">清晰表达具体需求和目标，确保AI输出符合教学预期</p>
+                </div>
+                <div class="bento-card bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.4s;">
+                    <div class="text-4xl font-black text-green-600 mb-4">F</div>
+                    <h3 class="text-2xl font-bold mb-4">Format 格式要求</h3>
+                    <p class="text-gray-600">规范输出形式和结构，让AI生成的内容直接可用</p>
+                </div>
+            </div>
+
+            <!-- Example Case -->
+            <div class="bento-card bg-white rounded-3xl p-12 shadow-lg scroll-reveal">
+                <h3 class="text-3xl font-bold mb-8 text-center">实战案例：物理题目的三种呈现方式</h3>
+                <div class="bg-gray-50 rounded-2xl p-6 mb-8">
+                    <h4 class="font-bold mb-4">题目示例：</h4>
+                    <p class="mb-4"><strong>关于生活中的物理知识，下列说法正确的是：</strong></p>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>A. 黄光路灯多于白光路灯是因为黄光显色性强</li>
+                        <li>B. 购物小票划痕会变黑体现了摩擦生热的原理</li>
+                        <li>C. 锂离子电池充电时锂离子从负极向正极运动</li>
+                        <li>D. 猫眼门镜为了防窥将门外一侧安装为凸透镜</li>
+                    </ul>
+                    <div class="mt-4 text-sm text-gray-500">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        试题来源：2025年3月事业单位联考职测E类 第九题
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 cursor-pointer hover:shadow-lg transition-all duration-300 bento-card" onclick="openPromptModal('structured')">
+                        <i class="fas fa-list-alt text-3xl text-purple-600 mb-4"></i>
+                        <h4 class="font-bold mb-3">结构化输出</h4>
+                        <p class="text-sm text-gray-600 mb-4">生成完整的解题思路框架，包含题目分析、知识点梳理、易错点提醒等</p>
+                        <div class="flex items-center text-purple-600 font-semibold">
+                            <span>查看提示词</span>
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 cursor-pointer hover:shadow-lg transition-all duration-300 bento-card" onclick="openPromptModal('svg')">
+                        <i class="fas fa-palette text-3xl text-orange-600 mb-4"></i>
+                        <h4 class="font-bold mb-3">SVG卡片化</h4>
+                        <p class="text-sm text-gray-600 mb-4">生成视觉化的知识卡片，用彩色区块展示各选项，适合课堂投影</p>
+                        <div class="flex items-center text-orange-600 font-semibold">
+                            <span>查看提示词</span>
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl p-6 cursor-pointer hover:shadow-lg transition-all duration-300 bento-card" onclick="openPromptModal('interactive')">
+                        <i class="fas fa-mouse-pointer text-3xl text-teal-600 mb-4"></i>
+                        <h4 class="font-bold mb-3">交互式网页</h4>
+                        <p class="text-sm text-gray-600 mb-4">创建可点击的交互工具，支持实时反馈和知识拓展功能</p>
+                        <div class="flex items-center text-teal-600 font-semibold">
+                            <span>查看提示词</span>
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <div class="inline-flex items-center bg-gradient-to-r from-brand-red to-pink-500 text-white px-6 py-3 rounded-full">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        <span class="font-semibold">点击卡片查看完整提示词</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prompt Modal -->
+    <div id="promptModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white rounded-t-3xl p-6 border-b border-gray-200 flex items-center justify-between">
+                <h3 id="modalTitle" class="text-2xl font-bold"></h3>
+                <button onclick="closePromptModal()" class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors">
+                    <i class="fas fa-times text-gray-600"></i>
+                </button>
+            </div>
+            <div class="p-8">
+                <div id="modalContent"></div>
+                <div class="mt-8 flex justify-center">
+                    <button onclick="copyPrompt()" class="bg-gradient-to-r from-brand-red to-pink-500 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center">
+                        <i class="fas fa-copy mr-2"></i>
+                        复制提示词
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chapter 2: Platform Selection -->
+    <section class="py-20 bg-soft-gray">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <div class="text-8xl font-black text-brand-red opacity-20 mb-4">02</div>
+                <h2 class="text-5xl font-black mb-6">平台选择</h2>
+                <p class="text-xl text-gray-600">在AI大模型的海洋中找到最适合的那一个</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- 国内平台 -->
+                <div class="bento-card bg-white rounded-3xl p-8 scroll-reveal">
+                    <h3 class="text-3xl font-bold mb-8 text-center">
+                        <i class="fas fa-flag text-brand-red mr-3"></i>
+                        国内大模型
+                    </h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-search text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">DeepSeek</h4>
+                                <p class="text-gray-600 text-sm">国民AI工具，但是幻觉比较高，如果是非虚构内容，请做好事实核查</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-coffee text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">豆包</h4>
+                                <p class="text-gray-600 text-sm">字节跳动的产品，生态完善、功能突出，潜力无限</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-comments text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">通义千问</h4>
+                                <p class="text-gray-600 text-sm">阿里巴巴出品，实力强劲</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 国外平台 -->
+                <div class="bento-card bg-white rounded-3xl p-8 scroll-reveal" style="animation-delay: 0.2s;">
+                    <h3 class="text-3xl font-bold mb-8 text-center">
+                        <i class="fas fa-globe text-tech-blue mr-3"></i>
+                        国外大模型
+                    </h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-robot text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Claude Sonnet 4</h4>
+                                <p class="text-gray-600 text-sm">个人最推荐的选择。文本生成、编码能力，交给他，我放心</p>
+                                <span class="inline-block bg-brand-red text-white text-xs px-2 py-1 rounded-full mt-2">推荐</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-gem text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">Gemini 2.5 Pro</h4>
+                                <p class="text-gray-600 text-sm">谷歌的产品，多模态能力强大，超长上下文，超安心</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-brain text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-2">GPT O3/Pro</h4>
+                                <p class="text-gray-600 text-sm">复杂问题的解答上几乎接近人类专家水平</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12 scroll-reveal">
+                <div class="bento-card bg-gradient-to-r from-brand-red to-pink-500 text-white rounded-2xl p-8 inline-block">
+                    <i class="fas fa-lightbulb text-3xl mb-4"></i>
+                    <h4 class="text-xl font-bold mb-2">选择策略</h4>
+                    <p>找到你能用上的最好模型，持续使用，降低选择成本</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 3: Tool Ecosystem -->
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <div class="text-8xl font-black text-brand-red opacity-20 mb-4">03</div>
+                <h2 class="text-5xl font-black mb-6">工具生态</h2>
+                <p class="text-xl text-gray-600">摆脱网页束缚，让AI真正融入工作流</p>
+            </div>
+
+            <!-- 集成平台 -->
+            <div class="mb-16 scroll-reveal">
+                <h3 class="text-3xl font-bold mb-8 text-center">集成平台</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bento-card bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-16 h-16 bg-purple-500 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-desktop text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-bold">Cherry Studio</h4>
+                                <p class="text-gray-600">集成多模型桌面应用</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">集成多个AI模型的桌面应用，可以在同一个界面中切换不同的AI服务。避免网页跳转，也可以对比不同模型输出质量。</p>
+                    </div>
+                    <div class="bento-card bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8">
+                        <div class="flex items-center mb-6">
+                            <div class="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-comments text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-2xl font-bold">Chatbox</h4>
+                                <p class="text-gray-600">跨平台AI客户端</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">支持Windows、Mac、手机端的AI客户端，也可以直接在网页上使用。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 实用工具 -->
+            <div class="scroll-reveal">
+                <h3 class="text-3xl font-bold mb-8 text-center">实用工具推荐</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bento-card bg-white rounded-2xl p-6 shadow-lg">
+                        <div class="text-center mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-file-powerpoint text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-lg">WPS灵犀</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm text-center">国产办公软件的AI功能，与日常文档、PPT深度集成，一键生成教学PPT</p>
+                    </div>
+                    <div class="bento-card bg-white rounded-2xl p-6 shadow-lg">
+                        <div class="text-center mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-puzzle-piece text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-lg">Elmo Chat</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm text-center">浏览器扩展插件，可以在任何网页上快速调用AI助手，关键免费</p>
+                    </div>
+                    <div class="bento-card bg-white rounded-2xl p-6 shadow-lg">
+                        <div class="text-center mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-code text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-lg">Siliconflow</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm text-center">提供统一的API入口，可以用一个账号访问多个AI模型</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 4: Vibe Coding -->
+    <section class="py-20 bg-soft-gray">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <div class="text-8xl font-black text-brand-red opacity-20 mb-4">04</div>
+                <h2 class="text-5xl font-black mb-6">Vibe Coding</h2>
+                <p class="text-xl text-gray-600">当教师也能成为程序员</p>
+            </div>
+
+            <!-- 核心理念 -->
+            <div class="bento-card bg-white rounded-3xl p-12 mb-16 scroll-reveal">
+                <div class="text-center mb-12">
+                    <h3 class="text-4xl font-bold mb-6">氛围编程的核心理念</h3>
+                    <div class="text-6xl font-black gradient-text mb-6">意图优先，语法居次</div>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                        我们只需要用自然语言描述想要实现的功能，AI就能帮我们生成可执行的代码。简单点说，<strong class="text-brand-red">指哪儿打哪儿</strong>
+                    </p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-brand-red to-pink-500 text-white rounded-2xl p-8 text-center">
+                    <i class="fas fa-quote-left text-3xl mb-4 opacity-70"></i>
+                    <p class="text-2xl font-bold mb-4">有了 AI，人人都能成为程序员</p>
+                    <p class="opacity-90">— Andrei Karpathy, OpenAI联合创始人</p>
+                </div>
+            </div>
+
+            <!-- 开发工具 -->
+            <div class="grid md:grid-cols-3 gap-8 mb-16 scroll-reveal">
+                <div class="bento-card bg-white rounded-2xl p-8">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-mouse-pointer text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold">Cursor</h4>
+                        <span class="inline-block bg-brand-red text-white text-xs px-2 py-1 rounded-full mt-2">最推荐</span>
+                    </div>
+                    <p class="text-gray-600 text-center">不仅能生成代码，还能理解教学需求，帮助创建各种教学小工具</p>
+                </div>
+                <div class="bento-card bg-white rounded-2xl p-8">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-wind text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold">Windsurf</h4>
+                        <span class="inline-block bg-green-500 text-white text-xs px-2 py-1 rounded-full mt-2">OpenAI收购</span>
+                    </div>
+                    <p class="text-gray-600 text-center">优秀的AI编程工具，刚被OpenAI收购，后期整合生态潜力大</p>
+                </div>
+                <div class="bento-card bg-white rounded-2xl p-8">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-code-branch text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold">Trae</h4>
+                        <span class="inline-block bg-purple-500 text-white text-xs px-2 py-1 rounded-full mt-2">中文界面</span>
+                    </div>
+                    <p class="text-gray-600 text-center">字节旗下编程工具，中文界面，符合国人操作习惯</p>
+                </div>
+            </div>
+
+            <!-- 真实案例 -->
+            <div class="bento-card bg-white rounded-3xl p-12 scroll-reveal">
+                <h3 class="text-3xl font-bold mb-8 text-center">真实案例分享</h3>
+                <div class="bg-gray-50 rounded-2xl p-8 mb-8">
+                    <h4 class="font-bold mb-4 text-lg">需求描述：</h4>
+                    <div class="bg-white rounded-xl p-6 border-l-4 border-brand-red">
+                        <p class="text-gray-700">
+                            "创建一个公务员考试倒计时工具，功能包括：设置考试日期、显示剩余天数、每日学习计划制定、完成情况打卡、学习统计图表、激励语句推送。界面要简洁美观，支持数据本地保存。"
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-bold mb-4 text-lg">开发成果：</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>1分钟完成功能完整的Web应用</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>传统开发需要几天时间</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>工作效率成百倍提高</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-4 text-lg">其他成功案例：</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <i class="fas fa-tools text-brand-red mr-3"></i>
+                                <span>markdown2word 浏览器插件</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-tools text-brand-red mr-3"></i>
+                                <span>试题切片本地化应用</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-tools text-brand-red mr-3"></i>
+                                <span>个性化学习建议生成器</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Scenarios -->
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-5xl font-black mb-6">AI工具在实际教学中的综合应用</h2>
+                <p class="text-xl text-gray-600">让技术成为教学理念的放大器</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bento-card bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-8 scroll-reveal">
+                    <i class="fas fa-chalkboard-teacher text-4xl text-brand-red mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">教学设计</h3>
+                    <p class="text-gray-600">使用AI生成详细的教学设计，包括教学目标、重难点分析、教学方法选择等</p>
+                </div>
+                <div class="bento-card bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.1s;">
+                    <i class="fas fa-pen-fancy text-4xl text-tech-blue mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">内容创作</h3>
+                    <p class="text-gray-600">利用AI快速生成课程大纲，用WPS灵犀生成PPT和流程图、思维导图</p>
+                </div>
+                <div class="bento-card bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.2s;">
+                    <i class="fas fa-question-circle text-4xl text-green-600 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">实时答疑</h3>
+                    <p class="text-gray-600">使用 Chatbox / Cherry 作为日常答疑助手，快速生成试题答案解析</p>
+                </div>
+                <div class="bento-card bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.3s;">
+                    <i class="fas fa-gamepad text-4xl text-yellow-600 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">互动设计</h3>
+                    <p class="text-gray-600">运用AI生成的小游戏和互动环节，提高课堂参与度</p>
+                </div>
+                <div class="bento-card bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.4s;">
+                    <i class="fas fa-lightbulb text-4xl text-purple-600 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">难点突破</h3>
+                    <p class="text-gray-600">利用AI的多种表达方式，为不同理解能力的学员提供个性化解释</p>
+                </div>
+                <div class="bento-card bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-8 scroll-reveal" style="animation-delay: 0.5s;">
+                    <i class="fas fa-chart-line text-4xl text-teal-600 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">效果评估</h3>
+                    <p class="text-gray-600">通过AI分析学员学习数据，优化教学策略和内容安排</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion -->
+    <section class="py-20 bg-soft-gray">
+        <div class="container mx-auto px-6">
+            <div class="bento-card bg-white rounded-3xl p-12 scroll-reveal">
+                <div class="text-center mb-12">
+                    <h2 class="text-5xl font-black mb-6">拥抱变化，引领未来</h2>
+                    <div class="w-24 h-1 bg-brand-red mx-auto mb-8"></div>
+                </div>
+                
+                <div class="max-w-4xl mx-auto">
+                    <p class="text-xl text-gray-700 leading-relaxed mb-8 text-center">
+                        AI工具的发展速度超乎我们想象，但变化的永远是技术，不变的是我们对优质教育的追求。我们要做的不是被技术裹挟，而是让技术成为我们教学理念的放大器。
+                    </p>
+                    
+                    <div class="grid md:grid-cols-3 gap-8 mb-12">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-gradient-to-br from-brand-red to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-arrow-right text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2">知识传递者</h3>
+                            <p class="text-gray-600 text-sm">转向</p>
+                            <h3 class="font-bold text-brand-red">学习引导者</h3>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-gradient-to-br from-tech-blue to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-arrow-right text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2">内容创造者</h3>
+                            <p class="text-gray-600 text-sm">转向</p>
+                            <h3 class="font-bold text-tech-blue">体验设计师</h3>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-arrow-right text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2">教学执行者</h3>
+                            <p class="text-gray-600 text-sm">转向</p>
+                            <h3 class="font-bold text-green-600">教育创新者</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-brand-red to-pink-500 text-white rounded-2xl p-8 text-center">
+                        <i class="fas fa-quote-left text-3xl mb-4 opacity-70"></i>
+                        <p class="text-2xl font-bold mb-4">
+                            潮水到来的时候，不要做沙子，在岸边旁观，然后被冲走；<br>
+                            要做浪花，奋力追赶，站上潮头。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- References Section -->
+    <section class="py-20 bg-soft-gray">
+        <div class="container mx-auto px-6">
+            <div class="bento-card bg-white rounded-3xl p-12 scroll-reveal">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black mb-6">
+                        <i class="fas fa-link text-brand-red mr-3"></i>
+                        相关链接
+                    </h2>
+                    <div class="w-24 h-1 bg-brand-red mx-auto mb-8"></div>
+                    <p class="text-lg text-gray-600">文中提到的工具和平台</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <a href="https://lingxi.wps.cn" target="_blank" class="bento-card bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-file-powerpoint text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg group-hover:text-green-600 transition-colors">WPS灵犀</h3>
+                                <p class="text-sm text-gray-600">AI办公助手</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-green-600">
+                            <span class="text-sm">访问官网</span>
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <a href="https://chatboxai.app/zh" target="_blank" class="bento-card bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-comments text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg group-hover:text-blue-600 transition-colors">Chatbox</h3>
+                                <p class="text-sm text-gray-600">跨平台AI客户端</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-blue-600">
+                            <span class="text-sm">访问官网</span>
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <a href="https://cloud.siliconflow.cn" target="_blank" class="bento-card bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-code text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg group-hover:text-teal-600 transition-colors">Siliconflow</h3>
+                                <p class="text-sm text-gray-600">统一API平台</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-teal-600">
+                            <span class="text-sm">访问官网</span>
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <a href="https://www.cherry-ai.com/" target="_blank" class="bento-card bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-desktop text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg group-hover:text-purple-600 transition-colors">CherryStudio</h3>
+                                <p class="text-sm text-gray-600">多模型桌面应用</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-purple-600">
+                            <span class="text-sm">访问官网</span>
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <a href="https://www.elmo.chat/" target="_blank" class="bento-card bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-puzzle-piece text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg group-hover:text-orange-600 transition-colors">Elmo Chat</h3>
+                                <p class="text-sm text-gray-600">浏览器扩展插件</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-orange-600">
+                            <span class="text-sm">访问官网</span>
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <a href="https://www.trae.com.cn/" target="_blank" class="bento-card bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-code-branch text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg group-hover:text-indigo-600 transition-colors">Trae</h3>
+                                <p class="text-sm text-gray-600">中文编程工具</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-indigo-600">
+                            <span class="text-sm">访问官网</span>
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <a href="https://www.tongyi.com/" target="_blank" class="bento-card bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-brand-red rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-comments text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg group-hover:text-brand-red transition-colors">通义</h3>
+                                <p class="text-sm text-gray-600">阿里AI大模型</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-brand-red">
+                            <span class="text-sm">访问官网</span>
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+
+                    <a href="https://www.deepseek.com/" target="_blank" class="bento-card bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-search text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg group-hover:text-gray-700 transition-colors">DeepSeek</h3>
+                                <p class="text-sm text-gray-600">国民AI工具</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <span class="text-sm">访问官网</span>
+                            <i class="fas fa-external-link-alt ml-2 text-xs"></i>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <p class="text-sm text-gray-500">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        点击卡片可直接访问对应平台官网
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Author Info -->
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="bento-card bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-12 scroll-reveal">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl font-black mb-4">关于作者</h2>
+                    <div class="w-20 h-20 bg-gradient-to-br from-brand-red to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-white text-2xl font-bold">李</span>
+                    </div>
+                    <h3 class="text-3xl font-bold text-brand-red mb-2">李弋</h3>
+                    <p class="text-gray-600">AI教育布道者 | 实践者</p>
+                </div>
+                
+                <div class="flex justify-center space-x-8">
+                    <a href="https://v.douyin.com/KWLNwyhxiSQ/" target="_blank" class="flex items-center space-x-3 bg-white rounded-xl p-4 hover:shadow-lg transition-all duration-300 bento-card">
+                        <div class="w-12 h-12 bg-black rounded-lg flex items-center justify-center">
+                            <i class="fab fa-tiktok text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">抖音</p>
+                            <p class="text-sm text-gray-600">李老师聊医学</p>
+                        </div>
+                    </a>
+                    <a href="https://www.xiaohongshu.com/user/profile/61d313ec000000001000e0df?xsec_token=YB7vIleXdfbkd1aFZJ83RRzI23hzVrfyN2aymMy7s2v78=" target="_blank" class="flex items-center space-x-3 bg-white rounded-xl p-4 hover:shadow-lg transition-all duration-300 bento-card">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-400 to-red-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">小红书</p>
+                            <p class="text-sm text-gray-600">医考李老师</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400 mb-4">© 李弋： AI 与教学：个人思考与实践</p>
+            <p class="text-gray-500 text-sm">让技术成为教学理念的放大器</p>
+        </div>
+    </footer>
+</body>
+</html>
