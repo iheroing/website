@@ -221,6 +221,156 @@
             }
         });
 
+        // 激光笔效果
+        let laserPointer = null;
+        let isLaserActive = false;
+        let laserTrail = [];
+        let trailElements = [];
+        const maxTrailLength = 15;
+
+        function createLaserPointer() {
+            laserPointer = document.createElement('div');
+            laserPointer.className = 'laser-pointer';
+            laserPointer.innerHTML = '<div class="laser-dot"></div>';
+            document.body.appendChild(laserPointer);
+        }
+
+        function toggleLaser() {
+            isLaserActive = !isLaserActive;
+            
+            if (isLaserActive) {
+                if (!laserPointer) createLaserPointer();
+                laserPointer.style.display = 'block';
+                document.body.style.cursor = 'none';
+                
+                // 显示激光笔提示
+                showLaserNotification('激光笔已开启 - 按L键关闭', 'success');
+            } else {
+                if (laserPointer) {
+                    laserPointer.style.display = 'none';
+                }
+                document.body.style.cursor = 'auto';
+                clearTrail();
+                
+                // 显示关闭提示
+                showLaserNotification('激光笔已关闭', 'info');
+            }
+        }
+
+        function updateLaserPosition(e) {
+            if (!isLaserActive || !laserPointer) return;
+            
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            laserPointer.style.left = x + 'px';
+            laserPointer.style.top = y + 'px';
+            
+            // 添加轨迹点
+            addTrailPoint(x, y);
+        }
+
+        function addTrailPoint(x, y) {
+            laserTrail.push({ x, y, time: Date.now() });
+            
+            // 限制轨迹长度
+            if (laserTrail.length > maxTrailLength) {
+                laserTrail.shift();
+            }
+            
+            // 创建轨迹元素
+            const trailDot = document.createElement('div');
+            trailDot.className = 'laser-trail';
+            trailDot.style.left = x + 'px';
+            trailDot.style.top = y + 'px';
+            document.body.appendChild(trailDot);
+            
+            trailElements.push(trailDot);
+            
+            // 限制轨迹元素数量
+            if (trailElements.length > maxTrailLength) {
+                const oldDot = trailElements.shift();
+                if (oldDot && oldDot.parentNode) {
+                    oldDot.parentNode.removeChild(oldDot);
+                }
+            }
+            
+            // 自动清除轨迹点
+            setTimeout(() => {
+                if (trailDot && trailDot.parentNode) {
+                    trailDot.style.opacity = '0';
+                    setTimeout(() => {
+                        if (trailDot && trailDot.parentNode) {
+                            trailDot.parentNode.removeChild(trailDot);
+                        }
+                    }, 300);
+                }
+            }, 800);
+        }
+
+        function clearTrail() {
+            trailElements.forEach(element => {
+                if (element && element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+            });
+            trailElements = [];
+            laserTrail = [];
+        }
+
+        function showLaserNotification(message, type = 'info') {
+            // 移除现有通知
+            const existingNotification = document.querySelector('.laser-notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = `laser-notification laser-notification-${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // 显示动画
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // 自动隐藏
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification && notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 2000);
+        }
+
+        // 键盘事件监听
+        document.addEventListener('keydown', function(e) {
+            // L键切换激光笔
+            if (e.key.toLowerCase() === 'l' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                e.preventDefault();
+                toggleLaser();
+            }
+            // C键清除轨迹
+            if (e.key.toLowerCase() === 'c' && isLaserActive && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                e.preventDefault();
+                clearTrail();
+                showLaserNotification('轨迹已清除', 'info');
+            }
+        });
+
+        // 鼠标移动事件
+        document.addEventListener('mousemove', updateLaserPosition);
+
+        // 页面加载完成后显示激光笔使用提示
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                showLaserNotification('按 L 键开启激光笔演示模式', 'info');
+            }, 2000);
+        });
+
         // Apple-style Navigation Functions
         let isMenuOpen = false;
 
@@ -544,6 +694,124 @@
                 display: none;
             }
         }
+        
+        /* 激光笔效果样式 */
+        .laser-pointer {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+            transform: translate(-50%, -50%);
+        }
+        
+        .laser-dot {
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #ff0000 0%, #ff4444 40%, rgba(255, 0, 0, 0.8) 70%, rgba(255, 0, 0, 0.3) 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 10px #ff0000,
+                0 0 20px #ff0000,
+                0 0 30px #ff0000,
+                inset 0 0 5px rgba(255, 255, 255, 0.3);
+            animation: laserPulse 1.5s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .laser-dot::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffffff;
+        }
+        
+        .laser-trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.8) 0%, rgba(255, 0, 0, 0.4) 50%, rgba(255, 0, 0, 0.1) 100%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease-out;
+            animation: trailFade 0.8s ease-out forwards;
+        }
+        
+        .laser-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .laser-notification.show {
+            transform: translateX(0);
+        }
+        
+        .laser-notification-success {
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .laser-notification-info {
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .laser-notification-warning {
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        @keyframes laserPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes trailFade {
+            0% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3);
+            }
+        }
+        
+        /* 激光笔模式下隐藏默认光标 */
+        body.laser-mode {
+            cursor: none !important;
+        }
+        
+        body.laser-mode * {
+            cursor: none !important;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900 overflow-x-hidden">
@@ -720,7 +988,7 @@
 
             <!-- Example Case -->
             <div class="bento-card bg-white rounded-3xl p-12 shadow-lg scroll-reveal">
-                <h3 class="text-3xl font-bold mb-8 text-center">实战案例：物理题目的三种呈现方式</h3>
+                <h3 class="text-3xl font-bold mb-8 text-center">实战案例：一道题目的三种呈现方式</h3>
                 <div class="bg-gray-50 rounded-2xl p-6 mb-8">
                     <h4 class="font-bold mb-4">题目示例：</h4>
                     <p class="mb-4"><strong>关于生活中的物理知识，下列说法正确的是：</strong></p>
