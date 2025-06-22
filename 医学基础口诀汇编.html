@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="互动教学课件">
+    <meta name="author" content="AI 课件架构师">
+    <title>医学基础核心记忆口诀宝典</title>
+    <!-- 预加载关键资源 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- KaTeX 数学公式渲染 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0KOVEMcAORTEysVRK6ynQcVbYNUeC8TaHGPFCh/GMPWS0SZAJGlQL" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --primary-red: #C53030; --primary-red-rgb: 197, 48, 48; --elegant-gray: #A0AEC0; --deep-red: #9B2C2C; --light-red: #FEB2B2; --dark-gray: #718096; --light-gray: #E2E8F0; --white: #FFFFFF; --black: #1A202C; --near-black: #2D3748; --bg-light: #F7FAFC; --bg-warm: #FFFAF0; --font-serif: 'Noto Serif SC', 'Source Han Serif SC', serif; --font-sans: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; --spacing-sm: 0.5rem; --spacing-md: 1rem; --spacing-lg: 1.5rem; --spacing-xl: 2rem; --spacing-2xl: 3rem; --radius-md: 8px; --radius-lg: 12px; --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.12); --transition-normal: 0.3s ease-out; --emphasis-bg: rgba(197, 48, 48, 0.08); --emphasis-border: rgba(197, 48, 48, 0.2);
+            --correct-green: #2F855A; --incorrect-red: #C53030; --info-blue: #2B6CB0; --warning-orange: #DD6B20;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: var(--font-sans); color: var(--near-black); background-color: var(--bg-light); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow: hidden; cursor: default; }
+        h1, h2, h3, h4 { font-family: var(--font-serif); margin-bottom: var(--spacing-lg); color: var(--near-black); }
+        h1 { font-size: clamp(2rem, 5vw, 3rem); } h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); border-bottom: 2px solid var(--light-gray); padding-bottom: 0.5rem; } h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+        p { margin-bottom: 1.5rem; line-height: 1.8; font-size: clamp(0.9rem, 2vw, 1.1rem); }
+        ul, ol { padding-left: 2rem; line-height: 1.8; }
+        ul li, ol li { margin-bottom: 0.5rem; font-size: clamp(0.9rem, 2vw, 1.1rem); }
+        .subtle-emphasis { color: var(--primary-red); font-weight: 500; } .key-highlight { background: var(--emphasis-bg); padding: 0.15em 0.3em; border-radius: 3px; font-weight: 500; border-bottom: 1px solid var(--emphasis-border); } .concept-highlight { position: relative; font-weight: 500; } .concept-highlight::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, var(--primary-red), transparent); opacity: 0.3; }
+        .hidden { display: none !important; }
+
+        /* 布局与组件样式 */
+        .presentation-container { width: 100vw; height: 100vh; position: relative; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: clamp(1rem, 3vw, 3rem); display: none; flex-direction: column; align-items: center; justify-content: center; background-color: var(--bg-light); transition: opacity 0.5s ease-in-out; overflow: hidden; }
+        .slide.active-slide { display: flex; z-index: 1; }
+        .slide-content { width: 100%; max-width: min(1200px, 90vw); max-height: 85vh; overflow-y: auto; padding: 1rem; scrollbar-width: thin; scrollbar-color: var(--primary-red) transparent; }
+        .slide-content::-webkit-scrollbar { width: 6px; } .slide-content::-webkit-scrollbar-track { background: transparent; } .slide-content::-webkit-scrollbar-thumb { background: var(--primary-red); border-radius: 3px; }
+        .title-slide .slide-content { max-height: none; overflow: visible; padding-top: clamp(60px, 10vh, 120px); text-align: center; }
+        .scroll-reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; } .scroll-reveal.revealed { opacity: 1; transform: translateY(0); }
+        
+        /* 医学教学专用样式 */
+        .definition-block { background: var(--bg-warm); border-left: 4px solid var(--primary-red); padding: clamp(1rem, 3vw, 1.5rem); margin: var(--spacing-lg) 0; border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+        .formula-container { background: var(--white); padding: var(--spacing-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-card); margin: var(--spacing-lg) 0; text-align: center; font-size: clamp(1.2rem, 3vw, 1.8rem); overflow-x: auto; }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-xl); }
+        .option-btn { background-color: var(--white); border: 2px solid var(--light-gray); border-radius: var(--radius-md); padding: var(--spacing-md) var(--spacing-lg); font-size: clamp(1rem, 2.5vw, 1.1rem); text-align: left; cursor: pointer; transition: all var(--transition-normal); position: relative; padding-left: 3rem; }
+        .option-btn:hover { border-color: var(--primary-red); transform: translateY(-2px); }
+        .option-btn::before { content: attr(data-letter); position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-weight: bold; color: var(--dark-gray); }
+        .option-btn.correct { background-color: #E6FFFA; border-color: var(--correct-green); color: var(--correct-green); font-weight: 600; }
+        .option-btn.incorrect { background-color: #FFF5F5; border-color: var(--incorrect-red); color: var(--incorrect-red); font-weight: 600; }
+        .option-btn.disabled { pointer-events: none; }
+        .explanation-box { background-color: #EBF8FF; border-left: 4px solid var(--info-blue); color: var(--near-black); padding: var(--spacing-md); margin-top: var(--spacing-xl); border-radius: var(--radius-md); opacity: 0; transform: translateY(10px); transition: all 0.4s ease-out; max-height: 0; overflow: hidden; }
+        .explanation-box.visible { opacity: 1; transform: translateY(0); max-height: 50vh; overflow-y: auto; }
+        .explanation-box h4 { font-family: var(--font-sans); font-size: 1.1rem; color: var(--info-blue); border: none; margin-bottom: 0.5rem; }
+        .explanation-box p { font-size: clamp(0.85rem, 1.8vw, 1rem); line-height: 1.7; margin-bottom: 0.75rem; }
+        .reveal-container .solution-content { margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px dashed var(--light-gray); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.4s ease-out, max-height 0.5s ease-out; }
+        .reveal-container .solution-content.visible { opacity: 1; max-height: 50vh; }
+        .reveal-btn { background-color: var(--primary-red); color: var(--white); border: none; padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 99px; cursor: pointer; transition: all var(--transition-normal); box-shadow: var(--shadow-elevated); }
+        .reveal-btn:hover { transform: translateY(-2px); }
+        .alert-box { padding: var(--spacing-md) var(--spacing-lg); margin: var(--spacing-lg) 0; border-radius: var(--radius-md); border-left-width: 5px; border-left-style: solid; }
+        .alert-box__title { display: flex; align-items: center; font-family: var(--font-sans); font-weight: 600; font-size: 1.1rem; margin-bottom: var(--spacing-sm); }
+        .alert-box__title .fa-solid { margin-right: 0.75rem; font-size: 1.3rem; }
+        .alert-box.alert-critical { background-color: rgba(197, 48, 48, 0.05); border-color: var(--primary-red); color: var(--deep-red); } .alert-box.alert-critical .alert-box__title { color: var(--primary-red); }
+        .alert-box.alert-warning { background-color: rgba(221, 107, 32, 0.05); border-color: var(--warning-orange); color: #9C4221; } .alert-box.alert-warning .alert-box__title { color: var(--warning-orange); }
+        .alert-box.alert-info { background-color: rgba(43, 108, 176, 0.05); border-color: var(--info-blue); color: #2A4365; } .alert-box.alert-info .alert-box__title { color: var(--info-blue); }
+        .alert-box.alert-summary { background-color: #F7FAFC; border-color: var(--elegant-gray); color: var(--near-black); } .alert-box.alert-summary .alert-box__title { color: var(--dark-gray); }
+        .case-study-block { background: var(--white); box-shadow: var(--shadow-card); border-radius: var(--radius-lg); padding: var(--spacing-lg); margin: var(--spacing-lg) 0; }
+        .case-study-block p { margin-bottom: var(--spacing-sm); } .case-study-block p strong { color: var(--primary-red); font-family: var(--font-serif); margin-right: 0.5rem; }
+        .mnemonic-block { text-align: center; background: linear-gradient(135deg, var(--bg-warm), #fff9e6); padding: var(--spacing-lg); border-radius: var(--radius-lg); margin: var(--spacing-lg) 0; border: 2px dashed rgba(197, 48, 48, 0.2); }
+        .mnemonic-block__title { font-family: var(--font-serif); font-size: 1.4rem; color: var(--deep-red); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .mnemonic-block__content { font-size: 1.2rem; color: var(--near-black); line-height: 1.9; font-weight: 500; }
+        .diff-diag-table { width: 100%; border-collapse: collapse; margin: var(--spacing-lg) 0; box-shadow: var(--shadow-card); border-radius: var(--radius-lg); overflow: hidden; }
+        .diff-diag-table th, .diff-diag-table td { padding: var(--spacing-md); text-align: left; border-bottom: 1px solid var(--light-gray); }
+        .diff-diag-table th { background-color: #F7FAFC; font-family: var(--font-serif); font-weight: 600; }
+        .diff-diag-table tr:last-child td { border-bottom: none; }
+        .diff-diag-table td:first-child { font-weight: 500; color: var(--primary-red); }
+        .toc-list { list-style-type: none; padding-left: 0; counter-reset: toc-counter; }
+        .toc-list li { counter-increment: toc-counter; margin-bottom: 1rem; }
+        .toc-list li a { text-decoration: none; color: var(--near-black); font-size: clamp(1.1rem, 2.5vw, 1.3rem); display: flex; align-items: center; transition: all 0.2s ease; cursor: pointer;}
+        .toc-list li a::before { content: counter(toc-counter, decimal-leading-zero); font-family: var(--font-serif); font-weight: bold; font-size: 1.5rem; color: var(--primary-red); margin-right: 1.2rem; background: var(--emphasis-bg); padding: 0.2rem 0.6rem; border-radius: var(--radius-md); }
+        .toc-list li a:hover { color: var(--primary-red); transform: translateX(5px); }
+        .toc-list li a:hover::before { background: var(--primary-red); color: white; }
+
+        /* --- UI控件 & 课堂工具样式 --- */
+        .no-print { /* Utility class to hide elements during printing */ }
+        .auto-hide-ui { opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+        .auto-hide-ui.show { opacity: 1; pointer-events: auto; }
+        .progress-bar-container { position: fixed; top: 0; left: 0; width: 100%; height: 4px; z-index: 1020; } .progress-fill { height: 100%; background: var(--primary-red); width: 0; transition: width 0.3s ease; }
+        .slide-indicator { position: fixed; top: 20px; left: 20px; background: rgba(0,0,0,0.7); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: clamp(0.8rem, 2vw, 0.9rem); z-index: 1010; }
+        .top-right-controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 1010; }
+        .control-btn { width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: 1px solid var(--light-gray); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: var(--near-black); line-height: 1; transition: all 0.3s ease; }
+        .control-btn:hover { background: var(--white); transform: scale(1.1); }
+        .control-btn .fa-solid, .control-btn svg { width: 22px; height: 22px; font-size: 1.1rem; }
+        .navigation-controls { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 1rem; z-index: 1010; }
+        .nav-btn { width: 56px; height: 56px; border-radius: 50%; background: var(--primary-red); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-elevated); transition: all 0.2s; }
+        .nav-btn:hover { transform: translateY(-2px); } .nav-btn:disabled { background: var(--elegant-gray); cursor: not-allowed; transform: none; } .nav-btn svg { width: 24px; height: 24px; }
+        .thumbnails-container-wrapper { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); max-width: 60vw; width: 100%; z-index: 1010; pointer-events: none; }
+        .thumbnails-container-wrapper::before, .thumbnails-container-wrapper::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40px; z-index: 2; pointer-events: none; opacity: var(--gradient-opacity, 0); transition: opacity 0.3s ease; }
+        .thumbnails-container-wrapper::before { left: 0; background: linear-gradient(to right, rgba(247, 250, 252, 1), rgba(247, 250, 252, 0)); opacity: var(--before-opacity, 0); }
+        .thumbnails-container-wrapper::after { right: 0; background: linear-gradient(to left, rgba(247, 250, 252, 1), rgba(247, 250, 252, 0)); opacity: var(--after-opacity, 0); }
+        .slide-thumbnails { display: flex; gap: 0.5rem; background: rgba(255, 255, 255, 0.95); padding: 0.5rem; border-radius: 99px; box-shadow: var(--shadow-card); max-width: 100%; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; position: relative; z-index: 1; pointer-events: auto; }
+        .slide-thumbnails::-webkit-scrollbar { display: none; }
+        .thumbnail-btn { width: 40px; height: 30px; border: 2px solid var(--light-gray); border-radius: var(--radius-md); background: white; cursor: pointer; transition: all 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: var(--dark-gray); font-weight: 600; }
+        .thumbnail-btn.active { border-color: var(--primary-red); transform: translateY(-2px); }
+
+        /* 新增：课堂演示工具样式 */
+        #drawingCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1000; pointer-events: none; cursor: crosshair; }
+        #drawingCanvas.active { pointer-events: auto; }
+        #laserPointer { position: fixed; width: 20px; height: 20px; background: rgba(255, 0, 0, 0.7); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px red; z-index: 1005; pointer-events: none; transform: translate(-50%, -50%); display: none; }
+        #spotlightOverlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, transparent 120px, rgba(0,0,0,0.8) 150px); z-index: 999; pointer-events: none; display: none; }
+        #blackoutScreen, #whiteoutScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2000; }
+        #blackoutScreen { background-color: var(--black); }
+        #whiteoutScreen { background-color: var(--white); }
+        .classroom-tools { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1010; background: rgba(255, 255, 255, 0.9); padding: 8px; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+        .tool-btn { width: 48px; height: 48px; border-radius: 50%; background: transparent; border: 2px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--near-black); transition: all 0.2s ease; }
+        .tool-btn:hover { background: var(--light-gray); }
+        .tool-btn.active { background: var(--primary-red); color: white; border-color: var(--deep-red); }
+
+        /* === 优化：高保真打印与PDF导出样式 === */
+        @media print {
+            @page { size: A4; margin: 2cm 1.5cm; }
+            html, body { font-size: 11pt; color: #000; background: #fff; overflow: visible !important; height: auto !important; width: 100% !important; }
+            .no-print { display: none !important; }
+            .presentation-container { width: 100% !important; height: auto !important; }
+            .slide { display: block !important; position: relative !important; width: 100% !important; height: auto !important; padding: 0 0 1cm 0 !important; page-break-after: always; opacity: 1 !important; border-bottom: 1px solid #ddd; }
+            .slide:last-of-type { page-break-after: avoid; border-bottom: none; }
+            .slide-content { max-height: none !important; overflow: visible !important; padding: 0 !important; }
+            h1, h2, h3 { page-break-after: avoid; }
+            .alert-box, .case-study-block, .mnemonic-block, .diff-diag-table, .definition-block, .options-grid, .reveal-container { page-break-inside: avoid; }
+            -webkit-print-color-adjust: exact; color-adjust: exact;
+            .option-btn.correct { background: #E6FFFA !important; border-color: #2F855A !important; }
+            .explanation-box, .reveal-container .solution-content { display: block !important; opacity: 1 !important; transform: none !important; max-height: none !important; overflow: visible !important; background: #f0f8ff !important; }
+            .reveal-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingIndicator" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease;">
+        <div style="text-align: center;"><i class="fa-solid fa-brain fa-beat" style="font-size: 3rem; color: var(--primary-red);"></i><p style="margin-top: 1rem;">正在构建互动课件...</p></div>
+    </div>
+    <div class="progress-bar-container no-print auto-hide-ui"><div class="progress-fill" id="progressBar"></div></div>
+    <div class="slide-indicator no-print auto-hide-ui" id="slideIndicator"><span class="current-slide">1</span> / <span class="total-slides">1</span></div>
+    
+    <!-- 右上角控制 -->
+    <div class="top-right-controls no-print auto-hide-ui">
+        <button id="font-decrease-btn" class="control-btn" title="减小字体 (Ctrl+-)">-</button>
+        <button id="font-increase-btn" class="control-btn" title="增大字体 (Ctrl+=)">+</button>
+        <button id="print-btn" class="control-btn" title="打印或导出为高保真PDF (Ctrl+P)"><i class="fa-solid fa-print"></i></button>
+        <button class="control-btn" id="fullscreenBtn" onclick="toggleFullscreen()" title="切换全屏模式 (F)"><svg class="fullscreen-icon--enter" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg><svg class="fullscreen-icon--exit hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg></button>
+    </div>
+
+    <!-- 左下角课堂工具 -->
+    <div class="classroom-tools no-print auto-hide-ui">
+        <button id="laser-btn" class="tool-btn" title="激光笔 (L)"><i class="fa-solid fa-circle-dot"></i></button>
+        <button id="draw-btn" class="tool-btn" title="画笔 (D)"><i class="fa-solid fa-pen-nib"></i></button>
+        <button id="spotlight-btn" class="tool-btn" title="聚光灯 (S)"><i class="fa-solid fa-highlighter"></i></button>
+        <button id="eraser-btn" class="tool-btn" title="橡皮擦 (E)"><i class="fa-solid fa-eraser"></i></button>
+        <button id="clear-canvas-btn" class="tool-btn" title="清空当前页笔记"><i class="fa-solid fa-trash-can"></i></button>
+    </div>
+    
+    <main class="presentation-container" id="presentationContainer">
+        <!-- Slide 1: Title -->
+        <section class="slide title-slide active-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">医学基础核心记忆口诀宝典</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">覆盖解剖、生理、病理、药理、诊断及更多核心考点</p>
+            </div>
+        </section>
+
+        <!-- Slide 2: Table of Contents -->
+        <section class="slide">
+            <div class="slide-content">
+                <h2>课程学习导航</h2>
+                <ol class="toc-list">
+                    <li class="scroll-reveal"><a onclick="goToSlide(2)">第一部分：人体解剖学 (知识点 1-50)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(53)">第二部分：生理学 (知识点 51-86)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(89)">第三部分：病理学 (知识点 87-118)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(122)">第四部分：药理学 (知识点 119-142)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(147)">第五部分：诊断学 (知识点 143-161)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(167)">第六部分：法规与伦理 (知识点 162-175)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(182)">第七部分：组织胚胎学 (知识点 176-180)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(187)">第八部分：寄生虫学 (知识点 181-185)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(193)">第九部分：免疫学 (知识点 186-191)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(200)">第十部分：微生物学 (知识点 192-195)</a></li>
+                    <li class="scroll-reveal"><a onclick="goToSlide(205)">第十一部分：生物化学 (知识点 196-200)</a></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 1: Anatomy -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第一部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">人体解剖学记忆口诀 (知识点 1-50)</p>
+            </div>
+        </section>
+        
+        <section class="slide"><div class="slide-content"><h2>知识点1：人体的轴线</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：人体的轴线</h3><p class="mnemonic-block__content">“前后矢，左右冠，上下垂直，轴线看”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>垂直轴：呈上下方向，与人体长轴平行，与地平面垂直的轴；<br>冠状轴：呈左右方向，与地平面平行，与人体长轴垂直的轴；<br>矢状轴：呈前后方向，与地平面平行，与人体长轴垂直的轴。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点2：人体的面</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：人体的面</h3><p class="mnemonic-block__content">“矢分左右，冠前后，水平上下，面不同”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>矢状面：沿前后方向，将人体纵切为左右两部分，即矢状面；<br>冠状面：沿左右方向，将人体纵切为前后两部分，即冠状面；<br>水平面：沿地平面方向，将人体横切为上下两部分，即为水平面。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点3：终身存在红骨髓的部位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：终身存在红骨髓的部位</h3><p class="mnemonic-block__content">“又掐又勒的人最凶”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“掐”代表“髂骨”，“勒”代表“肋骨”，“最”代表“椎骨”，“凶”代表“胸骨”。在髂骨、肋骨、椎骨、胸骨等部位终生存在红骨髓。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点4：颈椎特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：颈椎特点</h3><p class="mnemonic-block__content">“颈椎椭圆棘分叉，椎血管过横突孔”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>颈椎椎体横断面呈椭圆形，第2～6颈椎棘突短，末端分叉，横突根部有横突孔，内有椎动脉及椎静脉通过。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点5：胸椎特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：胸椎特点</h3><p class="mnemonic-block__content">“胸椎心形瓦片棘，横突肋凹关节奇”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>胸椎椎体横断面呈心形，横突末端的前面有横突肋凹与肋结节相关节，胸椎棘突斜向后下方，呈叠瓦状排列。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点6：腰椎特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：腰椎特点</h3><p class="mnemonic-block__content">“腰椎肾形体粗壮，棘突后伸腰穿行”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>腰椎椎体横断面呈肾形，棘突宽厚呈板状且水平后伸，临床上常在此做腰椎穿刺术。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点7：胸骨角</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：胸骨角</h3><p class="mnemonic-block__content">“前2后4分纵隔”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“前2”代表“向前两侧平对第2肋”，“后4”代表“向后平对T4椎体下缘”，“分纵隔”代表“纵隔以胸骨角平面分为上下纵隔”。胸骨角两侧平对第2肋；胸骨角向后平对第4胸椎体下缘；纵隔以胸骨角平面为界分为了上纵隔和下纵隔。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点8：脑颅骨</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：脑颅骨</h3><p class="mnemonic-block__content">“额枕蝶筛双颞顶”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>不成对的脑颅骨有额骨、枕骨、蝶骨和筛骨，成对的脑颅骨有颞骨和顶骨。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点9：翼点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：翼点</h3><p class="mnemonic-block__content">“额顶颞蝶”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>额骨、顶骨、颞骨、蝶骨四骨交点形成一个H形骨缝，称为翼点，该处骨质薄弱，其内又有脑膜中动脉通过，受外力打击易破裂出血。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点10：成对的面颅骨</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：成对的面颅骨</h3><p class="mnemonic-block__content">“鼻上泪、颧下腭”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“鼻”代表“鼻骨”，“上”代表“上颌骨”，“泪”代表“泪骨”，“颧”代表“颧骨”，“下”代表“下鼻甲”，“腭”代表“腭骨”。成对的面颅骨包括鼻骨、上颌骨、泪骨、颧骨、下鼻甲、腭骨。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点11：不成对的面颅骨</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：不成对的面颅骨</h3><p class="mnemonic-block__content">“犁下舌”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“犁”代表“犁骨”，“下”代表“下颌骨”，“舌”代表“舌骨”。不成对的面颅骨包括犁骨、下颌骨、舌骨。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点12：嗅神经、视神经入颅部位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：嗅神经、视神经入颅部位</h3><p class="mnemonic-block__content">“嗅穿筛，视穿蝶”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>嗅神经穿筛板，视神经穿蝶骨的视神经管。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点13：动眼、滑车、展神经和三叉神经眼支入颅部位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：特定神经入颅部位</h3><p class="mnemonic-block__content">“动滑展眼眶上裂”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>动眼、滑车、展神经、三叉神经眼支穿眶上裂。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点14：三叉神经入颅部位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：三叉神经入颅部位</h3><p class="mnemonic-block__content">“三叉神经分三支，眼眶圆孔上卵下”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>三叉神经眼支穿眶上裂，上颌支穿圆孔、下颌支穿卵圆孔。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点15：面神经、听神经入颅部位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：面神经、听神经入颅部位</h3><p class="mnemonic-block__content">“内耳门过面听行”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>面神经、听神经穿内耳门。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点16：舌咽、迷走和副神经入颅部位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：特定神经入颅部位</h3><p class="mnemonic-block__content">“舌咽迷副颈静脉”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>舌咽、迷走、副神经穿颈静脉孔。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点17：舌下神经入颅部位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：舌下神经入颅部位</h3><p class="mnemonic-block__content">“神经管通舌下行”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>舌下神经穿舌下神经管。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点18：腕骨</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：腕骨</h3><p class="mnemonic-block__content">“舟月三角豆，大小头状钩”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>腕骨近侧列由桡侧向尺侧为：手舟骨、月骨、三角骨和豌豆骨；<br>远侧列为：大多角骨、小多角骨、头状骨和钩骨。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点19：跗骨</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：跗骨</h3><p class="mnemonic-block__content">“一二三楔骰内舟，上距下跟后出头”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>跗骨共7块，属短骨。分前、中、后三列。前列为内侧楔骨、中间楔骨、外侧楔骨及跟骨前方的骰骨；中列为位于距骨前方的足舟骨；后列包括上方的距骨和下方的跟骨。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点20：关节的基本构造</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：关节的基本构造</h3><p class="mnemonic-block__content">“面囊腔”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“面”代表“关节面”，“囊”代表“关节囊”，“腔”代表“关节腔”。关节的基本结构包括关节面、关节囊和关节腔。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点21：脊柱侧面观</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：脊柱侧面观</h3><p class="mnemonic-block__content">“妖精在前，兄弟在后”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“妖”同“腰”，“精”同“颈”，“兄”同“胸”，“弟”同“骶”。成人脊柱有颈、胸、腰、骶4个生理性弯曲，其中颈曲和腰曲凸向前，胸曲和骶曲凸向后。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点22：桡腕关节的组成</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：桡腕关节的组成</h3><p class="mnemonic-block__content">“舟月三角，桡尺骨盘”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>桡腕关节由手的舟骨、月骨和三角骨的近侧关节面作为关节头，桡骨的腕关节面和尺骨头下方的关节盘作为关节窝而构成。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点23：膝关节交叉韧带</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：膝关节交叉韧带</h3><p class="mnemonic-block__content">“前伸前，后屈后”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>前交叉韧带在伸膝时最紧张，防止胫骨前移；后交叉韧带在屈膝时最紧张，防止胫骨后移。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点24：膝关节半月板</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：膝关节半月板</h3><p class="mnemonic-block__content">“内C外O，内大外小”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>膝关节内侧半月板较大呈“C”形，外侧半月板较小呈“O”形。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点25：腹股沟三角</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：腹股沟三角</h3><p class="mnemonic-block__content">“内饥，外卖，地沟油”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“内饥”代表“内侧边是腹直肌外缘”，“外卖”代表“外侧边是腹壁下动脉”，“地沟油”代表“底边是腹股沟韧带”。腹股沟(海氏)三角是由腹直肌外侧缘、腹股沟韧带和腹壁下动脉围成的三角区。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点26：呼吸肌</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：呼吸肌</h3><p class="mnemonic-block__content">“用力吸气格外累”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“格”代表“膈肌”，“外累”代表“肋间外肌”。人体主要的吸气肌为膈肌和肋间外肌。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点27：膈的3个裂孔</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：膈的3个裂孔</h3><p class="mnemonic-block__content">“腔8，食10，主12”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“腔”代表“腔静脉孔”，“食”代表“食管裂孔”，“主”代表“主动脉裂孔”。膈有3个裂孔：腔静脉孔约平第8胸椎，有下腔静脉通过；食管裂孔约平第10胸椎，有食管和迷走神经通过；主动脉裂孔约平第12胸椎，有主动脉和胸导管通过。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点28：腹膜内位器官</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：腹膜内位器官</h3><p class="mnemonic-block__content">“以为蓝皮书横乱，空忙十二回”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>腹膜内位器官包括乙状结肠、胃、阑尾、脾、输卵管、横结肠、卵巢、空肠、盲肠、十二指肠上部、回肠。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点29：腹膜间位器官</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：腹膜间位器官</h3><p class="mnemonic-block__content">“肝胆直升降紫光”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>腹膜间位器官包括肝脏、胆囊、直肠上部、升结肠、降结肠、子宫、充盈的膀胱。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点30：腹膜外位器官</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：腹膜外位器官</h3><p class="mnemonic-block__content">“神仙医鸟十二只，膀胱空虚在外面”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>腹膜外位器官包括肾、肾上腺、胰、输尿管、十二指肠降部和水平部、直肠中段及空虚的膀胱。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点31：肺下界的投影</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肺下界的投影</h3><p class="mnemonic-block__content">“锁中6，腋中8，肩胛线，10肋叉”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>锁骨中线第6肋；腋中线第8肋；肩胛线第10肋。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点32：胸膜下界的投影</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：胸膜下界的投影</h3><p class="mnemonic-block__content">“锁中八，腋中十，肩胛线，十一肋”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>锁骨中线第8肋；腋中线第10肋；肩胛线第11肋。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点33：肾蒂内主要结构排列</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肾蒂内主要结构排列</h3><p class="mnemonic-block__content">“前进”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>肾蒂内主要结构排列由前向后依次为肾静脉、肾动脉和肾盂。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点34：肾窦</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肾窦</h3><p class="mnemonic-block__content">“动静肾盂大小盏，淋巴神经带脂肪”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>肾窦容纳肾血管、肾小盏、肾大盏、肾盂和脂肪等结构。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点35：子宫的位置</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：子宫的位置</h3><p class="mnemonic-block__content">“前膀胱后直肠，子宫在中央”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>子宫位于小骨盆中央，在膀胱与直肠之间；下端接阴道，两侧有输卵管和卵巢（二者合称子宫附件）。当膀胱空虚时，成年人子宫呈轻度前倾前屈位。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点36：子宫的固定装置</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：子宫的固定装置</h3><p class="mnemonic-block__content">“前圆后骶宫前倾、阔维正中主防垂”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>子宫圆韧带维持子宫前倾；子宫骶韧带牵引子宫向后上，协同子宫圆韧带；子宫阔韧带限制子宫向两侧移动，维持正中位置；子宫主韧带防止子宫脱垂。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点37：左二右三的解剖结构</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：左二右三的解剖结构</h3><p class="mnemonic-block__content">“左二右三”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>房室瓣：二尖瓣在“左”，三尖瓣在“右”；<br>肾上腺：左肾上腺近似半月形，右肾上腺呈三角形；<br>肺：左肺分为上下两叶，右肺分为上、中、下三叶。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点38：心腔结构</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：心腔结构</h3><p class="mnemonic-block__content">“上房下室”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>楼“上”是房子，楼下是地“下”室。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点39：Willis环</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：Willis环</h3><p class="mnemonic-block__content">“前前后前，颈内前后”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>由两侧大脑“前”动脉交通前段、两侧大脑“后”动脉交通前段、两侧“颈内”动脉末端以及“前”交通动脉和“后”交通动脉组成环。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点40：压力感受器</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：压力感受器</h3><p class="mnemonic-block__content">“宫斗有压力”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“宫”代表“主动脉弓”，“斗”代表“颈动脉窦”。主动脉弓和颈动脉窦有压力感受器。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点41：颈外动脉的分支</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：颈外动脉的分支</h3><p class="mnemonic-block__content">“耳后咽升枕动脉，甲上舌面颞上颌”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>颈外动脉的分支包括耳后动脉、咽升动脉、枕动脉、甲状腺上动脉、舌动脉、面动脉，颞浅动脉，上颌动脉。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点42：肝门静脉主要属支</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肝门静脉主要属支</h3><p class="mnemonic-block__content">“但脾气未长”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>肝门静脉主要属支包括胆囊静脉、脾静脉、附脐静脉、胃左静脉、胃右静脉、肠系膜上静脉、肠系膜下静脉。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点43：腹主动脉不成对的分支</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：腹主动脉不成对的分支</h3><p class="mnemonic-block__content">“厂商瞎干”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“厂商”代表“肠系膜上动脉”，“瞎”代表“肠系膜下动脉”，“干”代表“腹腔干”。腹主动脉不成对的分支包括肠系膜上动脉、肠系膜下动脉和腹腔干。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点44：不同年龄，脊髓与脊柱的关系</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：脊髓与脊柱关系</h3><p class="mnemonic-block__content">“331，等生成”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“3→等”胚胎3月时，脊髓与脊柱长度相等；<br>“生→3”出生时，脊髓末端平第三腰椎椎体下缘；<br>“成→1”成年时，脊髓末端平第一腰椎椎体下缘。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点45：眼的屈光装置</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：眼的屈光装置</h3><p class="mnemonic-block__content">“玻璃水晶饺”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“玻璃”代表“玻璃体”，“水”代表“房水”，“晶”代表“晶状体”，“饺”代表“角膜”。眼的屈光装置包括玻璃体、房水、晶状体和角膜。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点46：眼球外肌</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：眼球外肌</h3><p class="mnemonic-block__content">“上滑外展”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“上”斜肌被“滑”车神经支配，“外”直肌被“展”神经支配。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点47：十二对脑神经</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：十二对脑神经</h3><p class="mnemonic-block__content">“一嗅二视三动眼，四滑五叉六外展。七面八庭九舌咽，迷副舌下十二全”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>十二对脑神经包括Ⅰ嗅神经、Ⅱ视神经、Ⅲ动眼神经、Ⅳ滑车神经、Ⅴ三叉神经、Ⅵ展神经、Ⅶ面神经、Ⅷ前庭蜗神经、Ⅸ舌咽神经、Ⅹ迷走神经、Ⅺ副神经、Ⅻ舌下神经。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点48：十二对脑神经分类</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：十二对脑神经分类</h3><p class="mnemonic-block__content">“一二感看八，五七混九十，其余是运动”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>感觉性神经：Ⅰ、Ⅱ、Ⅷ；<br>混合性神经：Ⅴ、Ⅶ、Ⅸ、Ⅹ；<br>运动性神经：Ⅲ、Ⅳ、Ⅵ、Ⅺ、Ⅻ。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点49：纹状体的组成</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：纹状体的组成</h3><p class="mnemonic-block__content">“尾豆合成纹，纹分新和旧，尾新苍白旧”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>尾状核和豆状核组成纹状体，纹状体分为新纹状体和旧纹状体，苍白球是旧纹状体，尾状核和豆状核外侧部（壳）是新纹状体。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点50：常见神经损伤</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：常见神经损伤</h3><p class="mnemonic-block__content">“中原迟早闹炊烟，夜间常坐飞马进沟”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>正中神经损伤表现为猿掌，尺神经损伤表现为爪形手，桡神经损伤表现为垂腕，腋神经损伤表现为方肩，坐骨神经最长，腓总神经损伤表现为马蹄内翻足，胫神经受损表现为钩状足。</p></div></div></section>
+
+        <!-- Section 2: Physiology -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第二部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">生理学记忆口诀 (知识点 51-86)</p>
+            </div>
+        </section>
+
+        <section class="slide"><div class="slide-content"><h2>知识点51：大脑皮质功能定位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：大脑皮质功能定位</h3><p class="mnemonic-block__content">“颞上感，额下动；额中失写角失读”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>颞上回后部损伤出现感觉性失语症；<br>额下回后部损伤出现运动性失语症；<br>额中回后部损伤出现失写症；<br>角回损伤出现失读症。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点52：正反馈</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：正反馈</h3><p class="mnemonic-block__content">“四排一凝是正馈”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>正反馈包括“四排”排尿、排便、排卵、分娩（排孩子）；“一凝”血液凝固。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点53：单纯扩散</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：单纯扩散</h3><p class="mnemonic-block__content">“干酒水,有气氛”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>单纯扩散包括甘油；乙醇、乙醚；水；氧气、二氧化碳、氮气；氨气；尿素等。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点54：继发性主动转运</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：继发性主动转运</h3><p class="mnemonic-block__content">“肠肾继主其他易”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>肠上皮和肾小管上皮重吸收葡萄糖氨基酸是继发性主动转运，其他形式（葡萄糖进出红细胞）是易化扩散。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点55：主动转运</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：主动转运</h3><p class="mnemonic-block__content">“原发转运各种泵，借Na＋势能是继发”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>钠泵、钙泵属于原发性主动转运，继发性主动转运消耗的是钠泵的势能。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点56：静息电位/极化</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：静息电位/极化</h3><p class="mnemonic-block__content">“胞膜内外电位差，内负外正称极化”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>胞膜两侧存在外正内负且相对平稳的电位差称为静息电位；安静时细胞膜两侧处于外正内负的状态称为极化（静息电位）。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点57：血细胞</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：血细胞</h3><p class="mnemonic-block__content">“血细胞为红白板”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>血细胞可分为红细胞、白细胞、血小板。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点58：血浆</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：血浆</h3><p class="mnemonic-block__content">“膜外为浆九成晶，胶体三类白铅球”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>血浆是细胞外液，血浆中九成成分的晶体；血浆胶体物质主要是血浆蛋白，血浆蛋白包括白蛋白、纤维蛋白原、球蛋白。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点59：晶体渗透压及其意义</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：晶体渗透压</h3><p class="mnemonic-block__content">“精细盐”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>晶体渗透压的主要成分是NaCl；维持细胞内外水平衡，保持细胞正常形态和功能。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点60：胶体渗透压及其意义</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：胶体渗透压</h3><p class="mnemonic-block__content">“叫白雪”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>胶体渗透压大小主要由血浆白蛋白决定；调节血管内外水平衡，维持血浆容量。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点61：血沉加快</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：血沉加快</h3><p class="mnemonic-block__content">“荡秋千，越荡越快”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>胆固醇、球蛋白和血浆纤维蛋白原增高，使血沉加快。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点62：凝血因子</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：凝血因子</h3><p class="mnemonic-block__content">“爱妻就是家；山外有山；盖世英雄；跳舞吧”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>维生素K依赖性凝血因子：Ⅱ、Ⅶ、Ⅸ、Ⅹ；<br>不存在于血浆的凝血因子：Ⅲ（组织因子）；<br>不是蛋白质的凝血因子：Ⅳ（Ca2+）；<br>不稳定的凝血因子：Ⅴ、Ⅷ。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点63：心脏泵血过程</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：心脏泵血过程</h3><p class="mnemonic-block__content">“等容期均关闭，射血房闭半月启，充盈房启半月闭”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>等容收缩期、等容舒张期：房室瓣和半月瓣均关闭；<br>快速射血期、减慢射血期：房室瓣关闭，半月瓣开启；<br>快速充盈期、减慢充盈期：房室瓣开启，半月瓣关闭。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点64：影响动脉血压的因素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：影响动脉血压的因素</h3><p class="mnemonic-block__content">“心搏心率血容大，管小血粘升血压。脉压小因心搏少，脉压大缘管硬化”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>心脏搏出量、心率、血管系统容量增大时，动脉血压升高；“管腔缩小、血液黏稠时，升高血压；脉压减小是因为心脏搏出量减少；脉压增大是因为管壁硬化。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点65：消化道平滑肌的一般生理特性</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：消化道平滑肌特性</h3><p class="mnemonic-block__content">“平滑肌不高兴，自律紧张延展性，对电刺激没反应”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>消化道平滑肌兴奋性较低；消化道平滑肌具有自律性、紧张性和伸展性；消化道平滑肌对电刺激不敏感。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点66：胃酸（盐酸）作用</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：胃酸作用</h3><p class="mnemonic-block__content">“胃酸激变杀促吸”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>激活胃蛋白酶原；使食物中的蛋白质变性；杀灭随食物进入胃内的细菌；促进促胰液素和缩胆囊素的分泌，进而引起胰液、胆汁和小肠液的分泌；盐酸造成的酸性环境有利于小肠对铁和钙的吸收。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点67：胰液的成分及作用</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：胰液成分及作用</h3><p class="mnemonic-block__content">“胰液一碱酶，淀脂蛋白酶”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>胰液是无色无臭的碱性、含有消化酶的液体。胰酶含有胰蛋白酶原、糜蛋白酶原、胰淀粉酶、胰脂肪酶；蛋白酶消化蛋白、淀粉酶消化淀粉、脂肪酶消化脂肪。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点68：唾液的成分及作用</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：唾液成分及作用</h3><p class="mnemonic-block__content">“唾液里面淀粉酶，水解淀粉第一酶”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>唾液中水分约占99％。有机物主要为黏蛋白，还有免疫球蛋白、氨基酸、尿素、尿酸、唾液淀粉酶和溶菌酶等。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点70：产热</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：产热</h3><p class="mnemonic-block__content">“内脏产热肝最多，运动产热肌收缩。甲状肾上交感亢，产热过甚是其果”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>安静时主要由内脏产热，在内脏各器官中以肝脏的代谢最为旺盛；运动或劳动时，骨骼肌则成为主要的产热器官。甲状腺激素、肾上腺激素分泌增多，交感神经亢进时产热增多。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点71：散热</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：散热</h3><p class="mnemonic-block__content">“散热对流与蒸发，辐射传导共四法。皮温低时用蒸发，高时主要靠辐射”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>散热方式有四种：对流散热、蒸发散热、辐射散热、传导散热；皮肤温度等于或低于外界温度时，蒸发散热是唯一有效的散热形式;皮肤温度高于外界温度时的主要散热方式是辐射散热。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点72：尿液生成的过程</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：尿液生成过程</h3><p class="mnemonic-block__content">“肾球滤过成原尿，肾管重收排废料，最后形成为终尿”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>尿生成包括三个基本过程：①血浆在肾小球毛细血管处的滤过，形成原尿；②原尿在流经肾小管和集合管的过程中被选择性重吸收；③肾小管和集合管的分泌，最后形成终尿。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点73：视网膜的两种感光换能系统</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：视网膜感光系统</h3><p class="mnemonic-block__content">“日追夜赶”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“日追”代表“白天发挥作用的是视锥细胞”，“夜赶”代表“晚上发挥作用的是视杆细胞”。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点74：中耳结构</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：中耳结构</h3><p class="mnemonic-block__content">“中耳都是“骨””</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>中耳结构包括鼓膜，听小骨，鼓室（都含有“gu”）。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点75：交感神经的功能</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：交感神经功能</h3><p class="mnemonic-block__content">“交感加强主应激，心速高压张支气，收缩血管促分解，扩瞳竖毛汗分泌。抑制消化和泌尿，舒平滑缩括约肌”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>交感神经兴奋表现为应激；心动过速，血压增高，舒张支气管；不重要脏器血管收缩，促进糖原分解；扩大瞳孔，竖毛肌收缩、汗腺分泌；胃肠蠕动和胆囊活动减弱，括约肌收缩；逼尿肌舒张，括约肌收缩。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点76：副交感神经的功能</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：副交感神经功能</h3><p class="mnemonic-block__content">“副交领先在休息，多与交感相对立。促进吸收与排泄，保存能量利生殖”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>副交感神经兴奋多出现在休息时；交感神经、副交感神经功能基本相反；副交感神经兴奋促进吸收和排泄，有利于保存能量，有利于生殖。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点77：正常脑电图的波形和其意义</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：脑电图波形</h3><p class="mnemonic-block__content">“α静静睡到醒，贝克汉姆爱运动，困倦时候嘴张大，δ形状像S”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>α波：成人安静、闭目、清醒时；<br>β波（联想“贝”）：成人活动时；<br>θ波(形似打哈欠）：成人困倦时；<br>δ波（联想“sleep”）：成人熟睡后；婴幼儿正常时。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点78：肾上腺皮质</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肾上腺皮质</h3><p class="mnemonic-block__content">“球被束缚在网中，加盐加糖就行”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>肾上腺皮质由外到内分三带：球状带、束状带、网状带；分别分泌盐皮质激素、糖皮质激素、性激素。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点79：盐皮质激素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：盐皮质激素</h3><p class="mnemonic-block__content">“保水保钠却排钾，低钾水肿高血压”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>醛固酮的主要作用是保Na+、排K+作用，在重吸收Na+的同时也等渗性地重吸收水，因而对维持细胞外液量及循环血量的相对稳定具有重要意义。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点80：糖皮质激素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：糖皮质激素</h3><p class="mnemonic-block__content">“保钠排钾升血糖，减少蛋白向心胖”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>糖皮质激素有保钠排钾的作用；升高血糖；促进脂肪分解；能抑制肝外组织细胞内的蛋白质合成，加速其分解。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点81：生长激素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：生长激素</h3><p class="mnemonic-block__content">“升糖解脂合蛋白，生长激素由此来”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>生长激素升高血糖，促进脂肪分解，促进蛋白质合成。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点82：甲状腺激素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：甲状腺激素</h3><p class="mnemonic-block__content">“促进代谢食欲亢，促解蛋白糖脂肪，神经兴奋促生长，心率加速心肌强”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>甲状腺激素促进代谢，使食欲亢进；甲状腺激素促进蛋白质、糖、脂肪的分解；甲状腺激素使神经系统兴奋性增高，促进生长发育；甲状腺激素使心率加快、心肌收缩力增强。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点83：甲状旁腺与钙、磷代谢</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：钙、磷代谢激素</h3><p class="mnemonic-block__content">“降钙素全降，钙三醇全升”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>降钙素降低血钙、血磷；钙三醇升高血钙、血磷。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点84：卵巢功能</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：卵巢功能</h3><p class="mnemonic-block__content">“卵巢排卵产黄体，雌孕激素都分泌”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>卵巢能产生卵子和黄体；卵巢能分泌雌激素、孕激素。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点85：雌激素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：雌激素</h3><p class="mnemonic-block__content">“雌素刺激女性征，子宫阴道均增殖”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>雌激素促进第二性征出现并维持,使子宫内膜增生变厚，使阴道上皮增生角化。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点86：孕激素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：孕激素</h3><p class="mnemonic-block__content">“孕素促进宫腺体，宫腺变成分泌期，利于着床抑宫缩，产热乳腺受刺激”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>孕激素促进子宫内膜转为分泌期内膜，有利于安胎和着床，抑制子宫收缩，升高体温，促进乳房腺泡发育。</p></div></div></section>
+
+        <!-- Section 3: Pathology -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第三部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">病理学记忆口诀 (知识点 87-118)</p>
+            </div>
+        </section>
+
+        <section class="slide"><div class="slide-content"><h2>知识点87：萎缩</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：萎缩</h3><p class="mnemonic-block__content">“萎缩正常体数少”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>萎缩是正常发育的细胞体积缩小，可伴有数目的减少。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点88：增生</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：增生</h3><p class="mnemonic-block__content">“增生仅有数量加”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>增生是细胞数目增多的现象。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点89：脂肪变性的器官</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：脂肪变性器官</h3><p class="mnemonic-block__content">“大黄油”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>体积增大；淡黄色，边缘圆钝；切面呈油腻感。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点90：肝脏病变部位</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肝脏病变部位</h3><p class="mnemonic-block__content">“湖中淤泥，周边树林”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>慢性肝淤血脂肪变首先发生于小叶中央区；磷中毒肝细胞脂肪变首先发生于小叶周边部。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点91：凝固性坏死常见器官</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：凝固性坏死器官</h3><p class="mnemonic-block__content">“凝固坏死，心肝肾脾”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>坏死中凝固性坏死最为常见，多见于心、肝、肾和脾等实质器官。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点92：液化性坏死、脂肪坏死</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：液化性坏死</h3><p class="mnemonic-block__content">“湿性坏死，脑脂脓胰”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>液化性坏死见于细菌或某些真菌感染引起的脓肿、缺血缺氧引起的脑软化，以及由细胞水肿发展而来的溶解性坏死等。急性胰腺炎时细胞释放胰酶分解脂肪酸，乳房创伤时脂肪细胞破裂，可分别引起酶解性或创伤性脂肪坏死，也属液化性坏死范畴。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点93：营养不良性钙化见于</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：营养不良性钙化</h3><p class="mnemonic-block__content">“姐姐办学吃粥”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>结核病、瘢痕组织、心脏瓣膜病变、血栓、动脉粥样硬化斑块等。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点94：坏疽分类</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：坏疽分类</h3><p class="mnemonic-block__content">“坏疽三分干湿气”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>坏疽分为干性坏疽、气性坏疽和湿性坏疽。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点95：干性坏疽特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：干性坏疽特点</h3><p class="mnemonic-block__content">“干来动阻静乃畅，比如四肢硫化黑”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>干性坏疽发生于动脉端堵塞、静脉端通畅的部位，好发于四肢末端，坏死区干燥皱缩呈黑色是Fe2+与H2S的色泽。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点96：湿性坏疽特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：湿性坏疽特点</h3><p class="mnemonic-block__content">“湿来动阻静也阻，倒是子丹烂肠肺”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>湿性坏疽发生在动脉和静脉端都堵塞的部位，发生在肺、肠、子宫、胆囊等器官。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点97：气性坏疽特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：气性坏疽特点</h3><p class="mnemonic-block__content">“气来厌氧产荚膜，捻发捻到肌肉累”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>气性坏疽伴有产气荚膜梭菌的感染，发生于深达肌层的开放性创伤，伴有捻发音。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点98：细胞凋亡的特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：细胞凋亡特点</h3><p class="mnemonic-block__content">“程序死亡膜完整，胞核固缩质边集”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>凋亡是细胞的程序性死亡，细胞膜是完整的；细胞固缩，核染色质边集。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点99：细胞老化的特征</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：细胞老化特征</h3><p class="mnemonic-block__content">“普遍银子不厉害”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>普遍性、内因性、进行性（不可逆性）、有害性。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点100：不稳定细胞</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：不稳定细胞</h3><p class="mnemonic-block__content">“两皮两被，淋巴造血”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“两皮”间皮细胞，表皮细胞；“两被”呼吸道和消化道黏膜被覆细胞，男、女性生殖器官管腔的被覆细胞；“淋巴造血”淋巴细胞，造血细胞。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点101：永久细胞</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：永久细胞</h3><p class="mnemonic-block__content">“神机阁”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>神经细胞、心肌细胞、骨骼肌细胞。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点102：稳定细胞</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：稳定细胞</h3><p class="mnemonic-block__content">“腺体肾管上皮骨”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>各种腺体或腺样器官的实质细胞，如胰、涎腺、内分泌腺、汗腺、皮脂腺和肾小管的上皮细胞等，软骨和骨均为稳定细胞。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点103：白色血栓</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：白色血栓</h3><p class="mnemonic-block__content">“白头到老二尖瓣”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>白色血栓主要发生在心脏瓣膜，二尖瓣常见，延续性血栓的头部。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点104：混合血栓</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：混合血栓</h3><p class="mnemonic-block__content">“球神附体是混合”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>混合血栓主要发生在心腔内部，尤其是左心房的球形血栓和动脉粥样硬化部位的附壁血栓，延续性血栓的体部。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点105：红色血栓</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：红色血栓</h3><p class="mnemonic-block__content">“红色尾巴下肢来”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>红色血栓构成延续性血栓的尾部，容易发生在下肢。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点106：纤维素性炎的例子</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：纤维素性炎</h3><p class="mnemonic-block__content">“白毛大菌”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>白喉、绒毛心、大叶性肺炎、细菌性痢疾。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点107：急性炎症的血行蔓延</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：血行蔓延</h3><p class="mnemonic-block__content">“有菌无毒菌血症；有毒无菌毒血症；有菌有毒败血症”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>菌血症：细菌由局部病灶入血，全身无中毒症状，但从血液中可查到细菌；<br>毒血症：细菌的毒性产物或毒素被吸收入血，但血培养查不到病原菌；<br>败血症：细菌由局部病灶入血后，大量繁殖并产生毒素，引起全身中毒症状和病理变化。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点108：慢性肉芽肿性炎种类</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：慢性肉芽肿性炎</h3><p class="mnemonic-block__content">“风雪寒梅结芽闺中”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“风”麻风、风湿病；“雪”血吸虫病；“寒”伤寒；“梅”梅毒；“结”结核病、结节病；“芽”肉芽肿性炎；“闺”硅结节。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点109：常考的良性肿瘤</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：良性肿瘤</h3><p class="mnemonic-block__content">“神间只普及击鼓”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“神”神经鞘瘤；“间”间皮瘤；“只”脂肪瘤；“普”葡萄胎；“及”肌母细胞瘤；“鼓”骨母细胞瘤和软骨母细胞瘤。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点110：恶性肿瘤的转移</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：恶性肿瘤转移</h3><p class="mnemonic-block__content">“癌从淋巴走，肉瘤血道行”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>癌的转移方式多是淋巴转移；肉瘤多是从血道转移。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点111：癌前病变</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：癌前病变</h3><p class="mnemonic-block__content">“大家喝乳汁，肤白貌美，腿长没溃疡”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>大肠腺瘤、家族性结肠息肉病、乳腺纤维囊性病、皮肤慢性溃疡、黏膜白斑、慢性胃炎与肠上皮化生、慢性溃疡性结肠炎。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点112：肝硬化门静脉高压症的表现</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：门脉高压表现</h3><p class="mnemonic-block__content">“大水城”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>脾大；水肿、腹腔积液；侧支循环形成。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点113：常见肾脏疾病的病理改变</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肾脏病理改变</h3><p class="mnemonic-block__content">“急性红枣驼峰连，新月挂壁抹大白”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>急性弥漫性增生性肾小球肾炎肉眼观呈现大红肾、蚤咬肾，电镜下呈现驼峰状。新月性肾小球肾炎新月体由肾小囊壁层上皮细胞和单核细胞构成。膜性肾病多见于成年人，肉眼观呈现大白肾。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点114：后天梅毒的分期</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：后天梅毒分期</h3><p class="mnemonic-block__content">“一硬二疹仅三肿”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>一期梅毒的标志为硬性下疳；二期梅毒是梅毒疹；树胶样肿仅见于三期梅毒。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点115：阿米巴病的病理特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：阿米巴病病理</h3><p class="mnemonic-block__content">“包囊传染升盲肠，烧瓶溃疡肝变质”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>溶组织内阿米巴原虫四核包囊期是传染阶段，滋养体期是致病阶段，病变部位主要在盲肠、升结肠，基本病变为组织溶解液化为主的变质性炎，以形成口小底大的烧瓶状溃疡为特点。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点116：慢性支气管炎鉴别</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：慢性支气管炎鉴别</h3><p class="mnemonic-block__content">“爱惜阔小姐”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>肺癌、矽肺及其他尘肺、支气管扩张症、支气管哮喘、肺结核。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点117：继发性肺结核病类型</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：继发性肺结核类型</h3><p class="mnemonic-block__content">“兄求今冬柑橘”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>结核性胸膜炎、结核球又称结核瘤、浸润型肺结核、慢性纤维空洞性肺结核、干酪性肺炎、局灶型肺结核。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点118：结核病的基本病理变化</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：结核病病理变化</h3><p class="mnemonic-block__content">“渗出有浆液、增生成结节、坏死为干酪”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>结核病的基本病变包括渗出、坏死和增生三种类型。以渗出为主的病变主要表现为浆液性或浆液纤维素性炎。以增生为主的病变形成具有诊断价值的结核结节，又称结核性肉芽肿。以坏死为主的病变，结核坏死灶由于含脂质较多呈淡黄色、均匀细腻，质地较实，状似奶酪，故称干酪样坏死。</p></div></div></section>
+
+        <!-- Section 4: Pharmacology -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第四部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">药理学记忆口诀 (知识点 119-142)</p>
+            </div>
+        </section>
+
+        <section class="slide"><div class="slide-content"><h2>知识点119：影响药物吸收的因素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：药物吸收与排泄</h3><p class="mnemonic-block__content">“酸酸碱碱促吸收，酸碱酸碱促排泄”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>酸性药物在酸性环境容易吸收，碱性药物在碱性环境容易吸收，酸性药物在碱性环境容易排泄，碱性药物在酸性环境容易排泄。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点120：肝药酶诱导剂</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肝药酶诱导剂</h3><p class="mnemonic-block__content">“二苯二平为诱导”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“二苯”苯妥英钠、苯巴比妥；“二平”利福平、卡马西平等。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点121：肝药酶抑制剂</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肝药酶抑制剂</h3><p class="mnemonic-block__content">“怀抱绿西瓜，一去就抑制”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“怀抱”环孢素；“绿”氯霉素；“西”西咪替丁；“一去”伊曲康唑。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点122：M受体分布和激动表现</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：M受体激动表现</h3><p class="mnemonic-block__content">“心血献贫童”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>心脏抑制、血管扩张、腺体分泌增加、一般平滑肌收缩、瞳孔缩小。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点123：阿托品药理作用</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：阿托品药理作用</h3><p class="mnemonic-block__content">“一大二干三快四解痉”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>瞳孔扩大、口干、心脏兴奋、缓解胃肠绞痛。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点124：多巴胺的药理作用</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：多巴胺药理作用</h3><p class="mnemonic-block__content">“弟弟在二中是高富帅啊”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“弟弟”低浓度激动D1受体；“二中”中浓度激动β1受体；“高富帅啊”高浓度激动α受体。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点125：局麻药的特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：局麻药特点</h3><p class="mnemonic-block__content">“丁卡表麻毒性大，普卡安全不表麻”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>丁卡因用于表面麻醉但毒性大；普鲁卡因毒性小安全但不用于表面麻醉。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点126：抗癫痫药的临床选择</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：抗癫痫药选择</h3><p class="mnemonic-block__content">“大老鹰、小老虎，神马广谱用丙戊”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“大老鹰”癫痫大发作选苯妥英钠；“小老虎”癫痫小发作选乙琥胺；“神马”神经痛选卡马西平；“广谱用丙戊”大发作合并小发作选丙戊酸钠。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点127：阿司匹林不良反应</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：阿司匹林不良反应</h3><p class="mnemonic-block__content">“为您扬名易”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“为”胃肠道反应：最常见的不良反应。“您”凝血障碍；“扬”水杨酸反应；“名”过敏反应；“易”瑞夷综合征。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点128：抗心律失常药-钠离子通道阻滞剂</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：钠通道阻滞剂</h3><p class="mnemonic-block__content">“普通卡车装水泥，利多稳妥”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“普通”普罗帕酮；“卡车”普鲁卡因胺；“装水泥”奎尼丁；“利多”利多卡因；“稳妥”苯妥英钠。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点129：抗心律失常药</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：抗心律失常药</h3><p class="mnemonic-block__content">“耳朵被电，害怕补钙”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“耳朵”β肾上腺素受体拮抗药普萘洛尔；“被电”延长动作电位时程药胺碘酮；“害怕补钙”钙通道阻滞药维拉帕米。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点130：ACEI适应症</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：ACEI适应症</h3><p class="mnemonic-block__content">“糖心蛋”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“糖”高血压合并糖尿病；“心”高血压合并心衰心梗心肌肥厚；“蛋”高血压合并肾功能损害蛋白尿。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点131：肝素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肝素</h3><p class="mnemonic-block__content">“血栓疾病需抗凝，肝素作用强快灵，抗凝适用体内外，鱼精蛋白拮抗快”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>肝素在体内、体外均有强大抗凝作用，中毒可缓慢静脉注射硫酸鱼精蛋白解救。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点132：香豆素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：香豆素</h3><p class="mnemonic-block__content">“双香豆素仅体内，过量中毒加维K”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>香豆素类在体内发挥抗凝作用。应用过量易致自发性出血，应立即停药并缓慢静脉注射大量维生素K。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点133：枸橼酸钠</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：枸橼酸钠</h3><p class="mnemonic-block__content">“枸橼酸钠用体外，大量输血防低钙”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>枸橼酸钠仅在体外抗凝，常用于库存血抗凝,大量输注库存血时防止低钙血症。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点134：糖皮质激素对血液系统影响</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：糖皮质激素血液影响</h3><p class="mnemonic-block__content">“红中白板多，酸碱淋巴少”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“红中白板多”红细胞、血小板、中性粒细胞增多；“酸碱淋巴少”嗜酸性粒细胞、嗜碱性粒细胞、淋巴细胞减少。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点135：糖皮质激素药理作用</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：糖皮质激素药理作用</h3><p class="mnemonic-block__content">“四抗预热为股神”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“四抗”抗炎、抗免疫、抗毒、抗休克；“预热”允许作用、退热；“为股神”胃溃疡、骨质疏松、兴奋中枢神经。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点136：抗躁狂症药和抗抑郁药</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：抗精神病药</h3><p class="mnemonic-block__content">“锂狂躁嗪抑郁”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>抗躁狂症药首选碳酸锂，抗抑郁药首选丙米嗪。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点137：吗啡的中枢系统药理作用</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：吗啡中枢作用</h3><p class="mnemonic-block__content">“三镇一抑制，欣快一缩瞳：镇痛镇咳镇静，抑制呼吸，瞳孔缩小针尖样”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>镇痛、镇静、镇咳、致欣快、缩瞳作用。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点138：头孢代表药物</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：头孢代表药</h3><p class="mnemonic-block__content">“一代安定、二代可心、三代去舞厅，四代酷屁喽”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“一代安定”头孢氨苄、头孢拉定；<br>“二代可心”头孢克洛、头孢呋辛；<br>“三代去舞厅”头孢曲松、头孢噻肟、头孢他啶；<br>“四代酷屁喽”头孢匹罗。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点139：青霉素G理化性质特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：青霉素G特点</h3><p class="mnemonic-block__content">“一低二高三不”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>青霉素毒性低；抗菌作用强（高效）；变态反应是青霉素最常见的不良反应，最严重的是Ⅰ型即过敏性休克（过敏反应发生率高）；青霉素G属于窄谱抗生素类（不广谱），溶于水后极不稳定，不耐酶。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点140：氨基糖苷类药物不良反应</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：氨基糖苷类不良反应</h3><p class="mnemonic-block__content">“耳毒肾毒肌肉毒，过敏反应要注意”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“耳毒”耳毒性：新霉素最强；“肾毒”肾毒性：新霉素发生概率最高；“肌肉毒”神经肌肉麻痹；“过敏反应要注意”链霉素可引起过敏性休克。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点141：抗结核药</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：抗结核药</h3><p class="mnemonic-block__content">“一见钟情，立竿见红”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“一见钟情”异烟肼抗结核病首选，只针对结核杆菌有效；<br>“立竿见红”抗结核药利福平典型不良反应为体液呈橘红色。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点142：抗肿瘤药</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：抗肿瘤药分类</h3><p class="mnemonic-block__content">“嘌呤和蝶呤尿糖了，被小顺子陷害”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>影响核酸生物合成类抗肿瘤药：“嘌呤”巯嘌呤、“蝶呤”甲氨蝶呤、“尿”氟尿嘧啶和羟基脲、“糖”阿糖胞苷；<br>破坏DNA结构与功能抗肿瘤药：“小顺子”白消安和顺铂、“陷害”环磷酰胺。</p></div></div></section>
+
+        <!-- Section 5: Diagnostics -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第五部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">诊断学记忆口诀 (知识点 143-161)</p>
+            </div>
+        </section>
+
+        <section class="slide"><div class="slide-content"><h2>知识点143：稽留热</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：稽留热</h3><p class="mnemonic-block__content">“寒流过了1大半”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“寒流”稽留热、伤寒高热期；“1”24h内体温波动不超过1℃；“大”大叶性肺炎；“半”斑疹伤寒。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点144：弛张热</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：弛张热</h3><p class="mnemonic-block__content">“张2拜师结盟”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“张”弛张热；“2”24h内波动超过2℃；“拜”败血症；“师”风湿热；“结”重症肺结核；“盟”化脓性炎。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点145：回归热、间歇热</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：回归热、间歇热</h3><p class="mnemonic-block__content">“回家挥霍，间歇虐肾”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>回归热疾病：“回”回归热；“霍”霍奇金淋巴瘤。<br>间歇热疾病：“间”间歇热；“虐”疟疾；“肾”急性肾盂肾炎。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点146：水肿</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：水肿部位</h3><p class="mnemonic-block__content">“心在下，肾在上，肝脏水肿在中间”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“心在下”心源性水肿身体低垂部位；“肾在上”肾源性水肿眼睑或颜面水肿；“肝脏水肿在中间”肝源性水肿主要表现为腹水。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点147：呼吸困难的分类</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：呼吸困难分类</h3><p class="mnemonic-block__content">“大吸小呼”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>吸气性呼吸困难：大气道堵塞；<br>呼气性呼吸困难：小气道堵塞。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点148：呼吸减弱或消失的疾病</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：呼吸音减弱</h3><p class="mnemonic-block__content">“气水堵厚弱”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“气”肺泡内含气量过多 (COPD)，气胸；“水”大量胸腔积液；“堵”支气管阻塞；“厚”胸膜显著增厚粘连。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点149：干啰音的音调</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：干啰音</h3><p class="mnemonic-block__content">“高清连长，呼呼干活”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“高清连长”音调较高、清晰、连续、时间长；“呼呼”呼气时听诊更明显，“干”干啰音。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点150：湿啰音常见的疾病</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：湿啰音疾病</h3><p class="mnemonic-block__content">“沿河扩张，淤水湿鞋”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“沿河扩张”肺炎、肺结核、支气管扩张等；“淤水湿鞋”心力衰竭所致肺淤血、急性肺水肿等。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点151：心脏瓣膜的5个听诊区</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：心脏听诊区</h3><p class="mnemonic-block__content">“尖对尖，肺左二，右二左三主动脉，四五相连是三尖”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>二尖瓣区位于心尖搏动最强点；肺动脉瓣区在胸骨左缘第2肋间；主动脉瓣区位于胸骨右缘第2肋间，主动脉瓣第二听诊区在胸骨左缘第3肋间；三尖瓣区在胸骨左缘第4、5肋间。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点152：心脏听诊顺序</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：心脏听诊顺序</h3><p class="mnemonic-block__content">“二肺主主三”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>二尖瓣→肺动脉瓣→主动脉瓣→主动脉第二听诊区→三尖瓣。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点153：第一心音、第二心音</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：心音特点</h3><p class="mnemonic-block__content">“第一低调尖峰藏；第二垫底不高端”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>第一心音音调较低，历时较长，心尖部最响亮；第二心音音调较高而脆、强度较弱，心底部最响亮。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点154：少尿无尿的定义</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：少尿无尿定义</h3><p class="mnemonic-block__content">“四少爷一无所有”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“四少”24小时尿量＜400ml为少尿；“一无”24小时尿量＜100ml为无尿。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点155：三种黄疸的特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：黄疸特点</h3><p class="mnemonic-block__content">“三姨夫，学赶集，三二一，一二三”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“学”溶血性黄疸；“赶”肝细胞性黄疸；“集”胆汁淤积性黄疸。<br>UCB升高程度(三二一): 溶血性↑↑↑, 肝细胞性↑↑, 胆汁淤积性↑。<br>CB升高程度(一二三): 溶血性↑, 肝细胞性↑↑, 胆汁淤积性↑↑↑。<br>尿胆原(三姨夫): 溶血性↑↑↑, 肝细胞性↑, 胆汁淤积性(-)。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点156：肌力</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肌力分级</h3><p class="mnemonic-block__content">“一不动，二不抬，三不抗，四不全”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>1级：可见肌肉轻微收缩，但无肢体运动。<br>2级：肢体可以移动，但不能抬起。<br>3级：肢体抬离床面，但不能对抗阻力。<br>4级：能做对抗阻力的运动，但不完全。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点157：浅反射</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：浅反射</h3><p class="mnemonic-block__content">“题诗角门闭”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“题”提睾反射；“诗”跖反射；“角”角膜反射；“门”肛门反射；“闭”腹壁反射。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点158：深反射</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：深反射</h3><p class="mnemonic-block__content">“二头挠膝盖，三头跟阵挛”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“二头”肱二头肌反射；“挠”桡骨膜反射；“膝盖”膝反射；“三头”肱三头肌反射；“跟”跟腱反射；“阵挛”阵挛。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点159：心肌梗死</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：心梗ECG变化</h3><p class="mnemonic-block__content">“缺血T波变，损伤ST高，坏死异常Q”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>冠脉闭塞后，最早是缺血性T波改变；<br>随后出现损伤型ST段抬高；<br>最后心肌坏死导致病理性Q波。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点160：二尖瓣狭窄和关闭不全</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：二尖瓣杂音</h3><p class="mnemonic-block__content">“昨夜风吹二门闭，二龙难抵狭窄门”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“昨夜风吹二门闭”：二尖瓣关闭不全，在心尖区（向左腋下传导）可闻及吹风样杂音。<br>“二龙难抵狭窄门”：二尖瓣狭窄，在心尖区可闻及低调的、隆隆样舒张期杂音。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点161：胸膜腔穿刺术</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：胸穿定位</h3><p class="mnemonic-block__content">“前中后，五六七八”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>积液穿刺点：腋前线第5肋间；腋中线第6、7肋间；常选肩胛线、腋后线第7、8肋间。</p></div></div></section>
+        
+        <!-- Section 6: Regulations & Ethics -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第六部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">法规与伦理记忆口诀 (知识点 162-175)</p>
+            </div>
+        </section>
+
+        <section class="slide"><div class="slide-content"><h2>知识点162：执业医师考试报名条件</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：医师报名条件</h3><p class="mnemonic-block__content">“一本二执助，拜师学三年”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“一本”本科以上学历实践满1年；“二执助”执业助理医师工作满2年；“拜师学三年”师承式学中医满3年。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点163：执业医师证不予注册的情景</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：不予注册情形</h3><p class="mnemonic-block__content">“犯二不注册”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>①受刑事处罚，刑罚执行完毕不满2年；②被吊销医师执业证书不满2年；③中止医师执业活动超过2年。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点164：医疗事故的分级</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：医疗事故分级</h3><p class="mnemonic-block__content">“一死二中残，三轻四有伤”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>一级：造成患者死亡、重度残疾的；<br>二级：造成患者中度残疾、器官组织损伤导致严重功能障碍；<br>三级：造成患者轻度残疾、器官组织损伤导致一般功能障碍；<br>四级：造成患者明显人身损害的其他后果。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点165：婚前医学检查指定传染病</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：婚检传染病</h3><p class="mnemonic-block__content">“艾琳没妈”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>艾滋病、淋病、梅毒、麻风。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点166：甲类传染病</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：甲类传染病</h3><p class="mnemonic-block__content">“家有老鼠作乱”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>甲类传染病有鼠疫、霍乱。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点167：突发公共卫生事件分级</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：公卫事件分级</h3><p class="mnemonic-block__content">“一二三四，红橙黄蓝”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>Ⅰ级—特别重大—红色；<br>Ⅱ级—重大—橙色；<br>Ⅲ—较大—黄色；<br>Ⅳ—一般—蓝色。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点168：假药包括</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：假药定义</h3><p class="mnemonic-block__content">“成分不符非药品，变质再加超范围”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>①药品所含成分与国家药品标准规定的成分不符；②以非药品冒充药品或者以他种药品冒充此种药品；③变质的药品；④药品所标明的适应症或者功能主治超出规定范围。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点169：劣药包括</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：劣药定义</h3><p class="mnemonic-block__content">“含量不符被污染，效期批号加辅料”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>①药品成分的含量不符合国家药品标准；②被污染的药品；③未标明或者更改有效期的药品；④未注明或者更改产品批号的药品；⑤超过有效期的药品；⑥擅自添加防腐剂、辅料的药品。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点170：处方保管年限</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：处方保管年限</h3><p class="mnemonic-block__content">“普一精二麻药三，疫苗接种存五年”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>普通、急诊、儿科处方保存1年，二类精神药品和毒性药品保存2年，麻醉药品和一类精神药品保存3年，疫苗接种处方保存5年。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点171：超常处方的处罚</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：超常处方处罚</h3><p class="mnemonic-block__content">“超常处方，事不过三”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>医疗机构应对无正当理由开具抗菌药物超常处方达到3次以上且无正当理由的医师提出警告。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点172：无偿献血的规定</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：无偿献血规定</h3><p class="mnemonic-block__content">“一次两百最多四，间隔六月可再次”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>无偿献血每次采集血液量一般为200ml，最多不得超过400ml，两次采集间隔期不少于六个月。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点173：医患关系的类型</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：医患关系类型</h3><p class="mnemonic-block__content">“主被昏迷指导小，共同参与快不了”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“主被昏迷”主动-被动型适用于昏迷、休克、精神病患者；<br>“指导小”指导-合作型适用于病情较轻（小病）患者；<br>“共同参与快不了”共同参与型适用于慢性病患者（快不了）。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点174：心理测验工具的评价</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：心理测验评价</h3><p class="mnemonic-block__content">“信可一，效正效”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>信度：反映心理测验工具的可靠性和一致性。<br>效度：反映心理测验工具的正确性和有效性。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点175：脑死亡标准</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：脑死亡标准</h3><p class="mnemonic-block__content">“呼吸停止是首要，神魂点穴要停止”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“呼吸停止是首要”自主呼吸停止被认为是临床脑死亡的首要指标；“神”脑干神经反射消失；“魂”不可逆性深度昏迷；“点”脑电波消失；“穴”脑血液循环完全停止。</p></div></div></section>
+
+        <!-- Section 7: Histology & Embryology -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第七部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">组织胚胎学记忆口诀 (知识点 176-180)</p>
+            </div>
+        </section>
+
+        <section class="slide"><div class="slide-content"><h2>知识点176：被覆上皮类型及分布</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：被覆上皮分布</h3><p class="mnemonic-block__content">“内皮间皮单层扁，甲泡肾管单立方，胃肠子宫单柱上，肾输膀胱变移上”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>内皮、间皮是单层扁平上皮；<br>肾小管、甲状腺滤泡是单层立方上皮；<br>胃肠、胆囊、子宫等腔面是单层柱状上皮；<br>肾盏、肾盂、输尿管和膀胱等腔面是变移上皮。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点178：骨骼肌的超微结构</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：骨骼肌超微结构</h3><p class="mnemonic-block__content">“肌膜内陷横小管，两端囊状为终池，小管终池三联体”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>肌膜向肌浆内凹陷形成横小管；两端扩大呈扁囊状为终池；每条横小管与两侧的终池组成三联体。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点179：表皮角质形成细胞层次</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：表皮层次</h3><p class="mnemonic-block__content">“交通科技低”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>由外向内可分为5层：“交”角质层；“通”透明层；“科”颗粒层；“技”棘层；“低”基底层。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点180：神经元的分类</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：神经元分类</h3><p class="mnemonic-block__content">“数量单双多，长短高尔基”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>按突起数量分类：多极、双极、假单极；<br>按轴突长短分类：高尔基Ⅰ型、高尔基Ⅱ型。</p></div></div></section>
+
+        <!-- Section 8: Parasitology -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第八部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">寄生虫学记忆口诀 (知识点 181-185)</p>
+            </div>
+        </section>
+
+        <section class="slide"><div class="slide-content"><h2>知识点181：溶组织内阿米巴</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：溶组织内阿米巴</h3><p class="mnemonic-block__content">“在家吃了四袋锅巴，干了一瓶巧克力酱”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“家”首选甲硝唑治疗；“吃”经口传播；“四袋”4核包囊为感染期；“锅巴”阿米巴；“干”肠外阿米巴病以阿米巴性肝脓肿常见；“一瓶”肠阿米巴是烧瓶样溃疡。“巧克力酱”晚期穿刺则可见巧克力酱样脓液。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点182：蓝氏贾第鞭毛虫</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：蓝氏贾第鞭毛虫</h3><p class="mnemonic-block__content">“十二个蓝精灵，从家出发去水边，踩了坨屎”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“12”寄生于十二指肠；“蓝精灵”蓝氏贾第鞭毛虫；“家”甲硝唑治疗；“水边”水源传播；“踩了坨屎”急性期取新鲜粪便标本镜检查滋养体。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点183：华支睾吸虫（肝吸虫）</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肝吸虫</h3><p class="mnemonic-block__content">“人狗猫华支睾，不吃生鱼别飘”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“人狗猫”终宿主为人及肉食哺乳动物；“华支睾”华支睾吸虫；“不吃生鱼”不吃生淡水鱼虾；“别飘”可使用吡喹酮治疗。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点184：并殖吸虫（肺吸虫）</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：肺吸虫</h3><p class="mnemonic-block__content">“肺吸虫胸腔积液铁锈色，人狗螺蟹在丘陵”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“铁锈色”咳出铁锈色血痰；“人狗”终宿主为人、狗等；“螺蟹”第一中间宿主为螺，第二为淡水蟹或蝲蛄；“在丘陵”多见于丘陵地带。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点185：似蚓蛔线虫（蛔虫）</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：蛔虫</h3><p class="mnemonic-block__content">“蛔虫钻孔胸肠痛，营养不良还过敏”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“钻孔”习性；“胸肠痛”可致腹痛、肠穿孔等；“营养不良”；“过敏”可致荨麻疹等超敏反应。</p></div></div></section>
+
+        <!-- Section 9: Immunology -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第九部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">免疫学记忆口诀 (知识点 186-191)</p>
+            </div>
+        </section>
+        <section class="slide"><div class="slide-content"><h2>知识点186：免疫系统的作用</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：免疫系统作用</h3><p class="mnemonic-block__content">“监突变、稳自身、防外来”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>免疫防御、免疫监视、免疫自稳。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点187：抗体的分类</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：抗体分类</h3><p class="mnemonic-block__content">“哥哥高过胎盘，妹妹最大早诊断，阿姨婴儿吃母乳，DB一起抗狼抗”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>IgG：含量最高，唯一过胎盘；<br>IgM：分子量最大，最早出现的抗体；<br>IgA：婴儿可从母亲初乳中获得SIgA；<br>IgD：B细胞分化发育成熟的标志；<br>IgE：含量最少，亲细胞抗体。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点188：细胞因子</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：细胞因子</h3><p class="mnemonic-block__content">“去年的种子没长，白干”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“去年”趋化因子；“种”肿瘤坏死因子；“子”集落刺激因子；“没长”生长因子；“白”白细胞介素；“干”干扰素。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点189：超敏反应代表疾病</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：超敏反应疾病</h3><p class="mnemonic-block__content">“一超过敏和哮喘，二超溶血甲亢进，三超风肾复合型，四超接触结核病”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>Ⅰ型：药物过敏性休克、过敏性哮喘；<br>Ⅱ型：新生儿溶血病、自身免疫性溶血性贫血、甲亢；<br>Ⅲ型：链球菌感染后肾小球肾炎、类风湿性关节炎；<br>Ⅳ型：结核病、接触性皮炎。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点190：单基因遗传病</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：单基因遗传病</h3><p class="mnemonic-block__content">“囊肾短指常显性，白龙苯丙常隐性，血友色盲女隐性”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>常染色体显性：多囊肾、短指（趾）症；<br>常染色体隐性：白化病、先天性聋哑、苯丙酮尿症；<br>X连锁隐性：血友病、红绿色盲。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点191：Down综合征和5p-综合征</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：特定综合征</h3><p class="mnemonic-block__content">“二一智低舌外伸，咪咪猫叫是5P”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>Down综合征（21三体）：智力低下，张口、舌外伸。<br>5p-综合征（猫叫综合征）：婴儿哭声似猫叫。</p></div></div></section>
+
+        <!-- Section 10: Microbiology -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第十部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">微生物学记忆口诀 (知识点 192-195)</p>
+            </div>
+        </section>
+        <section class="slide"><div class="slide-content"><h2>知识点192：原核细胞型微生物</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：原核细胞型微生物</h3><p class="mnemonic-block__content">“一只萝莉放细菌”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“一只”衣原体、支原体；“萝”螺旋体；“莉”立克次氏体；“放”放线菌。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点193：内毒素与外毒素</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：内毒素与外毒素</h3><p class="mnemonic-block__content">“内阴脂多糖，外强蛋白质”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>内毒素：来自G-菌，化学成分是脂多糖。<br>外毒素：毒性作用强，化学成分是蛋白质。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点194：葡萄球菌属</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：葡萄球菌属</h3><p class="mnemonic-block__content">“金葡溶血酶凝固”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>金黄色葡萄球菌菌落为金黄色，并产生透明溶血环；金葡菌为凝固酶阳性菌，多为致病菌。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点195：狂犬病病毒</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：狂犬病病毒</h3><p class="mnemonic-block__content">“狂犬病毒嗜神经，诊断可见内急时”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>狂犬病毒是嗜神经病毒；内基氏小体是诊断动物狂犬病的指征。</p></div></div></section>
+
+        <!-- Section 11: Biochemistry -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">第十一部分</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">生物化学记忆口诀 (知识点 196-200)</p>
+            </div>
+        </section>
+        <section class="slide"><div class="slide-content"><h2>知识点196：氨基酸分类</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：氨基酸分类</h3><p class="mnemonic-block__content">“甲携来一亮色书；捡来精猪；冬天的谷子酸了；方嫪毐笨死了”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>必需氨基酸：蛋氨酸、缬氨酸、赖氨酸、异亮氨酸、亮氨酸、色氨酸、苏氨酸、组氨酸、苯丙氨酸。<br>碱性氨基酸：赖氨酸、精氨酸、组氨酸。<br>酸性氨基酸：天冬氨酸、谷氨酸。<br>芳香族氨基酸：酪氨酸、苯丙氨酸、色氨酸。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点197：酶促反应的特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：酶促反应特点</h3><p class="mnemonic-block__content">“高校长有特异功能，不问缘由跳进黄河”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“高校长”极高的催化效率；“特异功能”高度的特异性；“不问”不稳定性；“跳进黄河”可调节性。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点198：糖的无氧氧化</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：糖无氧氧化</h3><p class="mnemonic-block__content">“买两个冰激淋酸了”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>“买两个”1mol葡萄糖无氧氧化最终净得2mol ATP；“冰激淋”丙酮酸激酶、己糖激酶、磷酸果糖激酶-1；“酸了”乳酸生成。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点199：酮体组成和特点</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：酮体</h3><p class="mnemonic-block__content">“酮体三兄弟，丙酮乙乙酸，再加羟丁酸，肝内生成肝外用”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>酮体包括：丙酮、乙酰乙酸和β-羟丁酸；<br>酮体在肝内生成，在肝外组织摄取利用。</p></div></div></section>
+        <section class="slide"><div class="slide-content"><h2>知识点200：密码子组成</h2><div class="mnemonic-block scroll-reveal"><h3 class="mnemonic-block__title"><i class="fa-solid fa-lightbulb"></i> 记忆口诀：密码子</h3><p class="mnemonic-block__content">“哎呦急了,AG、GA、排排坐”</p></div><div class="alert-box alert-info scroll-reveal"><h4 class="alert-box__title"><i class="fa-solid fa-circle-info"></i> 口诀释意</h4><p>起始密码子为AUG；<br>终止密码子为UAG、UGA、UAA。</p></div></div></section>
+        
+        <!-- Final Slide -->
+        <section class="slide title-slide">
+            <div class="slide-content">
+                <h1 class="scroll-reveal">学习结束</h1>
+                <p class="scroll-reveal" style="font-size: 1.5rem; color: var(--dark-gray);">祝您考试顺利，成功上岸！</p>
+                <i class="fa-solid fa-graduation-cap scroll-reveal" style="font-size: 4rem; color: var(--primary-red); margin-top: 2rem;"></i>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 演示辅助元素 -->
+    <canvas id="drawingCanvas" class="no-print"></canvas>
+    <div id="laserPointer" class="no-print"></div>
+    <div id="spotlightOverlay" class="no-print"></div>
+    <div id="blackoutScreen" class="no-print hidden"></div>
+    <div id="whiteoutScreen" class="no-print hidden"></div>
+
+    <!-- 右下角导航 -->
+    <nav class="navigation-controls no-print auto-hide-ui">
+        <button class="nav-btn" id="prevBtn" onclick="previousSlide()" title="上一页 (←/↑)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()" title="下一页 (→/↓)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
+    </nav>
+    <div class="thumbnails-container-wrapper no-print auto-hide-ui" id="thumbnailsWrapper">
+        <nav class="slide-thumbnails" id="slideThumbnails"><!-- AI动态生成的缩略图按钮将插入这里 --></nav>
+    </div>
+    <script>
+        let currentSlide = 0, totalSlides = 0, fontScale = 1;
+        let hideUITimeout, isMouseMoving = false;
+        let isLaserOn = false, isDrawingMode = false, isSpotlightOn = false, isErasing = false, isDrawing = false;
+        let lastX = 0, lastY = 0;
+        let drawingCanvas, ctx;
+        let laserPointer, spotlightOverlay, toolButtons;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.renderMathInElement) { renderMathInElement(document.body, { delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}] }); }
+            initializePresentation();
+            setupClassroomTools();
+        });
+
+        function initializePresentation() {
+            totalSlides = document.querySelectorAll('.slide').length;
+            if (totalSlides === 0) {
+                const loading = document.getElementById('loadingIndicator');
+                if(loading) { loading.style.opacity = '0'; setTimeout(() => loading.style.display = 'none', 500); }
+                return;
+            }
+            document.querySelector('.total-slides').textContent = totalSlides;
+            const thumbnailsContainer = document.getElementById('slideThumbnails');
+            thumbnailsContainer.innerHTML = '';
+            for(let i = 1; i <= totalSlides; i++) { thumbnailsContainer.innerHTML += `<button class="thumbnail-btn" onclick="goToSlide(${i-1})" title="第 ${i} 页">${i}</button>`; }
+            goToSlide(0, true);
+            setupEventListeners();
+            setupAutoHideUI();
+            updateThumbnailScrollIndicators();
+            const loading = document.getElementById('loadingIndicator');
+            if(loading) { loading.style.opacity = '0'; setTimeout(() => loading.style.display = 'none', 500); }
+        }
+        function handleOptionClick(button, isCorrect) {
+            const optionsContainer = button.parentElement;
+            const feedbackBox = optionsContainer.parentElement.querySelector('.explanation-box');
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.classList.add('disabled');
+                if (btn.getAttribute('data-correct') === 'true') btn.classList.add('correct');
+            });
+            if (!isCorrect) button.classList.add('incorrect');
+            if (feedbackBox) feedbackBox.classList.add('visible');
+        }
+        function revealSolution(button) {
+            const solutionContent = button.nextElementSibling;
+            if (solutionContent) { solutionContent.classList.add('visible'); button.style.display = 'none'; }
+        }
+        function goToSlide(slideIndex, isInitial = false) { 
+            if (slideIndex < 0 || slideIndex >= totalSlides) return;
+            if (ctx && !isInitial) { ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); }
+            currentSlide = slideIndex; 
+            document.querySelectorAll('.slide').forEach((slide, index) => { slide.classList.toggle('active-slide', index === currentSlide); }); 
+            updateUI(); 
+            if (!isInitial) animateCurrentSlide(); 
+        }
+        function nextSlide() { if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1); }
+        function previousSlide() { if (currentSlide > 0) goToSlide(currentSlide - 1); }
+        function updateUI() { 
+            if(totalSlides === 0) return;
+            document.querySelector('.current-slide').textContent = currentSlide + 1; 
+            document.getElementById('progressBar').style.width = `${((currentSlide + 1) / totalSlides) * 100}%`; 
+            document.getElementById('prevBtn').disabled = currentSlide === 0; 
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1; 
+            document.querySelectorAll('.thumbnail-btn').forEach((btn, index) => btn.classList.toggle('active', index === currentSlide));
+            const activeThumbnail = document.querySelector('.thumbnail-btn.active');
+            if (activeThumbnail) { activeThumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); }
+        }
+        function animateCurrentSlide() { 
+            const animatedElements = document.querySelectorAll('.slide.active-slide .scroll-reveal'); 
+            animatedElements.forEach(el => el.classList.remove('revealed')); 
+            setTimeout(() => { animatedElements.forEach((el, index) => { setTimeout(() => el.classList.add('revealed'), index * 100); }); }, 100); 
+        }
+        function setupEventListeners() { 
+            document.addEventListener('keydown', e => { 
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                const keyMap = { ArrowRight: nextSlide, ArrowDown: nextSlide, ' ': nextSlide, PageDown: nextSlide, ArrowLeft: previousSlide, ArrowUp: previousSlide, PageUp: previousSlide, Home: () => goToSlide(0), End: () => goToSlide(totalSlides - 1), f: toggleFullscreen };
+                if (keyMap[e.key]) { e.preventDefault(); keyMap[e.key](); }
+                
+                const toolKeyMap = { l: toggleLaser, d: toggleDrawing, s: toggleSpotlight, b: toggleBlackoutScreen, w: toggleWhiteoutScreen, e: setEraser };
+                const toolKey = e.key.toLowerCase();
+                if(toolKeyMap[toolKey]) { e.preventDefault(); toolKeyMap[toolKey](); }
+                
+                if (e.ctrlKey || e.metaKey) {
+                    if(e.key === 'p') { e.preventDefault(); window.print(); }
+                    if(e.key === '=') { e.preventDefault(); updateFontSize(fontScale + 0.1); }
+                    if(e.key === '-') { e.preventDefault(); updateFontSize(fontScale - 0.1); }
+                }
+            }); 
+            document.getElementById('font-increase-btn').addEventListener('click', () => updateFontSize(fontScale + 0.1)); 
+            document.getElementById('font-decrease-btn').addEventListener('click', () => updateFontSize(fontScale - 0.1));
+            document.getElementById('print-btn').addEventListener('click', () => window.print());
+            document.getElementById('slideThumbnails').addEventListener('scroll', updateThumbnailScrollIndicators);
+            window.addEventListener('resize', () => { resizeCanvas(); updateThumbnailScrollIndicators(); });
+        }
+        function setupAutoHideUI() { 
+            document.body.addEventListener('mousemove', () => { showUI(); isMouseMoving = true; clearTimeout(hideUITimeout); hideUITimeout = setTimeout(() => { isMouseMoving = false; hideUI(); }, 3000); }); 
+            document.body.addEventListener('mouseleave', () => hideUI()); showUI(); setTimeout(() => { if (!isMouseMoving) hideUI(); }, 3000); 
+        }
+        function showUI() { document.querySelectorAll('.auto-hide-ui').forEach(el => el.classList.add('show')); }
+        function hideUI() { if (!isDrawingMode) document.querySelectorAll('.auto-hide-ui').forEach(el => el.classList.remove('show')); }
+        function updateFontSize(newScale) { fontScale = Math.max(0.7, Math.min(1.5, newScale)); document.documentElement.style.fontSize = `${16 * fontScale}px`; }
+        function toggleFullscreen() { 
+            if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => console.error(err)); } 
+            else { document.exitFullscreen(); } 
+        }
+        document.addEventListener('fullscreenchange', () => { 
+            const isFullscreen = !!document.fullscreenElement; 
+            document.querySelector('.fullscreen-icon--enter').classList.toggle('hidden', isFullscreen); 
+            document.querySelector('.fullscreen-icon--exit').classList.toggle('hidden', !isFullscreen); 
+        });
+        function updateThumbnailScrollIndicators() {
+            const container = document.getElementById('slideThumbnails');
+            const wrapper = document.getElementById('thumbnailsWrapper');
+            if (!container || !wrapper) return;
+            const isScrollable = container.scrollWidth > container.clientWidth;
+            wrapper.style.setProperty('--before-opacity', isScrollable && container.scrollLeft > 10 ? '1' : '0');
+            wrapper.style.setProperty('--after-opacity', isScrollable && container.scrollLeft + container.clientWidth < container.scrollWidth - 10 ? '1' : '0');
+        }
+
+        function setupClassroomTools() {
+            laserPointer = document.getElementById('laserPointer');
+            spotlightOverlay = document.getElementById('spotlightOverlay');
+            drawingCanvas = document.getElementById('drawingCanvas');
+            ctx = drawingCanvas.getContext('2d');
+            toolButtons = document.querySelectorAll('.tool-btn');
+            
+            resizeCanvas();
+            document.getElementById('laser-btn').addEventListener('click', toggleLaser);
+            document.getElementById('draw-btn').addEventListener('click', toggleDrawing);
+            document.getElementById('spotlight-btn').addEventListener('click', toggleSpotlight);
+            document.getElementById('eraser-btn').addEventListener('click', setEraser);
+            document.getElementById('clear-canvas-btn').addEventListener('click', () => ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height));
+            document.addEventListener('mousemove', handleToolMove);
+            drawingCanvas.addEventListener('mousedown', startDrawing);
+            drawingCanvas.addEventListener('mousemove', drawOnCanvas);
+            drawingCanvas.addEventListener('mouseup', stopDrawing);
+            drawingCanvas.addEventListener('mouseout', stopDrawing);
+        }
+        function disableAllTools(exceptButton = null) {
+            isLaserOn = isDrawingMode = isSpotlightOn = isErasing = false;
+            laserPointer.style.display = 'none';
+            spotlightOverlay.style.display = 'none';
+            drawingCanvas.classList.remove('active');
+            document.body.style.cursor = 'default';
+            toolButtons.forEach(btn => { if(btn !== exceptButton) btn.classList.remove('active'); });
+        }
+        function toggleTool(toolState, toolName, activationFn, deactivationFn) {
+            const button = document.getElementById(`${toolName}-btn`);
+            const wasActive = toolState;
+            disableAllTools(button);
+            if (!wasActive) { if (activationFn) activationFn(); button.classList.add('active'); return true; } 
+            else { if (deactivationFn) deactivationFn(); return false; }
+        }
+        function toggleLaser() { isLaserOn = toggleTool(isLaserOn, 'laser', () => { laserPointer.style.display = 'block'; document.body.style.cursor = 'none'; }); }
+        function toggleSpotlight() { isSpotlightOn = toggleTool(isSpotlightOn, 'spotlight', () => { spotlightOverlay.style.display = 'block'; document.body.style.cursor = 'none'; }); }
+        function toggleDrawing() { isDrawingMode = toggleTool(isDrawingMode, 'draw', () => { isErasing = false; drawingCanvas.classList.add('active'); ctx.globalCompositeOperation = 'source-over'; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(197, 48, 48, 0.9)'; }); }
+        function setEraser() {
+            if(!isDrawingMode && !isErasing) { toggleDrawing(); }
+            isErasing = toggleTool(isErasing, 'eraser', () => { isDrawingMode = true; drawingCanvas.classList.add('active'); ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = 25; document.getElementById('draw-btn').classList.remove('active'); }, () => { if(isDrawingMode) toggleDrawing(); });
+        }
+        function handleToolMove(e) {
+            if (isLaserOn) { laserPointer.style.left = `${e.clientX}px`; laserPointer.style.top = `${e.clientY}px`; }
+            if (isSpotlightOn) { spotlightOverlay.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, transparent 120px, rgba(0,0,0,0.8) 150px)`; }
+        }
+        function startDrawing(e) { if (!isDrawingMode) return; isDrawing = true; [lastX, lastY] = [e.offsetX, e.offsetY]; }
+        function drawOnCanvas(e) { if (!isDrawing) return; ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); [lastX, lastY] = [e.offsetX, e.offsetY]; }
+        function stopDrawing() { isDrawing = false; }
+        function resizeCanvas() {
+            if(!drawingCanvas) return;
+            const dpr = window.devicePixelRatio || 1;
+            const imageData = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            drawingCanvas.width = window.innerWidth;
+            drawingCanvas.height = window.innerHeight;
+            drawingCanvas.style.width = `${window.innerWidth}px`;
+            drawingCanvas.style.height = `${window.innerHeight}px`;
+            ctx.putImageData(imageData, 0, 0);
+            ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+            ctx.lineWidth = isErasing ? 25 : 5;
+            ctx.globalCompositeOperation = isErasing ? 'destination-out' : 'source-over';
+            ctx.strokeStyle = 'rgba(197, 48, 48, 0.9)';
+        }
+        function toggleBlackoutScreen() { document.getElementById('blackoutScreen').classList.toggle('hidden'); }
+        function toggleWhiteoutScreen() { document.getElementById('whiteoutScreen').classList.toggle('hidden'); }
+    </script>
+</body>
+</html>
