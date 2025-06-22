@@ -324,6 +324,79 @@
       50% { opacity: 0.7; transform: scale(1.05); }
     }
 
+    /* 文字分割动画样式 */
+    .split-text {
+      overflow: hidden;
+      display: inline-block;
+    }
+    
+    .split-char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform, opacity;
+    }
+    
+    .split-char.animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* 保持渐变文字样式 */
+    .split-text.gradient-slate .split-char {
+      background: linear-gradient(to right, #1e293b, #475569);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .split-text.gradient-blue .split-char {
+      background: linear-gradient(to right, #2563eb, #4f46e5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Shiny Text 闪光效果 */
+    .shiny-text {
+      position: relative;
+      display: inline-block;
+      background: linear-gradient(
+        90deg,
+        #475569 0%,
+        #475569 40%,
+        #ffffff 50%,
+        #475569 60%,
+        #475569 100%
+      );
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shiny-animation 5s ease-in-out infinite;
+    }
+    
+    .shiny-text.disabled {
+      animation: none;
+      background: #475569;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    @keyframes shiny-animation {
+      0% {
+        background-position: -200% 0;
+      }
+      50% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+    
     /* 滚动条 */
     ::-webkit-scrollbar { width: 8px;height:8px }
     ::-webkit-scrollbar-thumb { background: #efefef;border-radius:8px }
@@ -427,12 +500,12 @@
       </div>
       
       <h1 class="text-6xl md:text-8xl font-black leading-tight text-slate-800 mb-8 tracking-tight">
-        <span class="block mb-2 bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">壹医考</span>
-        <span class="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">让医考更容易</span>
+        <span class="block mb-2 split-text gradient-slate" data-text="壹医考">壹医考</span>
+        <span class="block split-text gradient-blue" data-text="让医考更容易">让医考更容易</span>
       </h1>
       
       <p class="text-xl text-slate-600 leading-relaxed mb-12 max-w-2xl mx-auto font-medium">
-        AI智能学习 + 精品资料库，轻松突破医考难关。
+        <span class="shiny-text">AI智能学习 + 精品资料库，轻松突破医考难关。</span>
       </p>
       
       <!-- 主要操作按钮 -->
@@ -984,6 +1057,41 @@ window.addEventListener('scroll', () => {
       item.classList.add('active');
     }
   });
+});
+
+/* -------------- 文字分割动画 -------------- */
+function initSplitTextAnimation() {
+  const splitTextElements = document.querySelectorAll('.split-text');
+  
+  splitTextElements.forEach((element, elementIndex) => {
+    const text = element.getAttribute('data-text') || element.textContent;
+    
+    // 保存原始样式类
+    const originalClasses = element.className;
+    
+    // 将文字分割成单个字符
+    const chars = text.split('').map((char, index) => {
+      const span = document.createElement('span');
+      span.className = 'split-char';
+      span.textContent = char === ' ' ? '\u00A0' : char; // 处理空格
+      span.style.transitionDelay = `${(elementIndex * 300) + (index * 80)}ms`;
+      return span;
+    });
+    
+    // 清空原元素内容并添加字符
+    element.innerHTML = '';
+    chars.forEach(char => element.appendChild(char));
+    
+    // 页面加载后触发动画
+    setTimeout(() => {
+      chars.forEach(char => char.classList.add('animate'));
+    }, 800 + (elementIndex * 300));
+  });
+}
+
+// 页面加载完成后初始化动画
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initSplitTextAnimation, 1000);
 });
 </script>
 
