@@ -134,6 +134,18 @@
             .explanation-box, .reveal-container .solution-content { display: block !important; opacity: 1 !important; transform: none !important; max-height: none !important; overflow: visible !important; background: #f0f8ff !important; }
             .reveal-btn { display: none !important; }
         }
+        
+        /* 返回主页按钮样式 */
+        .top-left-controls .control-btn:hover {
+            background: #b8342f !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(197, 48, 48, 0.4) !important;
+        }
+        
+        .top-left-controls .control-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(197, 48, 48, 0.3) !important;
+        }
     </style>
 </head>
 <body>
@@ -143,6 +155,14 @@
     <div class="progress-bar-container no-print auto-hide-ui"><div class="progress-fill" id="progressBar"></div></div>
     <div class="slide-indicator no-print auto-hide-ui" id="slideIndicator"><span class="current-slide">1</span> / <span class="total-slides">1</span></div>
     
+    <!-- 左上角返回主页按钮 -->
+    <div class="top-left-controls no-print auto-hide-ui" style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
+        <button onclick="window.location.href='index.html'" class="control-btn" title="返回主页" style="background: var(--primary-red); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(197, 48, 48, 0.3);">
+            <i class="fa-solid fa-home"></i>
+            <span>返回主页</span>
+        </button>
+    </div>
+
     <!-- 右上角控制 -->
     <div class="top-right-controls no-print auto-hide-ui">
         <button id="font-decrease-btn" class="control-btn" title="减小字体 (Ctrl+-)">-</button>
@@ -534,7 +554,7 @@
             const thumbnailsContainer = document.getElementById('slideThumbnails');
             thumbnailsContainer.innerHTML = '';
             for(let i = 1; i <= totalSlides; i++) { thumbnailsContainer.innerHTML += `<button class="thumbnail-btn" onclick="goToSlide(${i-1})" title="第 ${i} 页">${i}</button>`; }
-            goToSlide(0, true);
+            goToSlide(1, true); // 默认显示第二页（目录页），而不是标题页
             setupEventListeners();
             setupAutoHideUI();
             updateThumbnailScrollIndicators();
