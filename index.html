@@ -126,12 +126,27 @@
     
     .profile-card {
       position: relative;
-      width: 320px;
-      height: 384px;
+      width: 400px;
+      height: 480px;
       transform-style: preserve-3d;
       transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
       transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       cursor: pointer;
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+      .profile-card {
+        width: 320px;
+        height: 384px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .profile-card {
+        width: 280px;
+        height: 336px;
+      }
     }
     
     .profile-card-inner {
@@ -522,6 +537,12 @@
             体验 AI 工具
           </span>
         </a>
+        <a href="公考模拟器.html" target="_blank" class="group px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl shadow-xl font-bold hover:shadow-2xl transition-all duration-300 text-lg transform hover:scale-105">
+          <span class="flex items-center gap-3">
+            <i class="ri-gamepad-line text-xl"></i>
+            公考模拟器
+          </span>
+        </a>
         <a href="#about" class="group px-10 py-5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl shadow-xl font-bold hover:shadow-2xl transition-all duration-300 text-lg transform hover:scale-105">
           <span class="flex items-center gap-3">
             <i class="ri-user-star-line text-xl"></i>
@@ -532,7 +553,7 @@
     </div>
 
     <!-- 功能特色卡片网格 -->
-    <div class="grid md:grid-cols-3 gap-6 fade">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 fade">
       <!-- 卡片：笔试资料 -->
       <a href="#resources" class="group relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/50 hover:border-blue-200/50 transform hover:-translate-y-2">
         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/30 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -560,6 +581,22 @@
           <p class="text-slate-600 leading-relaxed mb-4">答题机器人 / 智能抽题</p>
           <div class="flex items-center text-emerald-600 font-semibold group-hover:gap-3 transition-all">
             <span>立即体验</span>
+            <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </a>
+
+      <!-- 卡片：公考模拟器 -->
+      <a href="公考模拟器.html" target="_blank" class="group relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-white/50 hover:border-purple-200/50 transform hover:-translate-y-2">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-pink-50/30 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative z-10">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <i class="ri-gamepad-line text-2xl text-white"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-slate-800 mb-3 group-hover:text-purple-600 transition-colors">公考模拟器</h3>
+          <p class="text-slate-600 leading-relaxed mb-4">体验公仆生涯 / 互动游戏</p>
+          <div class="flex items-center text-purple-600 font-semibold group-hover:gap-3 transition-all">
+            <span>开始游戏</span>
             <i class="ri-arrow-right-line ml-2 group-hover:translate-x-1 transition-transform"></i>
           </div>
         </div>
@@ -621,9 +658,9 @@
   <div class="max-w-6xl mx-auto px-8 fade">
     <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">关于<span class="highlight-blue">李弋老师</span></h2>
     
-    <div class="grid md:grid-cols-2 gap-12 items-center">
-      <!-- 左侧：照片 -->
-      <div class="text-center">
+    <div class="grid md:grid-cols-5 gap-8 lg:gap-12 items-center">
+      <!-- 左侧：照片 - 占据更多空间 -->
+      <div class="md:col-span-2 text-center">
         <div class="profile-card-wrapper" id="profileCard">
           <div class="profile-card">
             <div class="profile-card-inner">
@@ -636,7 +673,7 @@
       </div>
       
       <!-- 右侧：介绍内容 -->
-      <div class="space-y-6">
+      <div class="md:col-span-3 space-y-6">
         <div class="info-card bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-6 shadow-sm border border-slate-200">
           <p class="text-lg font-semibold text-slate-700 text-center">
             🎓 <span class="highlight-important">上海交通大学硕士</span> · <span class="highlight-important">华图医疗研究院院长</span>
