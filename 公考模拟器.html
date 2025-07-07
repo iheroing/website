@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公考模拟器：我的公仆生涯</title>
+    <title>仕途模拟器：我的公仆生涯</title>
     <style>
         /* 1. 全局样式与主题 - 像素风格 */
         :root {
@@ -306,12 +306,13 @@
             background: linear-gradient(180deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             color: var(--text-color);
             padding: 1.5rem;
+            padding-bottom: 2rem;
             border-right: var(--pixel-border);
             display: flex;
             flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
-            max-height: 100%;
+            max-height: calc(100vh - 120px);
         }
         .character-panel h3 {
             color: var(--success-color);
@@ -366,6 +367,8 @@
         .game-info {
             margin-top: auto;
             font-size: 0.9rem;
+            padding-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
         .right-panel {
             flex-grow: 1;
@@ -416,9 +419,8 @@
             border-radius: var(--border-radius);
             padding: 1rem;
             box-shadow: var(--box-shadow);
-            position: sticky;
-            bottom: 0;
-            z-index: 10;
+            margin-top: auto;
+            flex-shrink: 0;
         }
         
         .btn-group {
@@ -549,24 +551,218 @@
         }
         #skills-list .skill-item, #achievements-list .achievement-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            border-radius: var(--border-radius);
+            padding: 1.2rem;
+            border-radius: 12px;
             margin-bottom: 1rem;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
+            background: linear-gradient(135deg, #f8f9fa, rgba(255, 255, 255, 0.9));
+            border: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        
+        #skills-list .skill-item:hover, #achievements-list .achievement-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            border-color: var(--pixel-yellow);
+        }
+        
+        .skill-item .skill-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .skill-item .skill-name {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .skill-item .skill-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .skill-item .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--pixel-green), var(--pixel-yellow));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .skill-item .skill-value {
+            color: var(--pixel-green);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-left: 1rem;
+            min-width: 60px;
+            text-align: right;
+        }
+        
         #achievements-list .achievement-item.unlocked {
-            background-color: #e8f5e9; /* Light green */
-            border-color: var(--success-color);
+            background: linear-gradient(135deg, var(--pixel-yellow), var(--pixel-green));
+            border-color: var(--pixel-yellow);
+            animation: glow 2s ease-in-out infinite alternate;
         }
+        
         .achievement-icon {
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-right: 1rem;
         }
         
-        /* 6. 通知提示 */
+        .achievement-info {
+            flex: 1;
+        }
+        
+        .achievement-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            color: var(--primary-color);
+        }
+        
+        .achievement-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3); }
+            to { box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6); }
+        }
+        
+        /* 6. 卡通小人动画区域 */
+        .character-animation-area {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(180deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            border-left: var(--pixel-border);
+            border-right: var(--pixel-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .animated-character {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .character-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: idle 3s ease-in-out infinite;
+        }
+        
+        .character-head {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            animation: headBob 2s ease-in-out infinite;
+        }
+        
+        .character-torso {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .character-legs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .leg {
+            width: 8px;
+            height: 30px;
+            background: var(--text-color);
+            border-radius: 4px;
+        }
+        
+        .activity-indicator {
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--pixel-yellow);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            font-family: var(--font-family);
+            text-align: center;
+            margin-top: 1rem;
+            border: 1px solid var(--pixel-yellow);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* 动画关键帧 */
+        @keyframes idle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @keyframes headBob {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+        
+        @keyframes running {
+            0%, 100% { transform: translateX(0px) scale(1); }
+            25% { transform: translateX(-3px) scale(1.05); }
+            75% { transform: translateX(3px) scale(0.95); }
+        }
+        
+        @keyframes studying {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-2px) rotate(-1deg); }
+        }
+        
+        @keyframes working {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        @keyframes celebrating {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            25% { transform: translateY(-10px) rotate(-5deg) scale(1.1); }
+            75% { transform: translateY(-5px) rotate(5deg) scale(1.05); }
+        }
+        
+        /* 不同阶段的动画状态 */
+        .character-body.running {
+            animation: running 0.8s ease-in-out infinite;
+        }
+        
+        .character-body.studying {
+            animation: studying 2s ease-in-out infinite;
+        }
+        
+        .character-body.studying .character-head {
+            animation: none;
+            transform: rotate(-10deg);
+        }
+        
+        .character-body.working {
+            animation: working 1.5s ease-in-out infinite;
+        }
+        
+        .character-body.celebrating {
+            animation: celebrating 1s ease-in-out infinite;
+        }
+        
+        .character-body.celebrating .character-head {
+            animation: none;
+        }
+        
+        /* 7. 通知提示 */
         #notification {
             position: fixed;
             top: 20px;
@@ -587,6 +783,36 @@
             top: 40px;
         }
         
+        /* 设置相关样式 */
+        .setting-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .setting-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .setting-label input[type="checkbox"] {
+            margin-right: 0.8rem;
+            transform: scale(1.2);
+        }
+        
+        .setting-desc {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin: 0;
+            line-height: 1.4;
+        }
+        
         /* 7. 响应式布局 */
         @media (max-width: 768px) {
             #game-container {
@@ -597,22 +823,73 @@
             #main-game-screen {
                 flex-direction: column;
             }
+            .character-animation-area {
+                width: 100%;
+                height: 120px;
+                flex-direction: row;
+                justify-content: center;
+                border-left: none;
+                border-right: none;
+                border-top: var(--pixel-border);
+                border-bottom: var(--pixel-border);
+            }
+            .animated-character {
+                flex-direction: row;
+                align-items: center;
+                gap: 1rem;
+            }
+            .character-body {
+                transform: scale(0.8);
+            }
+            .activity-indicator {
+                margin-top: 0;
+                margin-left: 1rem;
+            }
             .left-panel {
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px solid #dee2e6;
                 height: auto;
+                max-height: 40vh;
                 padding: 1rem;
+                padding-bottom: 1.5rem;
             }
             .right-panel {
                 padding: 1rem;
                 flex-grow: 1;
+                min-height: 0;
+            }
+            .game-log-container {
+                height: 300px;
             }
             .actions-panel {
-                flex-wrap: wrap;
+                position: sticky;
+                bottom: 0;
+                z-index: 10;
+                margin-top: 0.5rem;
             }
             .btn {
                 font-size: 0.9rem;
+            }
+            .btn-group {
+                flex-wrap: wrap;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .left-panel {
+                max-height: 35vh;
+                padding: 0.8rem;
+            }
+            .right-panel {
+                padding: 0.8rem;
+            }
+            .game-log-container {
+                height: 250px;
+            }
+            .btn {
+                font-size: 0.8rem;
+                padding: 0.6rem 1rem;
             }
         }
 
@@ -637,7 +914,7 @@
             <!-- 游戏头部 -->
             <div class="game-header">
                 <div class="header-left">
-                    <h2>公考模拟器</h2>
+                    <h2>仕途模拟器</h2>
                     <div class="player-basic-info">
                         <span id="player-name-display"></span>
                         <span id="player-stage-display"></span>
@@ -691,6 +968,17 @@
                     </div>
                 </div>
 
+                <div class="effects-panel" style="margin-bottom: 1rem;">
+                    <h4 style="color: var(--success-color); margin-bottom: 0.5rem; font-size: 0.9rem; font-family: var(--font-family);">✨ 增益效果</h4>
+                    <div id="active-buffs" style="font-size: 0.8rem; min-height: 20px;">
+                        <span style="opacity: 0.6;">暂无增益效果</span>
+                    </div>
+                    <h4 style="color: var(--danger-color); margin-bottom: 0.5rem; font-size: 0.9rem; font-family: var(--font-family); margin-top: 0.8rem;">💔 负面效果</h4>
+                    <div id="active-debuffs" style="font-size: 0.8rem; min-height: 20px;">
+                        <span style="opacity: 0.6;">暂无负面效果</span>
+                    </div>
+                </div>
+
                 <div class="game-info">
                     <p><strong>当前时间:</strong> <span id="game-time"></span></p>
                     <p><strong>选择路径:</strong> <span id="selected-path">未选择</span></p>
@@ -713,6 +1001,22 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- 卡通小人动画区域 -->
+            <div class="character-animation-area">
+                <div id="animated-character" class="animated-character">
+                    <div class="character-body">
+                        <div class="character-head">😊</div>
+                        <div class="character-torso">👔</div>
+                        <div class="character-legs">
+                            <div class="leg left-leg"></div>
+                            <div class="leg right-leg"></div>
+                        </div>
+                    </div>
+                    <div class="activity-indicator" id="activity-text">准备中...</div>
+                </div>
+            </div>
+            
             <div class="right-panel">
                 <h3 style="color: var(--success-color); font-family: var(--font-family); text-transform: uppercase; border-bottom: 2px solid var(--success-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">工作日志</h3>
                 <div id="game-log" class="game-log-container">
@@ -722,10 +1026,10 @@
                     <div class="btn-group">
                         <button id="skills-btn" class="btn">查看能力</button>
                         <button id="achievements-btn" class="btn">我的成就</button>
+                        <button id="settings-btn" class="btn">⚙️ 设置</button>
                     </div>
                     <div class="btn-group">
-                        <button id="share-btn" class="btn">分享进度</button>
-                        <button id="viral-share-btn" class="btn" style="background: linear-gradient(45deg, #ff6b6b, #ffa500);">💥 火热分享</button>
+                        <button id="share-btn" class="btn" style="background: linear-gradient(45deg, #ff6b6b, #ffa500);">🔥 分享进度</button>
                         <button id="reset-btn" class="btn btn-danger">重置游戏</button>
                     </div>
                 </div>
@@ -781,6 +1085,42 @@
         </div>
     </div>
     
+    <!-- 模态框: 游戏设置 -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ 游戏设置</h2>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="auto-random-choice" checked>
+                        <span>普通事件自动随机选择</span>
+                    </label>
+                    <p class="setting-desc">开启后，普通事件将自动随机选择，重要事件仍需手动选择</p>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="show-event-hints" checked>
+                        <span>显示事件提示</span>
+                    </label>
+                    <p class="setting-desc">显示事件的重要性和影响提示</p>
+                </div>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="debug-mode">
+                        <span>开发者调试模式</span>
+                    </label>
+                    <p class="setting-desc">显示事件系统调试信息（开发者选项）</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-settings-btn" class="btn">保存设置</button>
+                <button id="close-settings-btn" class="btn">关闭</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- 通知 -->
     <div id="notification"></div>
 
@@ -798,6 +1138,7 @@
             event: document.getElementById('event-modal'),
             skills: document.getElementById('skills-modal'),
             achievements: document.getElementById('achievements-modal'),
+            settings: document.getElementById('settings-modal'),
         };
         const inputs = {
             playerName: document.getElementById('player-name-input'),
@@ -834,8 +1175,9 @@
             showAchievements: document.getElementById('achievements-btn'),
             closeAchievements: document.getElementById('close-achievements-btn'),
             share: document.getElementById('share-btn'),
-            viralShare: document.getElementById('viral-share-btn'),
             reset: document.getElementById('reset-btn'),
+            settings: document.getElementById('settings-btn'),
+            closeSettings: document.getElementById('close-settings-btn'),
         };
         const calendar = {
             year: document.getElementById('calendar-year'),
@@ -851,6 +1193,13 @@
         
         // 游戏状态对象 (玩家数据和游戏进程)
         let gameState = {};
+
+        // 游戏设置
+        let gameSettings = {
+            autoRandomChoice: false,  // 普通事件自动随机选择
+            showEventHints: true,     // 显示事件提示
+            debugMode: false          // 开发者调试模式
+        };
 
         // 游戏静态数据 (技能、事件、成就定义)
         const gameData = {
@@ -892,8 +1241,8 @@
                     id: 'Q001', type: '行测', category: '数量关系',
                     question: '小明从家到学校的距离是1200米，他以每分钟60米的速度步行，走了8分钟后发现忘记带作业本，立即原路返回家中取作业本，然后以每分钟80米的速度前往学校。问小明从家出发到到达学校总共用了多少分钟？',
                     options: ['A. 35分钟', 'B. 38分钟', 'C. 41分钟', 'D. 44分钟'],
-                    correct: 2, // 选项索引，从0开始
-                    explanation: '小明先走了8分钟480米，返回家用时8分钟，然后以80米/分钟走1200米用时15分钟，总计8+8+15=31分钟。等等，让我重新计算...'
+                    correct: 2,
+                    explanation: '小明先走了8分钟480米，返回家用时8分钟，然后以80米/分钟走1200米用时15分钟，总计8+8+15=31分钟。'
                 },
                 {
                     id: 'Q002', type: '申论', category: '综合分析',
@@ -908,6 +1257,41 @@
                     options: ['A. 误解 寻找 迷惑', 'B. 偏差 识别 误导', 'C. 分歧 发现 欺骗', 'D. 混乱 辨别 蒙蔽'],
                     correct: 1,
                     explanation: '信息传播容易产生偏差，需要识别真相，避免被误导。'
+                },
+                {
+                    id: 'Q004', type: '行测', category: '逻辑判断',
+                    question: '某单位要在甲、乙、丙、丁四人中选两人去参加培训。已知：(1)如果甲去，那么乙也去；(2)如果乙去，那么丙不去；(3)如果丙不去，那么丁去；(4)丁不去。根据以上条件，可以确定去参加培训的是：',
+                    options: ['A. 甲和乙', 'B. 甲和丙', 'C. 乙和丁', 'D. 丙和丁'],
+                    correct: 1,
+                    explanation: '由条件(4)丁不去，结合(3)可得丙去；由丙去和(2)可得乙不去；由乙不去和(1)可得甲不去。但题目要求选两人，所以应该是甲和丙。'
+                },
+                {
+                    id: 'Q005', type: '行测', category: '资料分析',
+                    question: '2023年某市GDP为5000亿元，比上年增长8.5%。其中第三产业增加值为2800亿元，占GDP的比重比上年提高了1.2个百分点。问2022年该市第三产业增加值约为多少亿元？',
+                    options: ['A. 2180', 'B. 2280', 'C. 2380', 'D. 2480'],
+                    correct: 1,
+                    explanation: '2022年GDP=5000÷1.085≈4608亿元；2023年第三产业占比=2800÷5000=56%；2022年占比=56%-1.2%=54.8%；2022年第三产业=4608×54.8%≈2525亿元，最接近B选项。'
+                },
+                {
+                    id: 'Q006', type: '申论', category: '贯彻执行',
+                    question: '假如你是某街道办事处工作人员，需要起草一份关于"垃圾分类宣传活动"的通知，你认为最重要的要素是：',
+                    options: ['A. 活动时间、地点、参与人员', 'B. 活动背景、意义、预期效果', 'C. 活动内容、方式、注意事项', 'D. 以上都很重要，需要全面考虑'],
+                    correct: 3,
+                    explanation: '公文写作需要要素齐全，时间地点、背景意义、内容方式等都是必要组成部分。'
+                },
+                {
+                    id: 'Q007', type: '行测', category: '常识判断',
+                    question: '下列关于我国基本国情的表述，正确的是：',
+                    options: ['A. 我国是世界上最大的发展中国家', 'B. 我国已经进入发达国家行列', 'C. 我国人均GDP已超过美国', 'D. 我国城镇化率已达到90%'],
+                    correct: 0,
+                    explanation: '我国仍然是世界上最大的发展中国家，这是我国的基本国情。'
+                },
+                {
+                    id: 'Q008', type: '行测', category: '数量关系',
+                    question: '一个正方形的边长增加20%，那么它的面积增加了：',
+                    options: ['A. 20%', 'B. 40%', 'C. 44%', 'D. 48%'],
+                    correct: 2,
+                    explanation: '设原边长为a，面积为a²；新边长为1.2a，面积为(1.2a)²=1.44a²；面积增加44%。'
                 }
             ],
             // 面试题库
@@ -935,13 +1319,49 @@
                     question: '你是新入职的公务员，发现同事工作方式比较传统，而你想推进一些新的工作方法，但遭到了一些阻力。你会怎么处理？',
                     keyPoints: ['理解包容', '沟通协调', '循序渐进', '求同存异'],
                     difficulty: 3
+                },
+                {
+                    id: 'I005', type: '综合分析',
+                    question: '当前"内卷"现象在职场中比较普遍，有人认为这是竞争激烈的表现，也有人认为这是一种恶性竞争。你怎么看？',
+                    keyPoints: ['理解内卷含义', '分析产生原因', '客观评价影响', '提出应对建议'],
+                    difficulty: 3
+                },
+                {
+                    id: 'I006', type: '计划组织',
+                    question: '你所在的社区要开展"垃圾分类"宣传活动，但居民参与度不高，领导安排你重新策划，你会怎么做？',
+                    keyPoints: ['分析问题原因', '创新宣传方式', '提高参与度', '确保活动效果'],
+                    difficulty: 2
+                },
+                {
+                    id: 'I007', type: '应急应变',
+                    question: '你在窗口服务时，遇到一位老人因为不会使用智能手机办理业务而情绪激动，大声抱怨现在办事太复杂，周围群众开始围观。你会怎么处理？',
+                    keyPoints: ['安抚情绪', '耐心解释', '提供帮助', '维护秩序'],
+                    difficulty: 2
+                },
+                {
+                    id: 'I008', type: '岗位匹配',
+                    question: '公务员工作相对稳定，但收入不如一些企业高，你为什么还要选择公务员这个职业？',
+                    keyPoints: ['明确职业理想', '体现价值追求', '展现服务意识', '表达坚定决心'],
+                    difficulty: 1
+                },
+                {
+                    id: 'I009', type: '综合分析',
+                    question: '近年来，一些地方出现了"躺平式"干部，工作不主动、不作为。你认为应该如何解决这个问题？',
+                    keyPoints: ['分析问题根源', '提出解决措施', '完善制度机制', '加强监督管理'],
+                    difficulty: 3
+                },
+                {
+                    id: 'I010', type: '人际沟通',
+                    question: '你刚到新单位工作，发现同事小王总是对你爱理不理，甚至在工作上不配合。你认为可能是什么原因？你会怎么处理？',
+                    keyPoints: ['分析原因', '主动沟通', '换位思考', '建立关系'],
+                    difficulty: 2
                 }
             ],
             // 事件库：这是游戏的核心驱动力
             events: [
                 // ========== 备考阶段 ==========
                 {
-                    id: 'E001', stage: '备考阶段', trigger: () => true, unique: true, important: true,
+                    id: 'E001', stage: '笔试备考', trigger: () => true, unique: true, important: true,
                     title: '选岗的终极纠结',
                     description: '网上铺天盖地的信息让你眼花缭乱：国考难度大但岗位好、省考相对简单、事业单位稳定、三支一扶能加分...朋友圈里有人晒上岸，有人吐槽996。你的内心开始了激烈的斗争。',
                     choices: [
@@ -985,7 +1405,7 @@
                 },
                 // 选具体职位事件
                 {
-                    id: 'E001_FOLLOW', stage: '备考阶段', trigger: (gs) => gs.selectedPath && !gs.jobLocation && gs.time.days > 5, unique: true, important: true,
+                    id: 'E001_FOLLOW', stage: '笔试备考', trigger: (gs) => gs.selectedPath && !gs.jobLocation && gs.time.days > 5, unique: true, important: true,
                     title: '具体职位的选择困难症',
                     description: '确定了考试类型后，现在要选具体职位了。打开职位表，密密麻麻的信息让你眼花缭乱：有的在北京但要求工作经验，有的在老家但是冷门部门，有的薪资高但在西部偏远地区...',
                     choices: [
@@ -1037,7 +1457,7 @@
                 },
                 // 详细职位选择的现实困境
                 {
-                    id: 'E001_DETAIL', stage: '备考阶段', trigger: (gs) => gs.jobLocation && !gs.jobType && gs.time.days > 20, unique: true, important: true,
+                    id: 'E001_DETAIL', stage: '笔试备考', trigger: (gs) => gs.jobLocation && !gs.jobType && gs.time.days > 20, unique: true, important: true,
                     title: '职位细节的艰难抉择',
                     description: '你看中了几个具体职位，但每个都有让人纠结的地方。这个选择将影响你未来几年甚至一生的轨迹...',
                     choices: [
@@ -1089,7 +1509,7 @@
                     ]
                 },
                 {
-                    id: 'TAX_FOLLOW', stage: '备考阶段', trigger: (gs) => gs.jobType === 'tax_bureau' && !gs.eventHistory.includes('TAX_FOLLOW'), unique: true, important: true,
+                    id: 'TAX_FOLLOW', stage: '笔试备考', trigger: (gs) => gs.jobType === 'tax_bureau' && !gs.eventHistory.includes('TAX_FOLLOW'), unique: true, important: true,
                     title: '税务局的额外挑战',
                     description: '选择税务局后，你了解到更多内情：这个岗位需要经常出差检查企业，工作强度很大，但专业能力提升很快，而且有不少同龄人...',
                     choices: [
@@ -1117,7 +1537,7 @@
                 },
                 // 薪资vs发展的具体冲突
                 {
-                    id: 'SALARY_DILEMMA', stage: '备考阶段', trigger: (gs) => gs.jobType && gs.time.days > 35, unique: true, important: true,
+                    id: 'SALARY_DILEMMA', stage: '笔试备考', trigger: (gs) => gs.jobType && gs.time.days > 35, unique: true, important: true,
                     title: '薪资与发展的两难选择',
                     description: '你同时收到了两个岗位的意向：一个是市中心某委办局的科员，薪资高但晋升慢；另一个是新区管委会的主任科员，薪资一般但发展前景好。朋友们意见不一...',
                     choices: [
@@ -1157,7 +1577,7 @@
                 },
                 // 工作地点的家庭考量
                 {
-                    id: 'FAMILY_LOCATION', stage: '备考阶段', trigger: (gs) => gs.time.days > 50 && !gs.eventHistory.includes('FAMILY_LOCATION'), unique: true, important: true,
+                    id: 'FAMILY_LOCATION', stage: '笔试备考', trigger: (gs) => gs.time.days > 50 && !gs.eventHistory.includes('FAMILY_LOCATION'), unique: true, important: true,
                     title: '家庭因素的现实考量',
                     description: '就在你准备最终确定职位时，家里传来消息：奶奶身体不好需要人照顾，女朋友也希望你留在本地发展。但你心仪的岗位在外地，这让你陷入深深的纠结...',
                     choices: [
@@ -1196,7 +1616,7 @@
                     ]
                 },
                 {
-                    id: 'E002', stage: '备考阶段', trigger: (gs) => gs.selectedPath, unique: true,
+                    id: 'E002', stage: '笔试备考', trigger: (gs) => gs.selectedPath, unique: true,
                     title: '制定学习计划',
                     description: '距离笔试还有3个月，时间紧迫。面对厚厚的复习资料，你决定制定一个学习计划。',
                     choices: [
@@ -1206,7 +1626,7 @@
                     ]
                 },
                 {
-                    id: 'E012', stage: '备考阶段', trigger: (gs) => gs.time.days > 15, unique: true,
+                    id: 'E012', stage: '笔试备考', trigger: (gs) => gs.time.days > 15, unique: true,
                     title: '心态波动',
                     description: '复习遇到了瓶颈，一道难题让你百思不得其解，你感到有些焦虑。',
                     choices: [
@@ -1216,7 +1636,7 @@
                     ]
                 },
                 {
-                    id: 'E003', stage: '备考阶段', trigger: (gs) => gs.time.days > 30, unique: true,
+                    id: 'E003', stage: '笔试备考', trigger: (gs) => gs.time.days > 30, unique: true,
                     title: '模拟考试',
                     description: '培训机构组织了一次模拟考试，你的成绩不太理想，排名靠后。',
                     choices: [
@@ -1226,7 +1646,7 @@
                     ]
                 },
                 {
-                    id: 'E004', stage: '备考阶段', trigger: (gs) => gs.time.days > 45, unique: true,
+                    id: 'E004', stage: '笔试备考', trigger: (gs) => gs.time.days > 45, unique: true,
                     title: '家人的关心',
                     description: '家人看到你每天埋头苦读，既心疼又担心，劝你要注意身体。',
                     choices: [
@@ -1236,7 +1656,7 @@
                     ]
                 },
                 {
-                    id: 'E005', stage: '备考阶段', trigger: (gs) => gs.time.days > 60, unique: true,
+                    id: 'E005', stage: '笔试备考', trigger: (gs) => gs.time.days > 60, unique: true,
                     title: '朋友的聚会',
                     description: '老同学组织聚会，邀请你参加。你已经很久没有放松过了。',
                     choices: [
@@ -1246,7 +1666,7 @@
                     ]
                 },
                 {
-                    id: 'E006', stage: '备考阶段', trigger: (gs) => gs.time.days > 25, unique: true,
+                    id: 'E006', stage: '笔试备考', trigger: (gs) => gs.time.days > 25, unique: true,
                     title: '🔥 华图直播间的超神级讲师',
                     description: '华图在线APP推送：今晚8点华图教育金牌讲师直播《申论高分秘籍》！你的室友疯狂推荐："兄弟，华图这个老师太强了！去年我朋友就是看他的课上岸的！"弹幕已经沸腾了...',
                     choices: [
@@ -1279,7 +1699,7 @@
                     ]
                 },
                 {
-                    id: 'E007', stage: '备考阶段', trigger: (gs) => gs.time.days > 40, unique: true,
+                    id: 'E007', stage: '笔试备考', trigger: (gs) => gs.time.days > 40, unique: true,
                     title: '💬 华图学习群的神仙打架',
                     description: '华图教育官方学习群里炸了！有学霸每天晒进度条"今日刷题200道✅"，有人哭诉"申论永远40+怎么破😭"，还有大神在分享"我是这样从30分逆袭到70分的..."群消息99+停不下来！',
                     choices: [
@@ -1312,7 +1732,7 @@
                     ]
                 },
                 {
-                    id: 'E008', stage: '备考阶段', trigger: (gs) => gs.time.days > 50, unique: true,
+                    id: 'E008', stage: '笔试备考', trigger: (gs) => gs.time.days > 50, unique: true,
                     title: '📺 华图教育直播间：今夜无眠刷题大会',
                     description: '华图教育视频号疯了！今晚深夜直播"100道行测秒杀技巧"，主播是华图王牌讲师，弹幕全是"老师牛逼！""这个方法绝了！"你室友激动地摇你："快起来！华图老师在教神仙解题法！"',
                     choices: [
@@ -1346,7 +1766,7 @@
                     ]
                 },
                 {
-                    id: 'E009', stage: '备考阶段', trigger: (gs) => gs.time.days > 30 && gs.examProgress.practiceTests < 2, unique: true,
+                    id: 'E009', stage: '笔试备考', trigger: (gs) => gs.time.days > 30 && gs.examProgress.practiceTests < 2, unique: true,
                     title: '第一次模拟考试',
                     description: '你报名参加了第一次模拟考试。这是检验学习成果的重要机会，但也很紧张。',
                     choices: [
@@ -1368,7 +1788,7 @@
                     ]
                 },
                 {
-                    id: 'E010', stage: '备考阶段', trigger: (gs) => gs.time.month === 2 && gs.time.day > 20, unique: true,
+                    id: 'E010', stage: '笔试备考', trigger: (gs) => gs.time.month === 2 && gs.time.day > 20, unique: true,
                     title: '距离报名只有一周！',
                     description: '看着日历上圈出的报名日期，你突然意识到只剩一周时间了！朋友圈里已经有人在讨论职位选择，你感到了前所未有的紧迫感。',
                     choices: [
@@ -1384,7 +1804,7 @@
                     ]
                 },
                 {
-                    id: 'E011', stage: '备考阶段', trigger: (gs) => gs.time.days > 70, unique: true,
+                    id: 'E011', stage: '笔试备考', trigger: (gs) => gs.time.days > 70, unique: true,
                     title: '🆚 华图在线APP vs 其他刷题软件大战',
                     description: '微博上#刷题软件哪家强#话题冲上热搜！网友分成几派：华图派说"华图在线的解析最详细"，粉笔派反击"粉笔题目最新"，中公派坚持"中公最全面"...你的选择恐惧症犯了！',
                     choices: [
@@ -1418,7 +1838,7 @@
                 },
                 // ========== 特殊BUFF事件 ==========
                 {
-                    id: 'BUFF001', stage: '备考阶段', trigger: (gs) => Math.random() < 0.1 && gs.time.days > 20 && !gs.eventHistory.includes('BUFF001'), unique: true,
+                    id: 'BUFF001', stage: '笔试备考', trigger: (gs) => Math.random() < 0.1 && gs.time.days > 20 && !gs.eventHistory.includes('BUFF001'), unique: true,
                     title: '💫 今日运势：学习效率爆表',
                     description: '今天不知道怎么回事，注意力特别集中，理解力也很强。连平时最难的题目都能轻松搞定！',
                     special: 'buff',
@@ -1435,7 +1855,7 @@
                     ]
                 },
                 {
-                    id: 'BUFF002', stage: '备考阶段', trigger: (gs) => Math.random() < 0.08 && gs.time.days > 30 && !gs.eventHistory.includes('BUFF002'), unique: true,
+                    id: 'BUFF002', stage: '笔试备考', trigger: (gs) => Math.random() < 0.08 && gs.time.days > 30 && !gs.eventHistory.includes('BUFF002'), unique: true,
                     title: '🎉 华图教育押题神话：老师又预测中了！',
                     description: '华图教育公众号炸了！今年模拟考的题目竟然和华图讲师预测的80%重合！网友疯狂转发："华图老师是不是考试出题人的亲戚？""这预测准得离谱！"你赶紧翻出华图的押题资料...',
                     special: 'buff',
@@ -1471,7 +1891,7 @@
                     ]
                 },
                 {
-                    id: 'DEBUFF001', stage: '备考阶段', trigger: (gs) => Math.random() < 0.12 && gs.time.days > 25 && !gs.eventHistory.includes('DEBUFF001'), unique: true,
+                    id: 'DEBUFF001', stage: '笔试备考', trigger: (gs) => Math.random() < 0.12 && gs.time.days > 25 && !gs.eventHistory.includes('DEBUFF001'), unique: true,
                     title: '😵 突发状况：手机成瘾',
                     description: '最近刷手机上瘾了，明明打算学习，但总是忍不住看微博、抖音。时间就这样悄悄溜走了...',
                     special: 'debuff',
@@ -1503,7 +1923,7 @@
                     ]
                 },
                 {
-                    id: 'BUFF003', stage: '备考阶段', trigger: (gs) => Math.random() < 0.06 && gs.time.days > 35 && !gs.eventHistory.includes('BUFF003'), unique: true,
+                    id: 'BUFF003', stage: '笔试备考', trigger: (gs) => Math.random() < 0.06 && gs.time.days > 35 && !gs.eventHistory.includes('BUFF003'), unique: true,
                     title: '🎉 幸运事件：遇到学霸室友',
                     description: '你的新室友竟然是去年上岸的学长！他主动提出要分享一些独家的学习资料和经验，简直是天降好运！',
                     special: 'buff',
@@ -1528,7 +1948,7 @@
                     ]
                 },
                 {
-                    id: 'DEBUFF002', stage: '备考阶段', trigger: (gs) => Math.random() < 0.1 && gs.time.days > 50 && !gs.eventHistory.includes('DEBUFF002'), unique: true,
+                    id: 'DEBUFF002', stage: '笔试备考', trigger: (gs) => Math.random() < 0.1 && gs.time.days > 50 && !gs.eventHistory.includes('DEBUFF002'), unique: true,
                     title: '😴 困扰事件：严重失眠',
                     description: '最近压力太大，你开始失眠。凌晨3点还在翻来覆去，白天学习时昏昏沉沉，效率极低。',
                     special: 'debuff',
@@ -1562,7 +1982,7 @@
                     ]
                 },
                 {
-                    id: 'BUFF004', stage: '考试阶段', trigger: (gs) => Math.random() < 0.15 && gs.selectedPath && !gs.eventHistory.includes('BUFF004'), unique: true,
+                    id: 'BUFF004', stage: '笔试考试', trigger: (gs) => Math.random() < 0.15 && gs.selectedPath && !gs.eventHistory.includes('BUFF004'), unique: true,
                     title: '🍀 超级幸运：考试当天好运爆棚',
                     description: '考试当天一切顺利：提前到达考场、座位靠窗采光好、考试题目刚好都是你重点复习的内容！',
                     special: 'buff',
@@ -1579,7 +1999,7 @@
                     ]
                 },
                 {
-                    id: 'DEBUFF003', stage: '考试阶段', trigger: (gs) => Math.random() < 0.08 && gs.time.days > 92 && !gs.eventHistory.includes('DEBUFF003'), unique: true,
+                    id: 'DEBUFF003', stage: '笔试考试', trigger: (gs) => Math.random() < 0.08 && gs.time.days > 92 && !gs.eventHistory.includes('DEBUFF003'), unique: true,
                     title: '😰 倒霉事件：考试当天突发状况',
                     description: '考试当天简直是诸事不顺：闹钟没响差点迟到、考场空调坏了很闷热、隔壁考生一直咳嗽...',
                     special: 'debuff',
@@ -1604,9 +2024,57 @@
                         }
                     ]
                 },
+                // ========== 多样化结局选择事件 ==========
+                {
+                    id: 'ENDING_CHOICE', stage: '职业发展', trigger: (gs) => gs.time.days >= 365, unique: true,
+                    title: '🎯 人生的十字路口',
+                    description: '经过一年的努力，你已经在职场站稳了脚跟。现在面临人生的重要选择，每一条路都充满了不同的可能性...',
+                    choices: [
+                        {
+                            text: '💼 继续深耕公务员体系',
+                            effects: {
+                                gameOver: true,
+                                endingType: 'stable_career',
+                                log: '你选择在公务员体系中继续发展，追求稳定而有意义的职业生涯。'
+                            }
+                        },
+                        {
+                            text: '💔 为了爱情放弃一切',
+                            effects: {
+                                gameOver: true,
+                                endingType: 'love_sacrifice',
+                                log: '你决定为了心爱的人放弃现有的一切，追寻真爱。毕业分手？不存在的！'
+                            }
+                        },
+                        {
+                            text: '🚀 辞职创业追梦',
+                            effects: {
+                                gameOver: true,
+                                endingType: 'entrepreneur',
+                                log: '你毅然决定辞职创业，用自己的想法改变世界！'
+                            }
+                        },
+                        {
+                            text: '🌍 出国深造',
+                            effects: {
+                                gameOver: true,
+                                endingType: 'study_abroad',
+                                log: '你选择出国深造，在更广阔的天地中寻找人生的可能性。'
+                            }
+                        },
+                        {
+                            text: '🏠 回家继承家业',
+                            effects: {
+                                gameOver: true,
+                                endingType: 'family_business',
+                                log: '你决定回到家乡，继承家族事业，在熟悉的土地上书写新的篇章。'
+                            }
+                        }
+                    ]
+                },
                 // ========== 随机趣味事件 ==========
                 {
-                    id: 'RANDOM001', stage: '备考阶段', trigger: (gs) => Math.random() < 0.15 && gs.time.days > 10 && !gs.eventHistory.includes('RANDOM001'), unique: true,
+                    id: 'RANDOM001', stage: '笔试备考', trigger: (gs) => Math.random() < 0.15 && gs.time.days > 10 && !gs.eventHistory.includes('RANDOM001'), unique: true,
                     title: '🐱 突发状况：邻居家的猫',
                     description: '邻居家的猫不知道怎么跑到你家阳台上了，喵喵叫个不停。你正在专心学习，被吵得心烦意乱。',
                     special: 'random',
@@ -1764,14 +2232,17 @@
                     title: '笔试结果',
                     description: '笔试成绩出来了！你紧张地查询自己的分数...',
                     choices: [
-                        { text: '查看成绩', consequence: (gs) => {
+                        {text: '查看成绩', consequence: (gs) => {
                             const finalScore = gs.examProgress.writtenTestScore || 70;
                             if (finalScore >= 120) {
+                                // 设置笔试通过标志并转换到面试备考阶段
+                                gs.examProgress.writtenPassed = true;
+                                gs.player.stage = '面试备考';
+                                gs.time.days = 100;
                                 return { 
-                                    log: `恭喜！你的笔试成绩是${finalScore}分，成功进入面试环节！`,
+                                    log: `恭喜！你的笔试成绩是${finalScore}分，成功进入面试环节！现在开始准备面试。`,
                                     achievement: 'PASS_WRITTEN_TEST',
-                                    nextStage: false,
-                                    triggerEvent: 'E105'
+                                    nextStage: true
                                 };
                             } else {
                                 return { 
@@ -1783,7 +2254,7 @@
                     ]
                 },
                 {
-                    id: 'E105', stage: '考试阶段', trigger: () => true, unique: true,
+                    id: 'E105', stage: '面试备考', trigger: () => true, unique: true,
                     title: '面试通知的兴奋与紧张',
                     description: '收到面试通知的那一刻，你激动得差点叫出声来！但随即而来的是深深的紧张...距离面试还有一周，你需要做好准备。',
                     choices: [
@@ -1799,7 +2270,7 @@
                     ]
                 },
                 {
-                    id: 'E106', stage: '考试阶段', trigger: (gs) => gs.time.days > 112, unique: true,
+                    id: 'E106', stage: '面试备考', trigger: (gs) => gs.time.days > 112, unique: true,
                     title: '面试前的"最后一课"',
                     description: '面试前一天，你刷到了一个面试培训机构的"最后一课"直播，老师说要教"必过技巧"。但你已经准备得差不多了。',
                     choices: [
@@ -1815,7 +2286,7 @@
                     ]
                 },
                 {
-                    id: 'E107', stage: '考试阶段', trigger: (gs) => gs.time.days > 113, unique: true,
+                    id: 'E107', stage: '面试考试', trigger: (gs) => gs.time.days > 113, unique: true,
                     title: '面试当天：第一印象',
                     description: '面试当天，你早早到了考点。看到其他考生都穿着正装，有的在背材料，有的在练习手势。你需要调整好状态。',
                     choices: [
@@ -1831,7 +2302,7 @@
                     ]
                 },
                 {
-                    id: 'E108', stage: '考试阶段', trigger: (gs) => gs.time.days > 113, unique: true,
+                    id: 'E108', stage: '面试考试', trigger: (gs) => gs.time.days > 113, unique: true,
                     title: '面试正式开始：综合分析题',
                     description: '你被叫到号了！坐在考官面前，第一题是："有人说95后是躺平的一代，也有人说95后是最有希望的一代，你怎么看？"',
                     choices: [
@@ -1867,18 +2338,20 @@
                     ]
                 },
                 {
-                    id: 'E109', stage: '考试阶段', trigger: (gs) => gs.time.days > 114, unique: true,
+                    id: 'E109', stage: '面试考试', trigger: (gs) => gs.time.days > 114, unique: true,
                     title: '面试结果揭晓',
                     description: '面试结束了，你忐忑不安地等待着结果...',
                     choices: [
                         { text: '查看面试结果', consequence: (gs) => {
                             const finalScore = gs.examProgress.interviewScore || 60;
                             if (finalScore >= 80) {
+                                // 面试通过，转换到入职适应阶段
+                                gs.player.stage = '入职适应';
+                                gs.time.days = 120;
                                 return { 
-                                    log: `恭喜！你的面试成绩是${finalScore}分，成功通过面试！`,
+                                    log: `恭喜！你的面试成绩是${finalScore}分，成功通过面试！🎉 恭喜上岸！你即将开始公务员生涯！`,
                                     achievement: 'ACE_INTERVIEW',
-                                    nextStage: true,
-                                    notification: '🎉 恭喜上岸！你即将开始公务员生涯！'
+                                    nextStage: true
                                 };
                             } else {
                                 return { 
@@ -2169,7 +2642,7 @@
             gameState = {
                 player: {
                     name: playerName,
-                    stage: '备考阶段', // 备考阶段 -> 考试阶段 -> 入职适应 -> 能力提升 -> 职业发展
+                    stage: '笔试备考', // 笔试备考 -> 笔试考试 -> 面试备考 -> 面试考试 -> 入职适应 -> 能力提升 -> 职业发展
                     stats: {
                         professional: 5,
                         communication: 5,
@@ -2223,12 +2696,13 @@
                     writtenTestScore: 0,
                     interviewScore: 0,
                     practiceTests: 0,
-                    mockInterviews: 0
+                    mockInterviews: 0,
+                    writtenPassed: false // 笔试是否通过
                 }
             };
             
             // 设置初始目标
-            setStageGoals('备考阶段');
+            setStageGoals('笔试备考');
             
             // 初始日志
             addLogMessage(`欢迎你，${playerName}！你的公仆生涯从今天开始。`);
@@ -2244,7 +2718,7 @@
             gameState.currentGoals = [];
             
             switch(stage) {
-                case '备考阶段':
+                case '笔试备考':
                     gameState.currentGoals = [
                         { id: 'choose_path', text: '选择考试路径（国考/省考/事业单位）', completed: false, deadline: '2024年2月底', urgent: false },
                         { id: 'study_plan', text: '制定学习计划', completed: false, deadline: '2024年1月底', urgent: true },
@@ -2357,29 +2831,54 @@
             
             gameState.currentGoals.forEach(goal => {
                 const goalElement = document.createElement('div');
-                goalElement.style.marginBottom = '0.5rem';
-                goalElement.style.padding = '0.3rem';
-                goalElement.style.borderRadius = '4px';
-                goalElement.style.backgroundColor = goal.completed ? '#e8f5e8' : (goal.urgent ? '#fff3cd' : '#f8f9fa');
-                goalElement.style.border = `1px solid ${goal.completed ? '#28a745' : (goal.urgent ? '#ffc107' : '#dee2e6')}`;
+                goalElement.style.marginBottom = '0.6rem';
+                goalElement.style.padding = '0.5rem';
+                goalElement.style.borderRadius = '6px';
+                goalElement.style.backgroundColor = goal.completed ? '#d4edda' : (goal.urgent ? '#fff3cd' : '#f8f9fa');
+                goalElement.style.border = `2px solid ${goal.completed ? '#28a745' : (goal.urgent ? '#ffc107' : '#dee2e6')}`;
+                goalElement.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+                goalElement.style.transition = 'all 0.2s ease';
                 
+                // 进度条和文本
                 let progressText = '';
+                let progressBar = '';
                 if (goal.current !== undefined && goal.target !== undefined) {
-                    progressText = ` (${goal.current}/${goal.target})`;
+                    const percentage = Math.min((goal.current / goal.target) * 100, 100);
+                    progressText = `<span style="font-weight: bold; color: ${goal.completed ? '#28a745' : '#495057'};"> ${goal.current}/${goal.target}</span>`;
+                    progressBar = `
+                        <div style="margin-top: 0.3rem; background: #e9ecef; border-radius: 10px; height: 6px; overflow: hidden;">
+                            <div style="background: ${goal.completed ? '#28a745' : '#007bff'}; height: 100%; width: ${percentage}%; transition: width 0.3s ease;"></div>
+                        </div>
+                    `;
                 }
                 
                 let deadlineText = '';
                 if (goal.deadline) {
-                    deadlineText = `<br><small style="color: #6c757d;">⏰ ${goal.deadline}</small>`;
+                    deadlineText = `<div style="margin-top: 0.3rem; font-size: 0.7rem; color: #6c757d; display: flex; align-items: center;"><span style="margin-right: 0.2rem;">⏰</span>${goal.deadline}</div>`;
                 }
                 
                 goalElement.innerHTML = `
-                    <div style="display: flex; align-items: center;">
-                        <span style="margin-right: 0.5rem;">${goal.completed ? '✅' : '⏳'}</span>
-                        <span style="flex: 1; ${goal.completed ? 'text-decoration: line-through; color: #6c757d;' : ''}">${goal.text}${progressText}</span>
+                    <div style="display: flex; align-items: flex-start; line-height: 1.3;">
+                        <span style="margin-right: 0.5rem; font-size: 1rem; margin-top: 0.1rem;">${goal.completed ? '✅' : (goal.urgent ? '🔥' : '⏳')}</span>
+                        <div style="flex: 1;">
+                            <div style="${goal.completed ? 'text-decoration: line-through; color: #6c757d;' : 'color: #212529; font-weight: 500;'} font-size: 0.8rem;">
+                                ${goal.text}${progressText}
+                            </div>
+                            ${progressBar}
+                            ${deadlineText}
+                        </div>
                     </div>
-                    ${deadlineText}
                 `;
+                
+                // 添加悬停效果
+                goalElement.addEventListener('mouseenter', () => {
+                    goalElement.style.transform = 'translateY(-1px)';
+                    goalElement.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+                });
+                goalElement.addEventListener('mouseleave', () => {
+                    goalElement.style.transform = 'translateY(0)';
+                    goalElement.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+                });
                 
                 goalsList.appendChild(goalElement);
             });
@@ -2396,7 +2895,7 @@
                 if (!isPaused && !gameState.isGameOver) {
                     nextDay();
                 }
-            }, 2000); // 每2秒推进一天
+            }, 1500); // 每1.5秒推进一天，提升游戏节奏
         }
         
         function stopAutoProgress() {
@@ -2423,11 +2922,21 @@
             screens.main.classList.add('active');
             updateUI();
             
+            // 立即显示游戏启动提示
+            calendar.progressStatus.textContent = '🚀 游戏启动中...';
+            addLogMessage('🎯 欢迎来到公考模拟器！你的公职之路即将开始...', 'success');
+            
             // 启动自动推进
             startAutoProgress();
             
-            // 触发第一个事件
-            setTimeout(() => triggerEvent(), 500);
+            // 短延迟后触发第一个事件，给用户适应时间
+            setTimeout(() => {
+                calendar.progressStatus.textContent = '📋 准备第一个事件...';
+                setTimeout(() => {
+                    calendar.progressStatus.textContent = '⏰ 自动推进中...';
+                    triggerEvent('E001'); // 直接指定触发第一个事件
+                }, 800); // 给用户800毫秒的准备时间
+            }, 200); // 先显示准备提示
         }
         
         // 推进游戏时间
@@ -2451,14 +2960,22 @@
             // 处理BUFF/DEBUFF效果
             processActiveEffects();
             
+            // 处理事件链
+            processEventChains();
+            
+            // 定期清理已完成的事件链
+            if (gameState.time.days % 10 === 0) {
+                cleanupEventChains();
+            }
+            
             // 检查阶段性事件
             checkStageProgression();
             
-            // 随机触发一个普通事件
-            let eventChance = 0.5; // 基础50%概率
+            // 随机触发一个普通事件 - 提高事件频率
+            let eventChance = 0.9; // 基础90%概率，大幅提升事件频率
             // 根据阶段调整事件概率
-            if (gameState.player.stage === '考试阶段') eventChance = 0.7;
-            if (gameState.player.stage === '能力提升' || gameState.player.stage === '职业发展') eventChance = 0.6;
+            if (gameState.player.stage === '考试阶段') eventChance = 0.95;
+            if (gameState.player.stage === '能力提升' || gameState.player.stage === '职业发展') eventChance = 0.92;
             
             if (Math.random() < eventChance) {
                 // 暂停自动推进以处理事件
@@ -2475,8 +2992,8 @@
                             isPaused = false;
                             calendar.progressStatus.textContent = '⏰ 自动推进中...';
                         }
-                    }, 1000);
-                }, 500);
+                    }, 600); // 减少恢复延迟
+                }, 300); // 减少触发延迟
             }
             
             updateUI();
@@ -2507,8 +3024,13 @@
                 setTimeout(() => triggerEvent('E101'), 2000);
             }
             
-            // 检查面试时间
+            // 检查面试时间 - 修复：只有笔试通过才能参加面试
             if (isDateMatch(currentDate, schedule.interview)) {
+                // 检查是否笔试通过
+                if (!gameState.examProgress.writtenPassed) {
+                    addLogMessage(`❌ 由于笔试未通过，无法参加${getPathName(gameState.selectedPath)}面试。`, 'warning');
+                    return;
+                }
                 addLogMessage(`🎤 今天是${getPathName(gameState.selectedPath)}面试日！`, 'success');
                 setTimeout(() => triggerEvent('E105'), 2000);
             }
@@ -2532,177 +3054,20 @@
 
         // 处理激活的BUFF/DEBUFF效果
         function processActiveEffects() {
-            // 初始化每日效果记录
-            if (!gameState.dailyEffectsApplied) {
-                gameState.dailyEffectsApplied = {};
-            }
-            
-            const today = gameState.time.days;
-            if (gameState.dailyEffectsApplied[today]) {
-                return; // 今天已经处理过效果了
-            }
-            
-            // 处理BUFF效果
-            if (gameState.activeBuffs) {
-                gameState.activeBuffs = gameState.activeBuffs.filter(buff => {
-                    const daysActive = gameState.time.days - buff.startDay;
-                    if (daysActive >= buff.duration) {
-                        addLogMessage(`✨ ${buff.name} 效果已结束`, 'normal');
-                        return false; // 移除过期的BUFF
-                    }
-                    
-                    // 应用BUFF效果 (每天最多一次)
-                    switch(buff.effect) {
-                        case 'learning_boost':
-                            // 学习效率提升，每天有概率获得额外学习点数
-                            if (Math.random() < 0.3) {
-                                gameState.player.stats.learning += 1;
-                                if (gameState.player.stats.learning > 100) gameState.player.stats.learning = 100;
-                                addLogMessage(`✨ ${buff.name} 提升了学习能力`, 'success');
-                            }
-                            break;
-                        case 'exam_preview':
-                            // 考试预判，在实际考试中有加成
-                            break;
-                        case 'mentor_guidance':
-                            // 学霸指导，全方位能力提升
-                            if (Math.random() < 0.25) {
-                                const statNames = ['learning', 'professional', 'communication'];
-                                const stat = statNames[Math.floor(Math.random() * 3)];
-                                gameState.player.stats[stat] += 1;
-                                if (gameState.player.stats[stat] > 100) gameState.player.stats[stat] = 100;
-                                addLogMessage(`✨ ${buff.name} 提升了${stat === 'learning' ? '学习' : stat === 'professional' ? '专业' : '沟通'}能力`, 'success');
-                            }
-                            break;
-                        case 'exam_boost':
-                            // 超常发挥，考试期间能力加成
-                            break;
-                        case 'financial_stability':
-                            // 经济稳定，减少焦虑，提升抗压能力
-                            if (Math.random() < 0.3) {
-                                gameState.player.stats.resilience += 1;
-                                if (gameState.player.stats.resilience > 100) gameState.player.stats.resilience = 100;
-                            }
-                            break;
-                        case 'career_growth':
-                            // 发展潜力，提升学习和决策能力
-                            if (Math.random() < 0.25) {
-                                const stat = ['learning', 'decision'][Math.floor(Math.random() * 2)];
-                                gameState.player.stats[stat] += 1;
-                                if (gameState.player.stats[stat] > 100) gameState.player.stats[stat] = 100;
-                            }
-                            break;
-                        case 'exam_skills':
-                            // 华图秘技，考试技巧大幅提升
-                            if (Math.random() < 0.4) {
-                                gameState.player.stats.professional += 1;
-                                gameState.player.stats.learning += 1;
-                                if (gameState.player.stats.professional > 100) gameState.player.stats.professional = 100;
-                                if (gameState.player.stats.learning > 100) gameState.player.stats.learning = 100;
-                                addLogMessage(`✨ 华图秘技发挥效果，考试技巧持续提升！`, 'success');
-                            }
-                            break;
-                        case 'huatu_prediction':
-                            // 华图押题加持，大幅提升考试成功率
-                            if (Math.random() < 0.5) {
-                                gameState.player.stats.professional += 2;
-                                gameState.player.stats.decision += 1;
-                                if (gameState.player.stats.professional > 100) gameState.player.stats.professional = 100;
-                                if (gameState.player.stats.decision > 100) gameState.player.stats.decision = 100;
-                                addLogMessage(`🎯 华图押题命中！专业能力和判断力双提升！`, 'success');
-                            }
-                            break;
-                        case 'rational_study':
-                            // 理性备考，稳步提升各项能力
-                            if (Math.random() < 0.3) {
-                                const stats = ['professional', 'learning', 'decision'];
-                                const randomStat = stats[Math.floor(Math.random() * stats.length)];
-                                gameState.player.stats[randomStat] += 1;
-                                if (gameState.player.stats[randomStat] > 100) gameState.player.stats[randomStat] = 100;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    return true; // 保留有效的BUFF
-                });
-            }
-            
-            // 处理DEBUFF效果
-            if (gameState.activeDebuffs) {
-                gameState.activeDebuffs = gameState.activeDebuffs.filter(debuff => {
-                    const daysActive = gameState.time.days - debuff.startDay;
-                    if (daysActive >= debuff.duration) {
-                        addLogMessage(`💔 ${debuff.name} 负面效果已结束`, 'success');
-                        return false; // 移除过期的DEBUFF
-                    }
-                    
-                    // 应用DEBUFF效果
-                    switch(debuff.effect) {
-                        case 'phone_addiction':
-                            // 手机成瘾，降低学习效率
-                            if (Math.random() < 0.3) {
-                                gameState.player.stats.learning -= 1;
-                                if (gameState.player.stats.learning < 0) gameState.player.stats.learning = 0;
-                            }
-                            break;
-                        case 'insomnia':
-                            // 失眠，降低抗压能力和学习效率
-                            if (Math.random() < 0.4) {
-                                gameState.player.stats.resilience -= 1;
-                                if (gameState.player.stats.resilience < 0) gameState.player.stats.resilience = 0;
-                            }
-                            if (Math.random() < 0.2) {
-                                gameState.player.stats.learning -= 1;
-                                if (gameState.player.stats.learning < 0) gameState.player.stats.learning = 0;
-                            }
-                            break;
-                        case 'exam_anxiety':
-                            // 考试焦虑，影响决策能力和抗压能力
-                            if (Math.random() < 0.3) {
-                                gameState.player.stats.decision -= 1;
-                                gameState.player.stats.resilience -= 1;
-                                if (gameState.player.stats.decision < 0) gameState.player.stats.decision = 0;
-                                if (gameState.player.stats.resilience < 0) gameState.player.stats.resilience = 0;
-                            }
-                            break;
-                        case 'opportunity_cost':
-                            // 机会成本，错失机会带来的焦虑
-                            if (Math.random() < 0.2) {
-                                gameState.player.stats.decision -= 1;
-                                if (gameState.player.stats.decision < 0) gameState.player.stats.decision = 0;
-                            }
-                            break;
-                        case 'homesickness':
-                            // 思乡之苦，影响心情和抗压能力
-                            if (Math.random() < 0.25) {
-                                gameState.player.stats.resilience -= 1;
-                                gameState.player.stats.communication -= 1;
-                                if (gameState.player.stats.resilience < 0) gameState.player.stats.resilience = 0;
-                                if (gameState.player.stats.communication < 0) gameState.player.stats.communication = 0;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    return true; // 保留有效的DEBUFF
-                });
-            }
-            
-            // 标记今天已处理过效果
-            gameState.dailyEffectsApplied[today] = true;
+            // 使用新的BUFF/DEBUFF更新系统
+            updateBuffDebuffEffects();
         }
 
         // 检查并推进游戏阶段
         function checkStageProgression() {
-            // 备考90天后自动进入考试阶段
-            if (gameState.player.stage === '备考阶段' && gameState.time.days >= 90) {
+            // 笔试备考90天后自动进入笔试考试阶段
+            if (gameState.player.stage === '笔试备考' && gameState.time.days >= 90) {
                 addLogMessage('经过3个月的紧张复习，你即将迎来笔试。');
-                gameState.player.stage = '考试阶段';
+                gameState.player.stage = '笔试考试';
                 setTimeout(() => triggerEvent('E101'), 1000); // 触发笔试前夜事件
             }
-            // 考试阶段的特殊处理 - 自动推进笔试和面试流程
-            else if (gameState.player.stage === '考试阶段') {
+            // 笔试考试阶段的特殊处理
+            else if (gameState.player.stage === '笔试考试') {
                 if (gameState.time.days === 92 && !gameState.eventHistory.includes('E102')) {
                     setTimeout(() => triggerEvent('E102'), 1200);
                 } else if (gameState.time.days === 93 && !gameState.eventHistory.includes('E103')) {
@@ -2711,33 +3076,83 @@
                     setTimeout(() => triggerEvent('E104'), 1200);
                 }
             }
-            // 入职适应阶段180天后自动进入能力提升阶段
-            else if (gameState.player.stage === '入职适应' && gameState.time.days >= 180) {
-                advanceStage();
-                setTimeout(() => triggerEvent('E301'), 1000);
+            // 面试备考阶段的关键事件
+            else if (gameState.player.stage === '面试备考') {
+                if (gameState.time.days === 105 && !gameState.eventHistory.includes('E105')) {
+                    setTimeout(() => triggerEvent('E105'), 500);
+                } else if (gameState.time.days === 110 && !gameState.eventHistory.includes('E106')) {
+                    setTimeout(() => triggerEvent('E106'), 500);
+                } else if (gameState.time.days >= 115) {
+                    // 自动进入面试考试阶段
+                    gameState.player.stage = '面试考试';
+                    addLogMessage('面试备考结束，现在要参加面试了！', 'warning');
+                    setTimeout(() => triggerEvent('E107'), 1000);
+                }
             }
-            // 能力提升阶段270天后自动进入职业发展阶段
-            else if (gameState.player.stage === '能力提升' && gameState.time.days >= 270) {
-                advanceStage();
-                setTimeout(() => triggerEvent('E401'), 1000);
+            // 面试考试阶段的关键事件
+            else if (gameState.player.stage === '面试考试') {
+                if (gameState.time.days === 116 && !gameState.eventHistory.includes('E108')) {
+                    setTimeout(() => triggerEvent('E108'), 500);
+                } else if (gameState.time.days === 117 && !gameState.eventHistory.includes('E109')) {
+                    setTimeout(() => triggerEvent('E109'), 500);
+                }
+            }
+            // 入职适应阶段的关键事件
+            else if (gameState.player.stage === '入职适应') {
+                if (gameState.time.days === 125 && !gameState.eventHistory.includes('E201')) {
+                    setTimeout(() => triggerEvent('E201'), 500);
+                } else if (gameState.time.days >= 180) {
+                    advanceStage();
+                    setTimeout(() => triggerEvent('E301'), 1000);
+                }
+            }
+            // 能力提升阶段的关键事件强制触发
+            else if (gameState.player.stage === '能力提升') {
+                if (gameState.time.days === 185 && !gameState.eventHistory.includes('E302')) {
+                    setTimeout(() => triggerEvent('E302'), 500);
+                } else if (gameState.time.days === 200 && !gameState.eventHistory.includes('E303')) {
+                    setTimeout(() => triggerEvent('E303'), 500);
+                } else if (gameState.time.days === 220 && !gameState.eventHistory.includes('E304')) {
+                    setTimeout(() => triggerEvent('E304'), 500);
+                } else if (gameState.time.days >= 270) {
+                    advanceStage();
+                    setTimeout(() => triggerEvent('E401'), 1000);
+                }
+            }
+            // 职业发展阶段的关键事件和结局触发
+            else if (gameState.player.stage === '职业发展') {
+                if (gameState.time.days === 280 && !gameState.eventHistory.includes('E402')) {
+                    setTimeout(() => triggerEvent('E402'), 500);
+                } else if (gameState.time.days === 300 && !gameState.eventHistory.includes('E403')) {
+                    setTimeout(() => triggerEvent('E403'), 500);
+                } else if (gameState.time.days === 320 && !gameState.eventHistory.includes('E404')) {
+                    setTimeout(() => triggerEvent('E404'), 500);
+                } else if (gameState.time.days >= 365) {
+                    // 触发多样化结局选择
+                    setTimeout(() => triggerEvent('ENDING_CHOICE'), 1000);
+                }
             }
         }
         
         function advanceStage() {
-            const stageOrder = ['备考阶段', '考试阶段', '入职适应', '能力提升', '职业发展'];
+            const stageOrder = ['笔试备考', '笔试考试', '面试备考', '面试考试', '入职适应', '能力提升', '职业发展'];
             const currentIndex = stageOrder.indexOf(gameState.player.stage);
             if (currentIndex < stageOrder.length - 1) {
                 const nextStage = stageOrder[currentIndex + 1];
                 gameState.player.stage = nextStage;
                 
                 // 根据新阶段触发特定事件或给予奖励
-                if(nextStage === '考试阶段') {
-                    addLogMessage('笔试通过！你已进入面试环节。', 'success');
-                    // 自动推进时间到面试准备阶段
-                    gameState.time.days = 105;
+                if(nextStage === '笔试考试') {
+                    addLogMessage('笔试备考结束，即将参加笔试！', 'warning');
+                    gameState.time.days = 91;
+                } else if (nextStage === '面试备考') {
+                    addLogMessage('笔试通过！现在开始准备面试。', 'success');
+                    gameState.time.days = 100;
+                } else if (nextStage === '面试考试') {
+                    addLogMessage('面试备考结束，即将参加面试！', 'warning');
+                    gameState.time.days = 115;
                 } else if (nextStage === '入职适应') {
                     addLogMessage('恭喜！你已成功上岸，正式成为一名公职人员！', 'success');
-                    // 自动推进时间到入职阶段
                     gameState.time.days = 120;
                 } else if (nextStage === '能力提升') {
                     addLogMessage('经过适应期，你开始承担更多责任，进入能力提升阶段。', 'success');
@@ -2753,44 +3168,43 @@
             }
         }
         
-        // 触发事件
+        // 触发事件 - 修复：减少事件堆积
         function triggerEvent(eventId = null) {
+            // 记录事件触发尝试
+            if (!eventId) {
+                recordEventTriggerAttempt();
+            }
+            
             let event;
             if (eventId) {
                 event = gameData.events.find(e => e.id === eventId);
             } else {
+                // 限制事件队列长度，避免堆积过多
+                if (eventQueue.length >= 2) {
+                    return;
+                }
+                
+                // 动态调整事件触发频率（基于游戏阶段和玩家状态）
+                const baseTriggerRate = getDynamicTriggerRate();
+                if (Math.random() > baseTriggerRate) {
+                    return;
+                }
+                
                 // 检查是否有基于性格的特殊事件
                 const personalityEvents = checkPersonalityEvents();
                 if (personalityEvents.length > 0) {
-                    event = personalityEvents[Math.floor(Math.random() * personalityEvents.length)];
+                    event = selectEventByWeight(personalityEvents);
                 } else {
                     // 过滤可触发的事件
                     const possibleEvents = gameData.events.filter(e => 
                         e.stage === gameState.player.stage &&
                         (!e.unique || !gameState.eventHistory.includes(e.id)) &&
-                        (!e.trigger || e.trigger(gameState))
+                        (!e.trigger || e.trigger(gameState)) &&
+                        checkEventConditions(e)
                     );
                     
                     if (possibleEvents.length > 0) {
-                        // 优先级排序：重要事件 > BUFF/DEBUFF > 普通事件 > 随机事件
-                        const importantEvents = possibleEvents.filter(e => e.important);
-                        const buffEvents = possibleEvents.filter(e => e.special === 'buff');
-                        const debuffEvents = possibleEvents.filter(e => e.special === 'debuff');
-                        const normalEvents = possibleEvents.filter(e => !e.special && !e.important);
-                        const randomEvents = possibleEvents.filter(e => e.special === 'random');
-                        
-                        // 按优先级选择事件类型
-                        if (importantEvents.length > 0) {
-                            event = importantEvents[Math.floor(Math.random() * importantEvents.length)];
-                        } else if (buffEvents.length > 0 && Math.random() < 0.3) {
-                            event = buffEvents[Math.floor(Math.random() * buffEvents.length)];
-                        } else if (debuffEvents.length > 0 && Math.random() < 0.2) {
-                            event = debuffEvents[Math.floor(Math.random() * debuffEvents.length)];
-                        } else if (normalEvents.length > 0) {
-                            event = normalEvents[Math.floor(Math.random() * normalEvents.length)];
-                        } else if (randomEvents.length > 0 && Math.random() < 0.4) {
-                            event = randomEvents[Math.floor(Math.random() * randomEvents.length)];
-                        }
+                        event = selectEventByPriority(possibleEvents);
                     }
                 }
             }
@@ -2798,14 +3212,693 @@
             if (event) {
                 // 如果有事件正在处理，加入队列
                 if (isEventActive) {
-                    eventQueue.push(event);
+                    if (eventQueue.length < 3) {
+                        eventQueue.push(event);
+                    }
                     return;
                 }
                 
                 if(event.unique) {
                     gameState.eventHistory.push(event.id);
                 }
+                
+                // 记录事件触发统计
+                updateEventStatistics(event);
                 showEventModal(event);
+            }
+        }
+        
+        // 动态获取事件触发频率
+        function getDynamicTriggerRate() {
+            let baseRate = 0.8; // 基础80%触发率，大幅提升事件频率
+            
+            // 根据游戏阶段调整
+            const stageMultipliers = {
+                '准备阶段': 0.3,
+                '笔试阶段': 0.35,
+                '面试阶段': 0.4,
+                '入职适应': 0.3,
+                '能力提升': 0.25,
+                '职业发展': 0.2
+            };
+            baseRate *= (stageMultipliers[gameState.player.stage] || 0.25);
+            
+            // 根据玩家状态调整
+            const avgStats = Object.values(gameState.player.stats).reduce((a, b) => a + b, 0) / 5;
+            if (avgStats < 30) baseRate *= 1.2; // 能力低时增加事件频率
+            else if (avgStats > 70) baseRate *= 0.8; // 能力高时减少事件频率
+            
+            // 根据影响力调整
+            if (gameState.player.influence < 20) baseRate *= 1.1;
+            else if (gameState.player.influence > 80) baseRate *= 0.9;
+            
+            // 根据事件分析调整触发频率
+            const analysis = getEventAnalysis();
+            if (analysis) {
+                // 如果最近事件太少，提高触发率
+                if (analysis.averageEventsPerDay < 0.2) {
+                    baseRate *= 1.5;
+                }
+                // 如果需要更多样性，稍微提高触发率
+                if (analysis.needsMoreVariety) {
+                    baseRate *= 1.3;
+                }
+                // 如果最近事件太频繁，降低触发率
+                if (analysis.averageEventsPerDay > 0.5) {
+                    baseRate *= 0.7;
+                }
+            }
+            
+            return Math.min(Math.max(baseRate, 0.3), 0.95); // 限制在30%-95%之间，大幅提升事件频率
+        }
+        
+        // 检查事件额外条件
+        function checkEventConditions(event) {
+            // 检查时间条件
+            if (event.timeCondition) {
+                const currentDay = gameState.time.days;
+                if (event.timeCondition.minDay && currentDay < event.timeCondition.minDay) return false;
+                if (event.timeCondition.maxDay && currentDay > event.timeCondition.maxDay) return false;
+            }
+            
+            // 检查能力条件
+            if (event.statRequirement) {
+                for (const stat in event.statRequirement) {
+                    if (gameState.player.stats[stat] < event.statRequirement[stat]) return false;
+                }
+            }
+            
+            // 检查影响力条件
+            if (event.influenceRequirement && gameState.player.influence < event.influenceRequirement) {
+                return false;
+            }
+            
+            // 检查性格特征条件
+            if (event.personalityRequirement) {
+                for (const trait in event.personalityRequirement) {
+                    if (gameState.personality[trait] < event.personalityRequirement[trait]) return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        // 基于权重选择事件
+        function selectEventByWeight(events) {
+            const weightedEvents = events.map(event => ({
+                event,
+                weight: calculateEventWeight(event)
+            }));
+            
+            const totalWeight = weightedEvents.reduce((sum, item) => sum + item.weight, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (const item of weightedEvents) {
+                random -= item.weight;
+                if (random <= 0) return item.event;
+            }
+            
+            return events[0]; // 备选
+        }
+        
+        // 计算事件权重
+        function calculateEventWeight(event) {
+            let weight = event.baseWeight || 1;
+            
+            // 重要事件权重加成
+            if (event.important) weight *= 2;
+            
+            // 根据性格特征调整权重
+            if (event.personalityBonus) {
+                for (const trait in event.personalityBonus) {
+                    const personalityValue = gameState.personality[trait] || 0;
+                    weight *= (1 + personalityValue * event.personalityBonus[trait] * 0.1);
+                }
+            }
+            
+            // 根据玩家状态调整权重
+            if (event.statBonus) {
+                for (const stat in event.statBonus) {
+                    const statValue = gameState.player.stats[stat] || 0;
+                    weight *= (1 + statValue * event.statBonus[stat] * 0.01);
+                }
+            }
+            
+            // 事件冷却机制
+            const analysis = getEventAnalysis();
+            if (analysis && analysis.recentEventIds.includes(event.id)) {
+                const recentEvents = analysis.recentEventIds;
+                const lastIndex = recentEvents.lastIndexOf(event.id);
+                const daysSinceLastTrigger = recentEvents.length - lastIndex;
+                
+                // 根据距离上次触发的天数调整权重
+                if (daysSinceLastTrigger < 3) {
+                    weight *= 0.1; // 3天内大幅降低权重
+                } else if (daysSinceLastTrigger < 7) {
+                    weight *= 0.5; // 7天内适度降低权重
+                }
+            }
+            
+            return Math.max(weight, 0.05);
+        }
+        
+        // 按优先级选择事件
+        function selectEventByPriority(possibleEvents) {
+            // 过滤掉最近触发过的事件，避免重复
+            const analysis = getEventAnalysis();
+            let filteredEvents = possibleEvents;
+            
+            if (analysis && analysis.recentEventIds.length > 0) {
+                // 如果有足够的事件选择，过滤掉最近5个事件
+                const availableEvents = possibleEvents.filter(e => !analysis.recentEventIds.slice(-5).includes(e.id));
+                if (availableEvents.length > 0) {
+                    filteredEvents = availableEvents;
+                }
+            }
+            
+            // 分类事件
+            const importantEvents = filteredEvents.filter(e => e.important);
+            const buffEvents = filteredEvents.filter(e => e.special === 'buff');
+            const debuffEvents = filteredEvents.filter(e => e.special === 'debuff');
+            const normalEvents = filteredEvents.filter(e => !e.special && !e.important);
+            const randomEvents = filteredEvents.filter(e => e.special === 'random');
+            
+            // 动态调整各类事件的触发概率
+            const playerCondition = getPlayerCondition();
+            
+            // 根据玩家状态和事件分析调整概率
+            let buffChance = playerCondition === 'poor' ? 0.4 : 0.25;
+            let debuffChance = playerCondition === 'excellent' ? 0.1 : 0.15;
+            let importantChance = 0.6;
+            
+            // 应用事件平衡调整
+            const balanceAdjustments = adjustEventBalance();
+            if (balanceAdjustments.buffBonus) buffChance *= balanceAdjustments.buffBonus;
+            if (balanceAdjustments.debuffPenalty) debuffChance *= balanceAdjustments.debuffPenalty;
+            if (balanceAdjustments.importantBonus) importantChance *= balanceAdjustments.importantBonus;
+            
+            // 如果需要更多样性，调整各类事件的概率
+            if (analysis && analysis.needsMoreVariety) {
+                // 增加不常见事件类型的概率
+                const eventCounts = analysis.eventDistribution;
+                const totalEvents = analysis.totalEvents;
+                
+                if (totalEvents > 5) {
+                    // 如果某类事件比例过低，增加其概率
+                    if (eventCounts.buff / totalEvents < 0.2) buffChance *= 1.5;
+                    if (eventCounts.debuff / totalEvents < 0.1) debuffChance *= 1.5;
+                    if (eventCounts.important / totalEvents < 0.15) importantChance *= 1.3;
+                }
+            }
+            
+            // 按优先级选择
+            if (importantEvents.length > 0 && Math.random() < importantChance) {
+                return selectEventByWeight(importantEvents);
+            } else if (buffEvents.length > 0 && Math.random() < buffChance) {
+                return selectEventByWeight(buffEvents);
+            } else if (debuffEvents.length > 0 && Math.random() < debuffChance) {
+                return selectEventByWeight(debuffEvents);
+            } else if (normalEvents.length > 0) {
+                return selectEventByWeight(normalEvents);
+            } else if (randomEvents.length > 0 && Math.random() < 0.3) {
+                return selectEventByWeight(randomEvents);
+            }
+            
+            return null;
+        }
+        
+        // 获取玩家当前状态
+        function getPlayerCondition() {
+            const avgStats = Object.values(gameState.player.stats).reduce((a, b) => a + b, 0) / 5;
+            if (avgStats < 30) return 'poor';
+            if (avgStats > 70) return 'excellent';
+            return 'normal';
+        }
+        
+        // 更新事件统计
+        function updateEventStatistics(event) {
+            if (!gameState.eventStatistics) {
+                gameState.eventStatistics = {
+                    important: 0,
+                    buff: 0,
+                    debuff: 0,
+                    normal: 0,
+                    random: 0,
+                    personality: 0,
+                    totalEvents: 0,
+                    recentEvents: [],
+                    triggerAttempts: 0,
+                    successfulTriggers: 0
+                };
+            }
+            
+            const eventType = event.important ? 'important' : (event.special || 'normal');
+            gameState.eventStatistics[eventType] = (gameState.eventStatistics[eventType] || 0) + 1;
+            gameState.eventStatistics.totalEvents++;
+            gameState.eventStatistics.successfulTriggers++;
+            
+            // 记录最近的事件，用于避免重复
+            gameState.eventStatistics.recentEvents.push({
+                id: event.id,
+                day: gameState.time.days,
+                type: eventType,
+                title: event.title,
+                timestamp: Date.now()
+            });
+            
+            // 只保留最近20个事件记录
+            if (gameState.eventStatistics.recentEvents.length > 20) {
+                gameState.eventStatistics.recentEvents.shift();
+            }
+            
+            // 调试信息
+            if (window.DEBUG_EVENTS) {
+                console.log(`[事件系统] 触发事件: ${event.id} - ${event.title} (类型: ${eventType})`);
+            }
+        }
+        
+        // 记录事件触发尝试
+        function recordEventTriggerAttempt() {
+            if (!gameState.eventStatistics) {
+                updateEventStatistics({ id: 'init', title: '初始化', special: 'normal' });
+            }
+            gameState.eventStatistics.triggerAttempts++;
+        }
+        
+        // 获取事件系统性能报告
+        function getEventSystemReport() {
+            const analysis = getEventAnalysis();
+            if (!analysis) return null;
+            
+            const stats = gameState.eventStatistics;
+            const successRate = stats.triggerAttempts > 0 ? 
+                (stats.successfulTriggers / stats.triggerAttempts * 100).toFixed(1) : 0;
+            
+            return {
+                performance: {
+                    totalAttempts: stats.triggerAttempts,
+                    successfulTriggers: stats.successfulTriggers,
+                    successRate: successRate + '%',
+                    averageEventsPerDay: analysis.averageEventsPerDay.toFixed(2)
+                },
+                quality: {
+                    eventQuality: analysis.eventQuality,
+                    balanceScore: analysis.balanceScore.toFixed(1),
+                    varietyScore: analysis.needsMoreVariety ? '需要改善' : '良好'
+                },
+                distribution: analysis.eventDistribution,
+                recentEvents: analysis.recentEvents.slice(-5).map(e => ({
+                    id: e.id,
+                    title: e.title,
+                    type: e.type,
+                    day: e.day
+                }))
+            };
+        }
+        
+        // 开发者调试工具
+        window.debugEventSystem = function() {
+            window.DEBUG_EVENTS = !window.DEBUG_EVENTS;
+            console.log(`[事件系统] 调试模式: ${window.DEBUG_EVENTS ? '开启' : '关闭'}`);
+            
+            if (window.DEBUG_EVENTS) {
+                const report = getEventSystemReport();
+                if (report) {
+                    console.table(report.performance);
+                    console.table(report.quality);
+                    console.table(report.distribution);
+                    console.log('最近事件:', report.recentEvents);
+                }
+            }
+        };
+        
+        // 强制触发特定类型事件（调试用）
+        window.forceEventType = function(type) {
+            const events = checkPersonalityEvents().concat(
+                gameData.events.filter(e => 
+                    e.stage === gameState.player.stage &&
+                    (!e.unique || !gameState.eventHistory.includes(e.id))
+                )
+            );
+            
+            let filteredEvents;
+            switch(type) {
+                case 'important':
+                    filteredEvents = events.filter(e => e.important);
+                    break;
+                case 'buff':
+                    filteredEvents = events.filter(e => e.special === 'buff');
+                    break;
+                case 'debuff':
+                    filteredEvents = events.filter(e => e.special === 'debuff');
+                    break;
+                case 'personality':
+                    filteredEvents = checkPersonalityEvents();
+                    break;
+                default:
+                    filteredEvents = events.filter(e => !e.special && !e.important);
+            }
+            
+            if (filteredEvents.length > 0) {
+                const event = selectEventByWeight(filteredEvents);
+                showEventModal(event);
+                updateEventStatistics(event);
+                console.log(`[调试] 强制触发${type}事件:`, event.title);
+            } else {
+                console.log(`[调试] 没有可用的${type}事件`);
+            }
+        };
+        
+        // 获取事件分析数据
+        function getEventAnalysis() {
+            if (!gameState.eventStatistics) return null;
+            
+            const stats = gameState.eventStatistics;
+            const recentEventIds = stats.recentEvents.slice(-10).map(e => e.id);
+            const recentEvents = stats.recentEvents.slice(-10);
+            
+            // 计算事件质量分数
+            const eventQuality = calculateEventQuality(recentEvents);
+            
+            return {
+                totalEvents: stats.totalEvents,
+                eventDistribution: {
+                    important: stats.important || 0,
+                    buff: stats.buff || 0,
+                    debuff: stats.debuff || 0,
+                    normal: stats.normal || 0,
+                    random: stats.random || 0,
+                    personality: stats.personality || 0
+                },
+                recentEventIds: recentEventIds,
+                recentEvents: recentEvents,
+                averageEventsPerDay: stats.totalEvents / Math.max(gameState.time.days, 1),
+                needsMoreVariety: recentEventIds.length > 5 && new Set(recentEventIds).size < 3,
+                eventQuality: eventQuality,
+                balanceScore: calculateEventBalance(stats)
+            };
+        }
+        
+        // 计算事件质量分数
+        function calculateEventQuality(recentEvents) {
+            if (recentEvents.length === 0) return 0;
+            
+            let qualityScore = 0;
+            const typeVariety = new Set(recentEvents.map(e => e.type)).size;
+            const daySpread = recentEvents.length > 1 ? 
+                Math.max(...recentEvents.map(e => e.day)) - Math.min(...recentEvents.map(e => e.day)) : 0;
+            
+            // 类型多样性加分
+            qualityScore += typeVariety * 15;
+            
+            // 时间分布加分
+            if (daySpread > 5) qualityScore += 20;
+            else if (daySpread > 2) qualityScore += 10;
+            
+            // 重要事件比例检查
+            const importantRatio = recentEvents.filter(e => e.type === 'important').length / recentEvents.length;
+            if (importantRatio > 0.1 && importantRatio < 0.4) qualityScore += 15;
+            
+            return Math.min(qualityScore, 100);
+        }
+        
+        // 计算事件平衡分数
+        function calculateEventBalance(stats) {
+            const total = stats.totalEvents;
+            if (total < 5) return 50; // 事件太少，返回中等分数
+            
+            const distribution = {
+                important: (stats.important || 0) / total,
+                buff: (stats.buff || 0) / total,
+                debuff: (stats.debuff || 0) / total,
+                normal: (stats.normal || 0) / total,
+                random: (stats.random || 0) / total,
+                personality: (stats.personality || 0) / total
+            };
+            
+            // 理想分布
+            const idealDistribution = {
+                important: 0.2,
+                buff: 0.25,
+                debuff: 0.15,
+                normal: 0.3,
+                random: 0.05,
+                personality: 0.05
+            };
+            
+            let balanceScore = 100;
+            for (const type in idealDistribution) {
+                const deviation = Math.abs(distribution[type] - idealDistribution[type]);
+                balanceScore -= deviation * 100;
+            }
+            
+            return Math.max(balanceScore, 0);
+        }
+        
+        // 事件平衡调整系统
+        function adjustEventBalance() {
+            const analysis = getEventAnalysis();
+            if (!analysis || analysis.totalEvents < 10) return {};
+            
+            const adjustments = {};
+            const distribution = analysis.eventDistribution;
+            const total = analysis.totalEvents;
+            
+            // 如果重要事件太少，增加其权重
+            if (distribution.important / total < 0.15) {
+                adjustments.importantBonus = 1.5;
+            }
+            
+            // 如果增益事件太少，增加其概率
+            if (distribution.buff / total < 0.2) {
+                adjustments.buffBonus = 1.3;
+            }
+            
+            // 如果负面事件太多，减少其概率
+            if (distribution.debuff / total > 0.25) {
+                adjustments.debuffPenalty = 0.7;
+            }
+            
+            // 如果性格事件太少，增加其触发概率
+            if (distribution.personality / total < 0.03) {
+                adjustments.personalityBonus = 1.4;
+            }
+            
+            return adjustments;
+        }
+        
+        // BUFF/DEBUFF 管理系统
+        function applyBuff(buff) {
+            if (!gameState.activeBuffs) {
+                gameState.activeBuffs = [];
+            }
+            
+            // 检查是否已存在同名BUFF
+            const existingBuffIndex = gameState.activeBuffs.findIndex(b => b.name === buff.name);
+            
+            if (existingBuffIndex !== -1) {
+                // 如果存在同名BUFF，根据策略处理
+                const existingBuff = gameState.activeBuffs[existingBuffIndex];
+                if (buff.stackable) {
+                    // 可叠加：增强效果
+                    for (const stat in buff.effect) {
+                        existingBuff.effect[stat] = (existingBuff.effect[stat] || 0) + buff.effect[stat];
+                    }
+                    existingBuff.duration = Math.max(existingBuff.duration, buff.duration);
+                    addLogMessage(`✨ 增益效果「${buff.name}」得到强化！`, 'success');
+                } else {
+                    // 不可叠加：刷新持续时间
+                    existingBuff.duration = buff.duration;
+                    existingBuff.startDay = gameState.time.days;
+                    addLogMessage(`✨ 增益效果「${buff.name}」持续时间已刷新！`, 'success');
+                }
+            } else {
+                // 添加新BUFF
+                gameState.activeBuffs.push({
+                    name: buff.name,
+                    duration: buff.duration,
+                    effect: buff.effect,
+                    startDay: gameState.time.days,
+                    stackable: buff.stackable || false
+                });
+                addLogMessage(`✨ 获得增益效果：${buff.name}（持续${buff.duration}天）`, 'success');
+            }
+        }
+        
+        function applyDebuff(debuff) {
+            if (!gameState.activeDebuffs) {
+                gameState.activeDebuffs = [];
+            }
+            
+            // 检查是否已存在同名DEBUFF
+            const existingDebuffIndex = gameState.activeDebuffs.findIndex(d => d.name === debuff.name);
+            
+            if (existingDebuffIndex !== -1) {
+                // 如果存在同名DEBUFF，根据策略处理
+                const existingDebuff = gameState.activeDebuffs[existingDebuffIndex];
+                if (debuff.stackable) {
+                    // 可叠加：增强负面效果
+                    for (const stat in debuff.effect) {
+                        existingDebuff.effect[stat] = (existingDebuff.effect[stat] || 0) + debuff.effect[stat];
+                    }
+                    existingDebuff.duration = Math.max(existingDebuff.duration, debuff.duration);
+                    addLogMessage(`💔 负面效果「${debuff.name}」变得更严重！`, 'danger');
+                } else {
+                    // 不可叠加：刷新持续时间
+                    existingDebuff.duration = debuff.duration;
+                    existingDebuff.startDay = gameState.time.days;
+                    addLogMessage(`💔 负面效果「${debuff.name}」持续时间已刷新！`, 'danger');
+                }
+            } else {
+                // 添加新DEBUFF
+                gameState.activeDebuffs.push({
+                    name: debuff.name,
+                    duration: debuff.duration,
+                    effect: debuff.effect,
+                    startDay: gameState.time.days,
+                    stackable: debuff.stackable || false
+                });
+                addLogMessage(`💔 受到负面效果：${debuff.name}（持续${debuff.duration}天）`, 'danger');
+            }
+        }
+        
+        // 更新BUFF/DEBUFF状态（每日调用）
+        function updateBuffDebuffEffects() {
+            const currentDay = gameState.time.days;
+            
+            // 处理BUFF
+            if (gameState.activeBuffs) {
+                gameState.activeBuffs = gameState.activeBuffs.filter(buff => {
+                    const elapsed = currentDay - buff.startDay;
+                    if (elapsed >= buff.duration) {
+                        addLogMessage(`✨ 增益效果「${buff.name}」已结束`, 'normal');
+                        return false;
+                    }
+                    return true;
+                });
+            }
+            
+            // 处理DEBUFF
+            if (gameState.activeDebuffs) {
+                gameState.activeDebuffs = gameState.activeDebuffs.filter(debuff => {
+                    const elapsed = currentDay - debuff.startDay;
+                    if (elapsed >= debuff.duration) {
+                        addLogMessage(`💔 负面效果「${debuff.name}」已结束`, 'normal');
+                        return false;
+                    }
+                    return true;
+                });
+            }
+        }
+        
+        // 获取当前生效的BUFF/DEBUFF总效果
+        function getActiveEffects() {
+            const effects = {
+                knowledge: 0,
+                communication: 0,
+                professional: 0,
+                decision: 0,
+                physical: 0
+            };
+            
+            // 计算BUFF效果
+            if (gameState.activeBuffs) {
+                gameState.activeBuffs.forEach(buff => {
+                    for (const stat in buff.effect) {
+                        if (effects.hasOwnProperty(stat)) {
+                            effects[stat] += buff.effect[stat];
+                        }
+                    }
+                });
+            }
+            
+            // 计算DEBUFF效果
+            if (gameState.activeDebuffs) {
+                gameState.activeDebuffs.forEach(debuff => {
+                    for (const stat in debuff.effect) {
+                        if (effects.hasOwnProperty(stat)) {
+                            effects[stat] += debuff.effect[stat]; // DEBUFF通常是负值
+                        }
+                    }
+                });
+            }
+            
+            return effects;
+        }
+        
+        // 添加事件链系统
+        function addEventChain(chainId, events) {
+            if (!gameState.eventChains) {
+                gameState.eventChains = {};
+            }
+            gameState.eventChains[chainId] = {
+                events: events,
+                currentIndex: 0,
+                completed: false,
+                startDay: gameState.time.days,
+                lastTriggerDay: -1,
+                active: true
+            };
+        }
+        
+        function triggerNextInChain(chainId) {
+            if (!gameState.eventChains || !gameState.eventChains[chainId]) return false;
+            
+            const chain = gameState.eventChains[chainId];
+            if (chain.completed || !chain.active || chain.currentIndex >= chain.events.length) return false;
+            
+            const currentDay = gameState.time.days;
+            
+            // 检查是否已经在今天触发过
+            if (chain.lastTriggerDay === currentDay) return false;
+            
+            const nextEventId = chain.events[chain.currentIndex];
+            
+            // 检查事件是否存在
+            const eventExists = allEvents.some(e => e.id === nextEventId) || 
+                               checkPersonalityEvents().some(e => e.id === nextEventId);
+            
+            if (!eventExists) {
+                console.warn(`事件链中的事件 ${nextEventId} 不存在`);
+                chain.currentIndex++;
+                return false;
+            }
+            
+            chain.currentIndex++;
+            chain.lastTriggerDay = currentDay;
+            
+            if (chain.currentIndex >= chain.events.length) {
+                chain.completed = true;
+                chain.active = false;
+                addToLog(`事件链 "${chainId}" 已完成`, 'chain');
+            }
+            
+            // 延迟触发下一个事件
+            setTimeout(() => triggerEvent(nextEventId), 3000);
+            return true;
+        }
+        
+        // 检查所有活跃的事件链
+        function processEventChains() {
+            if (!gameState.eventChains) return;
+            
+            for (const chainId in gameState.eventChains) {
+                const chain = gameState.eventChains[chainId];
+                if (chain.active && !chain.completed) {
+                    triggerNextInChain(chainId);
+                }
+            }
+        }
+        
+        // 清理已完成的事件链
+        function cleanupEventChains() {
+            if (!gameState.eventChains) return;
+            
+            for (const chainId in gameState.eventChains) {
+                const chain = gameState.eventChains[chainId];
+                if (chain.completed && gameState.time.days - chain.startDay > 30) {
+                    delete gameState.eventChains[chainId];
+                }
             }
         }
         
@@ -2821,33 +3914,55 @@
         function checkPersonalityEvents() {
             const personalityEvents = [];
             const p = gameState.personality;
+            const stage = gameState.player.stage;
             
-            // 基于不同性格特征触发特殊事件
-            if (p.innovative >= 5 && gameState.player.stage === '能力提升' && !gameState.eventHistory.includes('PE001')) {
+            // 创新型性格事件
+            if (p.innovative >= 5 && stage === '能力提升' && !gameState.eventHistory.includes('PE001')) {
                 personalityEvents.push({
-                    id: 'PE001', title: '创新思维的碰撞',
+                    id: 'PE001', title: '创新思维的碰撞', important: true,
+                    baseWeight: 2, personalityBonus: { innovative: 0.2 },
                     description: '因为你一直以来的创新表现，领导决定让你参与一个改革试点项目。这是展现你创新能力的绝佳机会！',
                     choices: [
                         { text: '全力投入，展现创新潜力', 
-                          consequence: { stats: { professional: 3, decision: 2 }, influence: 25, achievement: 'INNOVATOR', log: '你的创新方案获得了上级高度认可！' } }
+                          consequence: { stats: { professional: 3, decision: 2 }, influence: 25, achievement: 'INNOVATOR', log: '你的创新方案获得了上级高度认可！' } },
+                        { text: '谨慎参与，稳妥推进',
+                          consequence: { stats: { professional: 1, decision: 1 }, influence: 15, log: '你选择了稳妥的方式，虽然成果有限但没有风险。' } }
                     ]
                 });
             }
             
-            if (p.social >= 6 && gameState.player.stage === '职业发展' && !gameState.eventHistory.includes('PE002')) {
+            if (p.innovative >= 7 && stage === '职业发展' && !gameState.eventHistory.includes('PE001B')) {
+                personalityEvents.push({
+                    id: 'PE001B', title: '创新项目的延续', 
+                    baseWeight: 1.5, personalityBonus: { innovative: 0.3 },
+                    description: '你之前的创新表现让上级印象深刻，现在有一个更大的创新项目需要你来主导。',
+                    choices: [
+                        { text: '接受挑战，主导项目',
+                          consequence: { stats: { professional: 4, decision: 3 }, influence: 35, log: '你成功主导了重要创新项目！', triggerEvent: 'CE002' } }
+                    ]
+                });
+            }
+            
+            // 社交型性格事件
+            if (p.social >= 6 && stage === '职业发展' && !gameState.eventHistory.includes('PE002')) {
                 personalityEvents.push({
                     id: 'PE002', title: '人际网络的力量',
+                    baseWeight: 1.8, personalityBonus: { social: 0.25 },
                     description: '你平时良好的人际关系发挥了作用！有几个部门的同事主动邀请你参与跨部门合作项目。',
                     choices: [
                         { text: '接受邀请，发挥协调优势', 
-                          consequence: { stats: { communication: 3, decision: 2 }, influence: 30, achievement: 'TEAM_PLAYER', log: '你的人际协调能力让项目进展顺利！' } }
+                          consequence: { stats: { communication: 3, decision: 2 }, influence: 30, achievement: 'TEAM_PLAYER', log: '你的人际协调能力让项目进展顺利！' } },
+                        { text: '婉拒邀请，专注本职工作',
+                          consequence: { stats: { professional: 2 }, influence: 10, log: '你选择专注于本职工作，获得了专业能力的提升。' } }
                     ]
                 });
             }
             
-            if (p.rebellious >= 4 && gameState.player.stage === '能力提升' && !gameState.eventHistory.includes('PE003')) {
+            // 叛逆型性格事件
+            if (p.rebellious >= 4 && stage === '能力提升' && !gameState.eventHistory.includes('PE003')) {
                 personalityEvents.push({
                     id: 'PE003', title: '不同声音的价值',
+                    baseWeight: 1.2, personalityBonus: { rebellious: 0.3 },
                     description: '在一次会议上，你提出了与主流观点不同的看法。虽然引起了争议，但也引发了深入思考。',
                     choices: [
                         { text: '坚持自己的观点', 
@@ -2855,6 +3970,51 @@
                           consequence: { stats: { decision: 3, communication: 1 }, influence: 20, achievement: 'CONTROVERSIAL_CHOICE', log: '你的不同观点最终被证明是有价值的！' } },
                         { text: '适当妥协，寻求平衡', 
                           consequence: { stats: { communication: 2, decision: 1 }, influence: 15, log: '你学会了在坚持原则和灵活变通之间找平衡。' } }
+                    ]
+                });
+            }
+            
+            // 勤奋型性格事件
+            if (p.studious >= 6 && (stage === '准备阶段' || stage === '笔试阶段') && !gameState.eventHistory.includes('PE004')) {
+                personalityEvents.push({
+                    id: 'PE004', title: '勤奋的回报',
+                    baseWeight: 2, personalityBonus: { studious: 0.2 },
+                    description: '你的勤奋学习得到了回报！在一次模拟考试中取得了优异成绩，这大大增强了你的信心。',
+                    choices: [
+                        { text: '继续保持，再接再厉',
+                          personality: { studious: 1 },
+                          consequence: { stats: { knowledge: 4, decision: 2 }, examProgress: { practiceTests: 2 }, 
+                                       buff: { name: '学习状态', duration: 7, effect: { knowledge: 2 } },
+                                       log: '你的学习状态非常好，效率大幅提升！' } }
+                    ]
+                });
+            }
+            
+            // 谨慎型性格事件
+            if (p.cautious >= 5 && stage === '面试阶段' && !gameState.eventHistory.includes('PE005')) {
+                personalityEvents.push({
+                    id: 'PE005', title: '谨慎的准备',
+                    baseWeight: 1.5, personalityBonus: { cautious: 0.25 },
+                    description: '你谨慎的性格让你在面试准备上格外细致，发现了一些其他人容易忽略的重要细节。',
+                    choices: [
+                        { text: '深入研究这些细节',
+                          consequence: { stats: { knowledge: 2, communication: 3 }, examProgress: { mockInterviews: 1 },
+                                       log: '你的细致准备让面试官印象深刻！' } }
+                    ]
+                });
+            }
+            
+            // 传统型性格事件
+            if (p.traditional >= 5 && stage === '入职适应' && !gameState.eventHistory.includes('PE006')) {
+                personalityEvents.push({
+                    id: 'PE006', title: '传统价值的体现',
+                    baseWeight: 1.3, personalityBonus: { traditional: 0.2 },
+                    description: '你对传统价值的坚持在新环境中得到了老同事们的认可和尊重。',
+                    choices: [
+                        { text: '继续保持传统作风',
+                          personality: { traditional: 1 },
+                          consequence: { stats: { professional: 2, communication: 2 }, influence: 20,
+                                       log: '你的传统作风赢得了同事们的信任！' } }
                     ]
                 });
             }
@@ -2870,8 +4030,8 @@
             eventElements.description.innerHTML = event.description;
             eventElements.choices.innerHTML = '';
             
-            // 添加重要性提示
-            if (event.important) {
+            // 添加重要性提示（根据设置决定）
+            if (event.important && gameSettings.showEventHints) {
                 const importantTag = document.createElement('div');
                 importantTag.style.cssText = `
                     background: #ff6b6b; color: white; padding: 0.3rem 0.8rem; 
@@ -2882,8 +4042,8 @@
                 eventElements.description.appendChild(importantTag);
             }
             
-            // 添加队列提示
-            if (eventQueue.length > 0) {
+            // 添加队列提示（根据设置决定）
+            if (eventQueue.length > 0 && gameSettings.showEventHints) {
                 const queueTag = document.createElement('div');
                 queueTag.style.cssText = `
                     background: var(--pixel-yellow); color: var(--primary-color); padding: 0.2rem 0.6rem; 
@@ -2902,9 +4062,9 @@
                 eventElements.choices.appendChild(button);
             });
             
-            // 设置自动选择倒计时
-            if (!event.important) {
-                setupAutoChoice(event, 8000); // 8秒后自动选择
+            // 设置自动选择倒计时（根据设置决定）
+            if (!event.important && gameSettings.autoRandomChoice) {
+                setupAutoChoice(event, 5000); // 5秒后自动选择，提升游戏节奏
             }
             
             modals.event.classList.add('active');
@@ -2933,9 +4093,10 @@
                     timeLeft--;
                 } else {
                     clearInterval(countdownInterval);
-                    // 自动选择第一个选项（通常是推荐选项）
-                    const recommendedChoice = event.choices[0];
-                    handleChoice(recommendedChoice, event.id);
+                    // 随机选择一个选项
+                    const randomIndex = Math.floor(Math.random() * event.choices.length);
+                    const randomChoice = event.choices[randomIndex];
+                    handleChoice(randomChoice, event.id);
                 }
             };
             
@@ -3021,7 +4182,7 @@
                 advanceStage();
             }
             if (result.gameOver) {
-                gameOver(result.log || '游戏结束');
+                gameOver(result.log || '游戏结束', result.endingType);
             }
             if (result.triggerEvent) {
                 // 延迟触发连锁事件
@@ -3031,30 +4192,10 @@
                 showNotification(result.notification);
             }
             if (result.buff) {
-                // 处理BUFF效果
-                if (!gameState.activeBuffs) {
-                    gameState.activeBuffs = [];
-                }
-                gameState.activeBuffs.push({
-                    name: result.buff.name,
-                    duration: result.buff.duration,
-                    effect: result.buff.effect,
-                    startDay: gameState.time.days
-                });
-                addLogMessage(`✨ 获得增益效果：${result.buff.name}（持续${result.buff.duration}天）`, 'success');
+                applyBuff(result.buff);
             }
             if (result.debuff) {
-                // 处理DEBUFF效果
-                if (!gameState.activeDebuffs) {
-                    gameState.activeDebuffs = [];
-                }
-                gameState.activeDebuffs.push({
-                    name: result.debuff.name,
-                    duration: result.debuff.duration,
-                    effect: result.debuff.effect,
-                    startDay: gameState.time.days
-                });
-                addLogMessage(`💔 受到负面效果：${result.debuff.name}（持续${result.debuff.duration}天）`, 'danger');
+                applyDebuff(result.debuff);
             }
             
             modals.event.classList.remove('active');
@@ -3069,10 +4210,10 @@
         }
         
         // 游戏结束
-        function gameOver(message) {
+        function gameOver(message, endingType = null) {
             gameState.isGameOver = true;
             stopAutoProgress();
-            addLogMessage(message, 'danger');
+            addLogMessage(message, endingType ? 'success' : 'danger');
             calendar.progressStatus.textContent = '🏁 游戏结束';
             buttons.pause.textContent = '游戏结束';
             buttons.pause.disabled = true;
@@ -3081,14 +4222,51 @@
             setTimeout(() => {
                 const totalStats = Object.values(gameState.player.stats).reduce((a, b) => a + b, 0);
                 const unlockedAchievements = Object.values(gameState.achievements).filter(a => a.unlocked).length;
+                
+                // 根据结局类型显示不同的结局信息
+                if (endingType) {
+                    addLogMessage(`\n=== 🎭 ${getEndingTitle(endingType)} ===`, 'success');
+                    addLogMessage(getEndingDescription(endingType), 'normal');
+                    addLogMessage('', 'normal'); // 空行
+                }
+                
                 addLogMessage(`\n=== 游戏总结 ===`, 'normal');
                 addLogMessage(`游戏天数：${gameState.time.days}天`, 'normal');
                 addLogMessage(`最终阶段：${gameState.player.stage}`, 'normal');
                 addLogMessage(`总能力值：${totalStats}`, 'normal');
                 addLogMessage(`影响力：${gameState.player.influence}`, 'normal');
                 addLogMessage(`解锁成就：${unlockedAchievements}/18`, 'normal');
-                addLogMessage(`感谢你体验《公考模拟器》！`, 'success');
+                
+                if (endingType) {
+                    addLogMessage(`结局类型：${getEndingTitle(endingType)}`, 'success');
+                }
+                
+                addLogMessage(`感谢你体验《仕途模拟器》！`, 'success');
             }, 1000);
+        }
+        
+        // 获取结局标题
+        function getEndingTitle(endingType) {
+            const endings = {
+                'stable_career': '稳定发展结局',
+                'love_sacrifice': '爱情至上结局', 
+                'entrepreneur': '创业追梦结局',
+                'study_abroad': '海外深造结局',
+                'family_business': '回归家族结局'
+            };
+            return endings[endingType] || '未知结局';
+        }
+        
+        // 获取结局描述
+        function getEndingDescription(endingType) {
+            const descriptions = {
+                'stable_career': '你选择在公务员体系中稳步发展，凭借扎实的专业能力和良好的人际关系，逐步晋升。虽然没有大起大落，但生活安稳充实，成为了同事眼中的可靠伙伴。多年后回望，你为自己的选择感到满意。',
+                'love_sacrifice': '为了心爱的人，你毅然放弃了稳定的公务员工作。虽然前路未卜，但爱情的力量让你勇敢面对一切挑战。你们一起奋斗，一起成长，最终收获了比事业更珍贵的幸福。毕业分手？在你们身上永远不会发生！',
+                'entrepreneur': '你辞去了公务员职务，投身创业大潮。凭借在政府部门积累的经验和人脉，你的创业项目获得了不错的发展。虽然过程充满挑战，但你享受着为梦想拼搏的每一天。你用行动证明了：梦想，永远不嫌晚！',
+                'study_abroad': '你选择出国深造，在异国他乡开启了人生新篇章。不同的文化环境让你的视野更加开阔，学术研究也取得了不错的成果。虽然离家万里，但你在追求知识的道路上找到了属于自己的价值。',
+                'family_business': '你回到了家乡，接手家族企业。运用在政府部门学到的管理经验，你为家族事业注入了新的活力。在熟悉的土地上，你既传承了家族传统，又开创了属于自己的事业版图。'
+            };
+            return descriptions[endingType] || '你走出了一条独特的人生道路...';
         }
 
         // ----------------------------------------------------
@@ -3150,14 +4328,141 @@
                 calendar.totalDays.textContent = gameState.time.days;
             }
             
+            // 更新BUFF/DEBUFF显示
+            updateEffectsDisplay();
+            
             // 更新目标显示
             updateGoalsDisplay();
             
+            // 更新卡通小人动画
+            updateCharacterAnimation();
+            
             // 更新日志
-            displays.log.scrollTop = displays.log.scrollHeight;
-        }
+        displays.log.scrollTop = displays.log.scrollHeight;
+    }
 
-        // 添加日志条目
+    // 更新卡通小人动画
+    function updateCharacterAnimation() {
+        const characterBody = document.querySelector('.character-body');
+        const characterHead = document.querySelector('.character-head');
+        const activityText = document.getElementById('activity-text');
+        
+        if (!characterBody || !characterHead || !activityText) return;
+        
+        // 清除所有动画类
+        characterBody.className = 'character-body';
+        
+        // 根据游戏阶段设置不同的动画和状态
+        const stage = gameState.player.stage;
+        const currentDay = gameState.time.days;
+        
+        switch(stage) {
+            case '笔试备考':
+                characterBody.classList.add('studying');
+                characterHead.textContent = '🤓';
+                activityText.textContent = '努力备考中...';
+                break;
+                
+            case '笔试考试':
+                characterBody.classList.add('running');
+                characterHead.textContent = '😰';
+                activityText.textContent = '紧张考试中...';
+                break;
+                
+            case '面试备考':
+                characterBody.classList.add('studying');
+                characterHead.textContent = '🎭';
+                activityText.textContent = '练习面试中...';
+                break;
+                
+            case '面试考试':
+                characterBody.classList.add('running');
+                characterHead.textContent = '😅';
+                activityText.textContent = '面试进行中...';
+                break;
+                
+            case '入职适应':
+                characterBody.classList.add('working');
+                characterHead.textContent = '😊';
+                activityText.textContent = '适应新环境...';
+                break;
+                
+            case '能力提升':
+                characterBody.classList.add('studying');
+                characterHead.textContent = '💪';
+                activityText.textContent = '提升技能中...';
+                break;
+                
+            case '职业发展':
+                characterBody.classList.add('celebrating');
+                characterHead.textContent = '😎';
+                activityText.textContent = '事业有成！';
+                break;
+                
+            default:
+                characterHead.textContent = '😊';
+                activityText.textContent = '准备中...';
+        }
+        
+        // 根据影响力调整表情
+        const influence = gameState.player.influence;
+        if (influence >= 80) {
+            characterHead.textContent = '😎';
+        } else if (influence >= 60) {
+            characterHead.textContent = '😊';
+        } else if (influence >= 40) {
+            characterHead.textContent = '🙂';
+        } else if (influence >= 20) {
+            characterHead.textContent = '😐';
+        } else {
+            characterHead.textContent = '😟';
+        }
+        
+        // 特殊事件时的动画
+        if (gameState.activeBuffs && gameState.activeBuffs.length > 0) {
+            characterBody.classList.add('celebrating');
+            activityText.textContent = '状态良好！';
+        }
+        
+        if (gameState.activeDebuffs && gameState.activeDebuffs.length > 0) {
+            characterHead.textContent = '😵';
+            activityText.textContent = '状态不佳...';
+        }
+    }
+    
+    // 更新BUFF/DEBUFF显示
+    function updateEffectsDisplay() {
+        const buffsContainer = document.getElementById('active-buffs');
+        const debuffsContainer = document.getElementById('active-debuffs');
+        
+        // 显示增益效果
+        if (gameState.activeBuffs && gameState.activeBuffs.length > 0) {
+            buffsContainer.innerHTML = gameState.activeBuffs.map(buff => {
+                const remaining = buff.duration - (gameState.time.days - buff.startDay);
+                return `<div style="margin-bottom: 0.3rem; padding: 0.2rem 0.5rem; background: rgba(40, 167, 69, 0.1); border-radius: 4px; border-left: 3px solid var(--success-color);">
+                    <div style="font-weight: bold; color: var(--success-color);">${buff.name}</div>
+                    <div style="font-size: 0.7rem; opacity: 0.8;">剩余 ${remaining} 天</div>
+                </div>`;
+            }).join('');
+        } else {
+            buffsContainer.innerHTML = '<span style="opacity: 0.6;">暂无增益效果</span>';
+        }
+        
+        // 显示负面效果
+        if (gameState.activeDebuffs && gameState.activeDebuffs.length > 0) {
+            debuffsContainer.innerHTML = gameState.activeDebuffs.map(debuff => {
+                const remaining = debuff.duration - (gameState.time.days - debuff.startDay);
+                return `<div style="margin-bottom: 0.3rem; padding: 0.2rem 0.5rem; background: rgba(220, 53, 69, 0.1); border-radius: 4px; border-left: 3px solid var(--danger-color);">
+                    <div style="font-weight: bold; color: var(--danger-color);">${debuff.name}</div>
+                    <div style="font-size: 0.7rem; opacity: 0.8;">剩余 ${remaining} 天</div>
+                </div>`;
+            }).join('');
+        } else {
+            debuffsContainer.innerHTML = '<span style="opacity: 0.6;">暂无负面效果</span>';
+        }
+    }
+
+    // 添加日志条目
         function addLogMessage(message, type = 'normal') {
             const entry = document.createElement('div');
             entry.classList.add('log-entry');
@@ -3191,11 +4496,14 @@
                 const item = document.createElement('div');
                 item.classList.add('skill-item');
                 item.innerHTML = `
-                    <div>
-                        <strong>${skill.name} (等级 ${Math.floor(value/10)})</strong>
-                        <p style="font-size: 0.8rem; color: var(--text-color);">${skill.description}</p>
+                    <div class="skill-info">
+                        <div class="skill-name">${skill.name} (等级 ${Math.floor(value/10)})</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: ${value}%"></div>
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--text-color); margin-top: 0.3rem;">${skill.description}</div>
                     </div>
-                    <strong>${value} / 100</strong>
+                    <div class="skill-value">${value}/100</div>
                 `;
                 lists.skills.appendChild(item);
             }
@@ -3214,14 +4522,44 @@
                 }
                 item.innerHTML = `
                     <span class="achievement-icon">${ach.unlocked ? '🏆' : '❓'}</span>
-                    <div>
-                        <strong>${ach.unlocked ? ach.name : '未解锁的成就'}</strong>
-                        <p style="font-size: 0.8rem; color: var(--text-color);">${ach.unlocked ? ach.description : '完成特定目标以解锁。'}</p>
+                    <div class="achievement-info">
+                        <div class="achievement-title">${ach.unlocked ? ach.name : '未解锁的成就'}</div>
+                        <div class="achievement-desc">${ach.unlocked ? ach.description : '完成特定目标以解锁。'}</div>
                     </div>
                 `;
                 lists.achievements.appendChild(item);
             }
             modals.achievements.classList.add('active');
+        }
+        
+        // 显示设置
+        function showSettings() {
+            // 更新设置项的状态
+            document.getElementById('auto-random-choice').checked = gameSettings.autoRandomChoice;
+            document.getElementById('show-event-hints').checked = gameSettings.showEventHints;
+            document.getElementById('debug-mode').checked = gameSettings.debugMode;
+            
+            modals.settings.classList.add('active');
+        }
+        
+        // 保存设置
+        function saveSettings() {
+            gameSettings.autoRandomChoice = document.getElementById('auto-random-choice').checked;
+            gameSettings.showEventHints = document.getElementById('show-event-hints').checked;
+            gameSettings.debugMode = document.getElementById('debug-mode').checked;
+            
+            // 保存到本地存储
+            localStorage.setItem('civilServantSim_gameSettings', JSON.stringify(gameSettings));
+            
+            showNotification('⚙️ 设置已保存！');
+        }
+        
+        // 加载设置
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('civilServantSim_gameSettings');
+            if (savedSettings) {
+                gameSettings = { ...gameSettings, ...JSON.parse(savedSettings) };
+            }
         }
         
         // 解锁成就并显示通知
@@ -3295,8 +4633,8 @@
         // 分享功能
         async function shareProgress() {
             const shareData = {
-                title: '我在《公考模拟器》中的公仆生涯',
-                text: `我在《公考模拟器》中扮演“${gameState.player.name}”，当前是${gameState.player.stage}，影响力已达到${gameState.player.influence}。你也来试试吧！`,
+                title: '我在《仕途模拟器》中的公仆生涯',
+                text: `我在《仕途模拟器》中扮演“${gameState.player.name}”，当前是${gameState.player.stage}，影响力已达到${gameState.player.influence}。你也来试试吧！`,
                 url: window.location.href
             };
             try {
@@ -3321,19 +4659,19 @@
             let hashTags = '';
             
             if (gameState.player.stage === '备考阶段') {
-                shareText = `🔥【公考日记】第${gameState.time.days}天，我在《公考模拟器》里体验备考生活！影响力已达${gameState.player.influence}，感觉自己离梦想越来越近了💪`;
+                shareText = `🔥【公考日记】第${gameState.time.days}天，我在《仕途模拟器》里体验备考生活！影响力已达${gameState.player.influence}，感觉自己离梦想越来越近了💪`;
                 hashTags = '#公考备考 #梦想成真 #坚持不懈';
             } else if (gameState.player.stage === '考试阶段') {
-                shareText = `💥【上岸倒计时】《公考模拟器》考试进行中！笔试已过，面试在即！影响力${gameState.player.influence}，为所有考公人加油！🚀`;
+                shareText = `💥【上岸倒计时】《仕途模拟器》考试进行中！笔试已过，面试在即！影响力${gameState.player.influence}，为所有考公人加油！🚀`;
                 hashTags = '#公考上岸 #面试加油 #青春无悔';
             } else if (gameState.player.stage === '入职适应') {
-                shareText = `🎉【成功上岸】我在《公考模拟器》里当上公务员啦！从菜鸟到职场新人，影响力${gameState.player.influence}！这就是传说中的"稳定工作"吗？`;
+                shareText = `🎉【成功上岸】我在《仕途模拟器》里当上公务员啦！从菜鸟到职场新人，影响力${gameState.player.influence}！这就是传说中的"稳定工作"吗？`;
                 hashTags = '#成功上岸 #新人报到 #职场生活';
             } else if (gameState.player.stage === '能力提升') {
-                shareText = `⚡【能力爆表】《公考模拟器》玩出新高度！解锁${unlockedAchievements}个成就，影响力${gameState.player.influence}！我可能就是传说中的"别人家的公务员"😎`;
+                shareText = `⚡【能力爆表】《仕途模拟器》玩出新高度！解锁${unlockedAchievements}个成就，影响力${gameState.player.influence}！我可能就是传说中的"别人家的公务员"😎`;
                 hashTags = '#能力提升 #成就解锁 #别人家的孩子';
             } else if (gameState.player.stage === '职业发展') {
-                shareText = `👑【大佬诞生】《公考模拟器》终极玩家！影响力破${gameState.player.influence}，解锁${unlockedAchievements}个成就！95后公务员就是这么优秀！快来膜拜吧～`;
+                shareText = `👑【大佬诞生】《仕途模拟器》终极玩家！影响力破${gameState.player.influence}，解锁${unlockedAchievements}个成就！95后公务员就是这么优秀！快来膜拜吧～`;
                 hashTags = '#95后公务员 #职场大佬 #人生赢家';
             }
             
@@ -3350,12 +4688,13 @@
             shareText += `\n\n${randomPhrase}`;
             
             // 完整分享文案
-            const fullShareText = `${shareText}\n\n${hashTags} #公考模拟器 #公务员生活 #95后职场`;
+            const gameLink = 'https://www.medyi.cn/%E5%85%AC%E8%80%83%E6%A8%A1%E6%8B%9F%E5%99%A8.html';
+            const fullShareText = `${shareText}\n\n${hashTags} #仕途模拟器 #公务员生活 #95后职场\n\n🎮 快来体验：${gameLink}`;
             
             try {
                 if (navigator.share) {
                     await navigator.share({
-                        title: '🔥 我在《公考模拟器》中的传奇公仆生涯',
+                        title: '🔥 我在《仕途模拟器》中的传奇公仆生涯',
                         text: fullShareText,
                         url: window.location.href
                     });
@@ -3395,14 +4734,21 @@
         buttons.start.addEventListener('click', initNewGame);
         buttons.pause.addEventListener('click', togglePause);
         buttons.reset.addEventListener('click', resetGame);
-        buttons.share.addEventListener('click', shareProgress);
-        buttons.viralShare.addEventListener('click', viralShareProgress);
+        buttons.share.addEventListener('click', viralShareProgress);
         
         buttons.showSkills.addEventListener('click', showSkills);
         buttons.closeSkills.addEventListener('click', () => modals.skills.classList.remove('active'));
         
         buttons.showAchievements.addEventListener('click', showAchievements);
         buttons.closeAchievements.addEventListener('click', () => modals.achievements.classList.remove('active'));
+        
+        buttons.settings.addEventListener('click', showSettings);
+        buttons.closeSettings.addEventListener('click', () => modals.settings.classList.remove('active'));
+        
+        // 设置项事件监听器
+        document.getElementById('auto-random-choice').addEventListener('change', saveSettings);
+        document.getElementById('show-event-hints').addEventListener('change', saveSettings);
+        document.getElementById('debug-mode').addEventListener('change', saveSettings);
         
         // 点击模态框背景关闭
         Object.values(modals).forEach(modal => {
@@ -3417,6 +4763,7 @@
         // 7. 游戏入口
         // ----------------------------------------------------
         function initialize() {
+            loadSettings(); // 加载设置
             if (loadGame()) {
                 // 如果有存档，直接开始游戏
                 startGame();
