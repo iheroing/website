@@ -1,0 +1,2988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>求职反诈模拟器 - RPG游戏</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            /* 移动端优化 */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            /* 平滑滚动 */
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #00ff88;
+            text-shadow: 0 0 20px #00ff88;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .stats-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .stats-panel.collapsed {
+            max-height: 120px;
+            overflow: hidden;
+        }
+        
+        .stats-panel.collapsed .stats-tabs,
+        .stats-panel.collapsed .stats-view {
+            display: none;
+        }
+        
+        .stats-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 10px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            /* 移动端触摸优化 */
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            touch-action: manipulation;
+        }
+        
+        .tab-btn.active {
+            background: #00ff88;
+            color: #000;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
+        
+        .stats-view {
+            min-height: 300px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        #radarChart {
+            max-width: 500px;
+            max-height: 500px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        
+        .stat-value {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        
+        .game-screen {
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .event-content {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .event-title {
+            font-size: 16px;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff6b6b;
+        }
+        
+        .event-description {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            /* 允许文本选择 */
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .option-button {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 20px;
+            color: white;
+            font-family: inherit;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            line-height: 1.4;
+            position: relative;
+            overflow: hidden;
+            /* 移动端触摸优化 */
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            touch-action: manipulation;
+        }
+        
+        .option-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.3);
+        }
+        
+        .option-button:active {
+            transform: translateY(0);
+        }
+        
+        .option-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .option-button:hover::before {
+            left: 100%;
+        }
+        
+
+        
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            border: 2px solid #fff;
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 10px;
+            transform: translateX(400px);
+            transition: transform 0.5s ease;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        
+        .achievement-popup.show {
+            transform: translateX(0);
+        }
+        
+        .share-panel {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .share-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            color: white;
+            font-family: inherit;
+            font-size: 10px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            /* 移动端触摸优化 */
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            touch-action: manipulation;
+        }
+        
+        .share-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .pixel-decoration {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #00ff88;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .pixel-decoration:nth-child(2) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0.5s;
+        }
+        
+        .pixel-decoration:nth-child(3) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+        
+        .pixel-decoration:nth-child(4) {
+            bottom: 10%;
+            left: 15%;
+            animation-delay: 1.5s;
+        }
+        
+        .pixel-decoration:nth-child(5) {
+            bottom: 20%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ff88; }
+            to { text-shadow: 0 0 30px #00ff88, 0 0 40px #00ff88; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .start-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        
+        .start-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            border: none;
+            border-radius: 15px;
+            padding: 20px 40px;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 20px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            /* 移动端触摸优化 */
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            touch-action: manipulation;
+        }
+        
+        .start-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        .result-screen {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .final-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .final-stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #00ff88;
+        }
+        
+        .ending-title {
+            font-size: 18px;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #ff6b6b;
+        }
+        
+        /* 阶段目标进度条样式 */
+        .objective-progress {
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .objective-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00cc66);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+        
+        .objective-progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+        
+        /* 可折叠面板样式 */
+        .collapsible-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .panel-header {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 10px 10px 0 0;
+            transition: background 0.3s ease;
+        }
+        
+        .panel-header:hover {
+            background: rgba(0, 255, 136, 0.2);
+        }
+        
+        .panel-title {
+            color: #00ff88;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .panel-toggle {
+            color: #00ff88;
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+        
+        .panel-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+        
+        .panel-content {
+            padding: 15px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .panel-content.collapsed {
+            display: none;
+        }
+        
+        /* 成就收集页面样式 */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 15px;
+        }
+        
+        .achievement-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .achievement-card.unlocked {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+        
+        .achievement-card.locked {
+            border-color: #666;
+            background: rgba(255, 255, 255, 0.02);
+            opacity: 0.6;
+        }
+        
+        .achievement-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .achievement-name {
+            color: #00ff88;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-desc {
+            color: #ccc;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+        
+        .achievement-card.locked .achievement-name {
+            color: #666;
+        }
+        
+        .achievement-card.locked .achievement-desc {
+            color: #555;
+        }
+        
+        /* 属性汇总样式 */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .summary-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .summary-label {
+            color: #ccc;
+            font-size: 9px;
+            margin-bottom: 3px;
+        }
+        
+        .summary-value {
+            color: #00ff88;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        /* 阶段完成动画样式 */
+        .stage-completion-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+        
+        .stage-completion-animation.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .stage-completion-content {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px;
+            position: relative;
+        }
+        
+        .stage-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+        
+        .stage-title {
+            color: #00ff88;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .stage-description {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .progress-indicator {
+            margin: 30px 0;
+        }
+        
+        .progress-bar-animation {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill-animation {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00d4aa);
+            border-radius: 4px;
+            width: 0;
+            animation: fillProgress 2s ease-out forwards;
+            position: relative;
+        }
+        
+        .progress-fill-animation::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
+        
+        .next-stage-preview {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+        }
+        
+        .next-stage-preview p {
+            color: #ccc;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        
+        .next-stage-preview h3 {
+            color: #00ff88;
+            margin: 0;
+            font-size: 20px;
+        }
+        
+        .celebration-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: floatParticle 3s ease-in-out infinite;
+        }
+        
+        .particle:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .particle:nth-child(2) {
+            top: 30%;
+            right: 15%;
+            animation-delay: 0.5s;
+        }
+        
+        .particle:nth-child(3) {
+            bottom: 25%;
+            left: 20%;
+            animation-delay: 1s;
+        }
+        
+        .particle:nth-child(4) {
+            bottom: 35%;
+            right: 25%;
+            animation-delay: 1.5s;
+        }
+        
+        .particle:nth-child(5) {
+            top: 50%;
+            left: 50%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+        
+        @keyframes fillProgress {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 0.7; }
+        }
+        
+        /* 移动端适配 - 平板设备 */
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 15px;
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .header p {
+                font-size: 11px;
+            }
+            
+            .stats-panel {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .stats-tabs {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .tab-btn {
+                padding: 8px 15px;
+                font-size: 9px;
+                margin: 2px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .game-screen {
+                padding: 20px;
+                min-height: 350px;
+            }
+            
+            .event-title {
+                font-size: 14px;
+            }
+            
+            .event-description {
+                font-size: 11px;
+                line-height: 1.5;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                gap: 12px;
+            }
+            
+            .option-button {
+                font-size: 10px;
+                padding: 12px 15px;
+                text-align: center;
+            }
+            
+            .achievements-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .stats-summary {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .stage-completion-content {
+                padding: 20px;
+                max-width: 90%;
+            }
+            
+            .stage-title {
+                font-size: 22px;
+            }
+            
+            .stage-description {
+                font-size: 13px;
+            }
+            
+            #radarChart {
+                max-width: 350px;
+                max-height: 350px;
+            }
+            
+            .final-stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .achievement-popup {
+                right: 10px;
+                top: 10px;
+                max-width: 250px;
+                font-size: 9px;
+            }
+        }
+        
+        /* 移动端适配 - 手机设备 */
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 10px;
+            }
+            
+            .header {
+                margin-bottom: 20px;
+            }
+            
+            .header h1 {
+                font-size: 16px;
+            }
+            
+            .header p {
+                font-size: 10px;
+            }
+            
+            .stats-panel {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .tab-btn {
+                padding: 6px 10px;
+                font-size: 8px;
+                margin: 1px;
+            }
+            
+            .stat-item {
+                padding: 8px;
+                font-size: 9px;
+            }
+            
+            .game-screen {
+                padding: 15px;
+                min-height: 300px;
+            }
+            
+            .event-title {
+                font-size: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .event-description {
+                font-size: 10px;
+                line-height: 1.4;
+                margin-bottom: 20px;
+            }
+            
+            .options-container {
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .option-button {
+                font-size: 9px;
+                padding: 10px 12px;
+                border-radius: 8px;
+                /* 增加触摸目标大小 */
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .start-button {
+                padding: 15px 30px;
+                font-size: 12px;
+                border-radius: 12px;
+            }
+            
+            .share-button {
+                padding: 10px 20px;
+                font-size: 9px;
+                margin: 3px;
+            }
+            
+            .stage-completion-content {
+                padding: 15px;
+                max-width: 95%;
+            }
+            
+            .stage-title {
+                font-size: 18px;
+            }
+            
+            .stage-description {
+                font-size: 11px;
+            }
+            
+            .stage-progress-bar {
+                height: 6px;
+            }
+            
+            .stage-next-preview {
+                font-size: 10px;
+                padding: 8px;
+            }
+            
+            #radarChart {
+                max-width: 280px;
+                max-height: 280px;
+            }
+            
+            .achievements-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 8px;
+            }
+            
+            .achievement-popup {
+                right: 5px;
+                top: 5px;
+                max-width: 200px;
+                font-size: 8px;
+                padding: 10px;
+            }
+            
+            .pixel-decoration {
+                width: 15px;
+                height: 15px;
+            }
+        }
+        
+        /* 超小屏幕适配 */
+        @media (max-width: 360px) {
+            .game-container {
+                padding: 8px;
+            }
+            
+            .header h1 {
+                font-size: 14px;
+            }
+            
+            .tab-btn {
+                padding: 5px 8px;
+                font-size: 7px;
+            }
+            
+            .event-title {
+                font-size: 11px;
+            }
+            
+            .event-description {
+                font-size: 9px;
+            }
+            
+            .option-button {
+                font-size: 8px;
+                padding: 8px 10px;
+                min-height: 40px;
+            }
+            
+            .start-button {
+                padding: 12px 25px;
+                font-size: 11px;
+            }
+            
+            .stage-title {
+                font-size: 16px;
+            }
+            
+            .stage-description {
+                font-size: 10px;
+            }
+            
+            #radarChart {
+                max-width: 250px;
+                max-height: 250px;
+            }
+        }
+        
+        /* 触摸设备优化 */
+        @media (hover: none) and (pointer: coarse) {
+            .option-button:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .option-button:active {
+                transform: scale(0.98);
+                background: linear-gradient(45deg, #3db8b0, #359a8a);
+            }
+            
+            .start-button:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .start-button:active {
+                transform: scale(0.98);
+            }
+            
+            .tab-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            .tab-btn:active {
+                background: rgba(0, 255, 136, 0.3);
+            }
+            
+            .share-button:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .share-button:active {
+                transform: scale(0.98);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        <div class="pixel-decoration"></div>
+        
+        <div class="header">
+            <h1>🎮 求职反诈模拟器 🎮</h1>
+            <p>像素风RPG游戏 - 在游戏中学习求职技能</p>
+        </div>
+        
+        <div class="stats-panel" id="statsPanel" style="display: none;">
+            <!-- 当前阶段目标 -->
+            <div class="stage-objective" id="stageObjective">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="color: #ff6b6b; margin: 0;">🎯 当前阶段目标</h4>
+                    <button class="expand-btn" id="expandBtn" onclick="toggleStatsPanel()" style="background: none; border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 10px;">展开详情</button>
+                </div>
+                <p id="objectiveText" style="color: #ccc; font-size: 10px;">开始你的求职之旅</p>
+                <div class="objective-progress" id="objectiveProgress">
+                    <div class="objective-progress-fill" id="objectiveProgressFill" style="width: 0%;"></div>
+                    <div class="objective-progress-text" id="objectiveProgressText">进度: 0%</div>
+                </div>
+            </div>
+            
+            <div class="stats-tabs">
+                <button class="tab-btn active" onclick="showStatsView('abilities')">核心能力</button>
+                <button class="tab-btn" onclick="showStatsView('attributes')">个人属性</button>
+                <button class="tab-btn" onclick="showStatsView('radar')">雷达图</button>
+                <button class="tab-btn" onclick="showStatsView('achievements')">成就收集</button>
+            </div>
+            
+            <!-- 核心能力视图 -->
+            <div id="stats-abilities" class="stats-view">
+                <!-- 属性汇总 -->
+                <div class="stats-summary">
+                    <div class="summary-item">
+                        <div class="summary-label">平均能力</div>
+                        <div class="summary-value" id="avgAbilities">50</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">最强能力</div>
+                        <div class="summary-value" id="topAbility">专业能力</div>
+                    </div>
+                </div>
+                
+                <!-- 可折叠的核心能力面板 -->
+                <div class="collapsible-panel">
+                    <div class="panel-header" onclick="togglePanel('abilities-panel')">
+                        <span class="panel-title">💼 核心能力详情</span>
+                        <span class="panel-toggle" id="abilities-toggle">▼</span>
+                    </div>
+                    <div class="panel-content" id="abilities-panel">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span>专业能力</span>
+                                <span class="stat-value" id="professional">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>沟通能力</span>
+                                <span class="stat-value" id="communication">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>抗压能力</span>
+                                <span class="stat-value" id="stress">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>创新能力</span>
+                                <span class="stat-value" id="creativity">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>逻辑思维</span>
+                                <span class="stat-value" id="logic">50</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 个人属性视图 -->
+            <div id="stats-attributes" class="stats-view" style="display: none;">
+                <!-- 属性汇总 -->
+                <div class="stats-summary">
+                    <div class="summary-item">
+                        <div class="summary-label">平均属性</div>
+                        <div class="summary-value" id="avgAttributes">50</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">最强属性</div>
+                        <div class="summary-value" id="topAttribute">财富指数</div>
+                    </div>
+                </div>
+                
+                <!-- 可折叠的个人属性面板 -->
+                <div class="collapsible-panel">
+                    <div class="panel-header" onclick="togglePanel('attributes-panel')">
+                        <span class="panel-title">👤 个人属性详情</span>
+                        <span class="panel-toggle" id="attributes-toggle">▼</span>
+                    </div>
+                    <div class="panel-content" id="attributes-panel">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span>财富指数</span>
+                                <span class="stat-value" id="wealth">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>人脉资源</span>
+                                <span class="stat-value" id="network">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>智商水平</span>
+                                <span class="stat-value" id="iq">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>情商水平</span>
+                                <span class="stat-value" id="eq">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>社会声望</span>
+                                <span class="stat-value" id="reputation">50</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>幸运指数</span>
+                                <span class="stat-value" id="luck">50</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 雷达图视图 -->
+            <div id="stats-radar" class="stats-view" style="display: none;">
+                <div class="radar-tabs">
+                    <button class="radar-tab-btn active" onclick="showRadarType('abilities')">能力雷达</button>
+                    <button class="radar-tab-btn" onclick="showRadarType('attributes')">属性雷达</button>
+                </div>
+                <canvas id="radarChart" width="400" height="400"></canvas>
+            </div>
+            
+            <!-- 成就收集视图 -->
+            <div id="stats-achievements" class="stats-view" style="display: none;">
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- 成就卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <div class="game-screen" id="gameScreen">
+            <div class="start-screen" id="startScreen">
+                <h2 class="event-title">🌟 欢迎来到求职反诈模拟器 🌟</h2>
+                <p class="event-description">
+                    在这个游戏中，你将体验完整的求职历程。<br>
+                    从大学毕业到职场打拼，每个选择都会影响你的属性和未来！<br><br>
+                    🎯 游戏特色：<br>
+                    • 100个精心设计的事件<br>
+                    • 11种属性系统<br>
+                    • 多种职业路径<br>
+                    • 丰富的成就系统<br>
+                    • 真实的求职场景模拟
+                </p>
+                <button class="start-button" onclick="startGame()">开始游戏</button>
+            </div>
+        </div>
+        
+        <div class="share-panel" id="sharePanel" style="display: none;">
+            <h3 style="margin-bottom: 15px; color: #00ff88;">分享你的游戏结果</h3>
+            <button class="share-button" onclick="shareToWeChat()">📱 分享到微信</button>
+            <button class="share-button" onclick="shareToWeibo()">🐦 分享到微博</button>
+            <button class="share-button" onclick="copyResult()">📋 复制结果</button>
+            <button class="share-button" onclick="restartGame()">🔄 重新开始</button>
+        </div>
+    </div>
+    
+    <div class="achievement-popup" id="achievementPopup">
+        <div id="achievementContent"></div>
+    </div>
+    
+    <script>
+        // 游戏数据 - 基于真实事件库
+        const gameEvents = [
+            {
+                id: 1,
+                title: "如何度过大学最后一年？",
+                description: "大学即将毕业，你需要为未来做准备。选择不同的方式会影响你的能力发展。",
+                options: [
+                    { text: "A. 疯狂投实习", effects: { professional: 2, stress: -1 } },
+                    { text: "B. 考专业证书", effects: { professional: 3, wealth: -20 } },
+                    { text: "C. 社交活动", effects: { communication: 2, network: 1 } },
+                    { text: "D. 兼职攒钱", effects: { stress: 1, wealth: 300 } }
+                ]
+            },
+            {
+                id: 2,
+                title: "社交中结识很多朋友，是否与他们保持长期联系？",
+                description: "在社交活动中你认识了很多新朋友，但维持关系需要时间和精力。",
+                options: [
+                    { text: "A. 是", effects: { wealth: -20, network: 1 } },
+                    { text: "B. 否", effects: { communication: -2, network: -2 } }
+                ]
+            },
+            {
+                id: 3,
+                title: "临近毕业，制作简历你会？",
+                description: "简历是求职的敲门砖，不同的制作方式会带来不同的效果。",
+                options: [
+                    { text: "A. 花重金请专家", effects: { communication: 2, wealth: -50 } },
+                    { text: "B. 自己反复打磨", effects: { professional: 1, stress: 1, creativity: 1 } },
+                    { text: "C. 抄袭模板", effects: { network: -2, luck: 1 } },
+                    { text: "D. 不准备，靠人脉内推", effects: { network: 2 } }
+                ]
+            },
+            {
+                id: 4,
+                title: "未来你的发展方向？",
+                description: "选择职业方向是人生的重要决定，每条路都有不同的挑战和机遇。",
+                options: [
+                    { text: "A. 互联网大厂", effects: { professional: 2 }, next: "tech" },
+                    { text: "B. 从政走仕途", effects: { wealth: -20, network: 10 }, next: "government" },
+                    { text: "C. 从商发家致富", effects: { wealth: 300 }, next: "business" },
+                    { text: "D. 自由职业", effects: { communication: 2 }, next: "freelance" }
+                ]
+            },
+            {
+                id: 5,
+                title: "从政走仕途备考编制类考试你的方式？",
+                description: "公务员考试竞争激烈，不同的备考方式会影响你的通过率。",
+                condition: "government",
+                options: [
+                    { text: "A. 通过网课学习笔试", effects: { professional: 2, stress: 1 } },
+                    { text: "B. 报名线下课学习笔试", effects: { professional: 10, wealth: -20 } },
+                    { text: "C. 自学课程", effects: { professional: 1 } },
+                    { text: "D. 随缘裸考", effects: { luck: 1 } }
+                ]
+            },
+            {
+                id: 6,
+                title: "逻辑推理题：某单位有甲、乙、丙、丁4人",
+                description: "①甲比乙高，比丙矮；②丁不是最矮的；③丙不是最高的。请问四人从高到矮的正确排序是？",
+                condition: "government",
+                options: [
+                    { text: "A. 乙 > 甲 > 丙 > 丁", effects: { professional: 1, iq: 1 } },
+                    { text: "B. 甲 > 乙 > 丙 > 丁", effects: { professional: -1 } },
+                    { text: "C. 乙 > 丙 > 甲 > 丁", effects: { professional: -1 } },
+                    { text: "D. 丙 > 甲 > 丁 > 乙", effects: { professional: -1 } }
+                ]
+            },
+            {
+                id: 7,
+                title: "数列题：2，5，10，17，26，？",
+                description: "观察数列规律，问号处应填的数字是？",
+                condition: "government",
+                options: [
+                    { text: "A. 34", effects: { professional: -1 } },
+                    { text: "B. 35", effects: { professional: -1 } },
+                    { text: "C. 36", effects: { professional: -1 } },
+                    { text: "D. 37", effects: { professional: 1, iq: 1 } }
+                ]
+            },
+            {
+                id: 8,
+                title: "面试备考阶段你会？",
+                description: "面试是求职的关键环节，充分的准备能大大提高成功率。",
+                options: [
+                    { text: "A. 购买正装", effects: { professional: 5, wealth: -10, reputation: 1 } },
+                    { text: "B. 上香祈求好事发生", effects: { luck: 10 } },
+                    { text: "C. 进行面试相关知识学习", effects: { professional: 20 } },
+                    { text: "D. 无需训练，放松心情", effects: { stress: 3 } }
+                ]
+            },
+            {
+                id: 9,
+                title: "性格测试：周末自由时间安排",
+                description: "周末你有完全自由的时间，以下哪种安排让你感到最放松和满足？",
+                options: [
+                    { text: "A. 约朋友组局玩桌游，聚餐聊天", effects: { network: 1, eq: 1 }, personality: "E" },
+                    { text: "B. 参加集体户外活动（徒步、摄影）", effects: { stress: 1, network: 1 }, personality: "E" },
+                    { text: "C. 独自在家看书/刷剧", effects: { professional: 1, stress: 1 }, personality: "I" },
+                    { text: "D. 去图书馆学习新技能", effects: { professional: 1, iq: 1 }, personality: "I" }
+                ]
+            },
+            {
+                id: 10,
+                title: "HR电话初筛问题",
+                description: "HR问你：'为什么选择我们公司？'这是一个经典的面试问题。",
+                condition: "tech",
+                options: [
+                    { text: "A. 贵司的技术栈和我的职业规划高度契合", effects: { professional: 1, communication: 1 } },
+                    { text: "B. 因为你们给钱多", effects: { wealth: 1, communication: -1 } },
+                    { text: "C. 我听说贵司食堂不错", effects: { luck: 1 }, achievement: "吃货人设" },
+                    { text: "D. 其实我是来学习怎么摸鱼的", effects: { communication: -1 } }
+                ]
+            },
+            {
+                id: 11,
+                title: "恭喜你顺利通过考试！",
+                description: "成为一名政府工作人员，正式步入仕途之路。入职第一天，处长让你泡茶但茶叶罐空了，你会？",
+                condition: "government",
+                options: [
+                    { text: "A. 拆了同事的奶茶包充数", effects: { creativity: 1, wealth: -50, reputation: -1 } },
+                    { text: "B. 跑去隔壁科室借茶叶", effects: { communication: 1, stress: 1, eq: 1 } },
+                    { text: "C. 往杯子里放枸杞冒充'养生茶'", effects: { stress: 1, creativity: 1, iq: 1 }, achievement: "糊弄学大师" },
+                    { text: "D. 提交《关于茶叶采购的紧急请示》", effects: { professional: -2, stress: -2, reputation: -2 } }
+                ]
+            },
+            {
+                id: 12,
+                title: "处长让你端茶时发现茶杯有霉斑",
+                description: "这种情况下你需要快速做出决定，既要解决问题又要维护形象。",
+                condition: "government",
+                options: [
+                    { text: "A. 用袖子擦干净", effects: { stress: 1, reputation: -1 }, achievement: "人肉抹布" },
+                    { text: "B. 冲去食堂借新杯子", effects: { stress: 1, reputation: 1 } },
+                    { text: "C. 掏出手机点奶茶外卖", effects: { wealth: -30, eq: 1 }, achievement: "奢侈新人" },
+                    { text: "D. 当场朗诵《公务员廉洁从政若干准则》", effects: { network: -1, iq: -2, reputation: -1 } }
+                ]
+            },
+            {
+                id: 13,
+                title: "互联网大厂面试：算法题挑战",
+                description: "笔试遇到一道完全不会的算法题，时间紧迫，你会怎么做？",
+                condition: "tech",
+                options: [
+                    { text: "A. 写伪代码并标注思路", effects: { professional: 1, logic: 1 } },
+                    { text: "B. 在注释里写'此题无解'", effects: { professional: -1, creativity: 1 } },
+                    { text: "C. 提交空代码，附上'人生就像这道题，有时无解'", effects: { eq: 1 } },
+                    { text: "D. 偷偷用手机搜答案", effects: { professional: -2 }, achievement: "偷鸡摸狗" }
+                ]
+            },
+            {
+                id: 14,
+                title: "HR问：你最大的缺点是什么？",
+                description: "这是面试中的经典陷阱题，需要巧妙回答。",
+                condition: "tech",
+                options: [
+                    { text: "A. 有时过于追求完美，导致代码重构次数多", effects: { eq: 2 } },
+                    { text: "B. 我最大的缺点是太优秀，容易让同事自卑", effects: { eq: -2 } },
+                    { text: "C. 我容易在写代码时睡着", effects: { professional: -1, stress: -1 } },
+                    { text: "D. 我缺点钱，所以来应聘", effects: { wealth: 2, communication: -1 } }
+                ]
+            },
+            {
+                id: 15,
+                title: "创业机会：开淀粉肠店",
+                description: "经过考察你准备开一家《烤了个寂寞淀粉肠店》，对于创业选址，你会？",
+                condition: "business",
+                options: [
+                    { text: "A. 高端商场美食区（租金高但客流优质）", effects: { wealth: -500, reputation: 15 } },
+                    { text: "B. 大学城小吃街（学生客群稳定）", effects: { professional: 2, wealth: -200, network: 10 } },
+                    { text: "C. 社区菜市场门口（成本最低）", effects: { wealth: -100, reputation: 5 } },
+                    { text: "D. 地铁口流动摊位（城管风险）", effects: { wealth: 0, reputation: -5 } }
+                ]
+            },
+            {
+                id: 16,
+                title: "产品研发方向选择",
+                description: "为了打开销路，你需要对现有产品进行升级，选择研发方向：",
+                condition: "business",
+                options: [
+                    { text: "A. 传统淀粉肠（成本最低）", effects: { professional: 10, wealth: 50 } },
+                    { text: "B. 创新口味（芝士/芥末）", effects: { creativity: 15, wealth: 100 } },
+                    { text: "C. 健康概念（零添加）", effects: { professional: 5, wealth: 150, reputation: 20 } },
+                    { text: "D. 奇葩造型（卡通形象）", effects: { creativity: 10, wealth: 50, luck: 3 } }
+                ]
+            },
+            {
+                id: 17,
+                title: "职场危机：同事甩锅",
+                description: "同事甩锅时说：'当初是你同意的！'你发现聊天记录已消失，此时：",
+                options: [
+                    { text: "A. 反手举报他偷用公司WiFi", effects: { professional: 1, wealth: -2 } },
+                    { text: "B. 当场表演失忆", effects: { network: -1, luck: 3 } },
+                    { text: "C. 掏出录音笔", effects: { stress: 2, logic: 3 } },
+                    { text: "D. 高唱《都是月亮惹的祸》", effects: { eq: 1, reputation: -1 } }
+                ]
+            },
+            {
+                id: 18,
+                title: "重要会议前的意外",
+                description: "重要会议前咖啡洒在衬衫上，你会：",
+                options: [
+                    { text: "A. 宣称是抽象艺术", effects: { creativity: 3 } },
+                    { text: "B. 反穿衬衫", effects: { stress: 2 } },
+                    { text: "C. 泼全组制造集体犯罪", effects: { network: -3, luck: 2 } },
+                    { text: "D. 哭诉工伤索赔", effects: { wealth: -1, reputation: -1 } }
+                ]
+            },
+            {
+                id: 19,
+                title: "晋升关键时刻的挑战",
+                description: "晋升关键时刻，对手散布你植发谣言，你会：",
+                options: [
+                    { text: "A. 直播拔发验真", effects: { stress: 2 } },
+                    { text: "B. 起诉造谣者", effects: { logic: 3, wealth: -1 } },
+                    { text: "C. 推广《秃头干部选拔标准》", effects: { stress: 3, creativity: 3 } },
+                    { text: "D. 供认不讳并代言生发液", effects: { wealth: 5 } }
+                ]
+            },
+            {
+                id: 20,
+                title: "终极选择：发现领导违纪证据",
+                description: "发现直属领导违纪证据，这是一个关键的道德选择时刻。",
+                options: [
+                    { text: "A. 连夜实名举报", effects: { professional: 5, stress: 3 }, achievement: "反腐先锋", ending: true },
+                    { text: "B. 制作加密证据包待价而沽", effects: { wealth: -4, reputation: 5 } },
+                    { text: "C. 暗示领导用政绩弥补", effects: { iq: 4, reputation: -3 } },
+                    { text: "D. 给证据包系蝴蝶结放他桌上", effects: { stress: 3, creativity: 4 } }
+                ]
+            },
+            {
+                id: 21,
+                title: "政府部门工作",
+                description: "你进入了政府部门工作，面临第一个重要任务。",
+                options: [
+                    { text: "严格按照规定执行", effects: { professional: 15, communication: 5, wealth: 5 } },
+                    { text: "灵活处理，提高效率", effects: { professional: 10, communication: 10, wealth: 10 } },
+                    { text: "寻求上级指导", effects: { professional: 5, communication: 15, wealth: 0 } }
+                ]
+            },
+            {
+                id: 22,
+                title: "技术面试挑战",
+                description: "你参加了一家知名科技公司的技术面试，面试官问了一个复杂的算法问题。",
+                options: [
+                    { text: "直接承认不会，请求提示", effects: { professional: 5, communication: 15, wealth: 0 } },
+                    { text: "尝试分析问题思路", effects: { professional: 15, communication: 10, wealth: 5 } },
+                    { text: "说之前做过类似项目", effects: { professional: -10, communication: 5, wealth: 0 } }
+                ]
+            },
+            {
+                id: 23,
+                title: "创业资金困境",
+                description: "你的创业项目遇到资金困难，有投资人愿意投资但要求控股。",
+                options: [
+                    { text: "接受投资，让出控股权", effects: { professional: 5, communication: 10, wealth: 30 } },
+                    { text: "拒绝投资，寻找其他方案", effects: { professional: 15, communication: 5, wealth: -10 } },
+                    { text: "尝试谈判更好的条件", effects: { professional: 10, communication: 20, wealth: 15 } }
+                ]
+            },
+            {
+                id: 24,
+                title: "职场危机处理",
+                description: "公司出现重大危机，你作为项目负责人需要承担责任。",
+                options: [
+                    { text: "主动承担全部责任", effects: { professional: 20, communication: 10, wealth: -20 } },
+                    { text: "分析问题，提出解决方案", effects: { professional: 25, communication: 15, wealth: 10 } },
+                    { text: "推卸责任给团队成员", effects: { professional: -20, communication: -15, wealth: 5 } }
+                ]
+            },
+            {
+                id: 25,
+                title: "网络诈骗识别",
+                description: "你收到一条短信，声称你中了大奖，需要先交税费才能领取。",
+                options: [
+                    { text: "立即转账交税费", effects: { professional: -30, communication: -10, wealth: -50 }, achievement: "上当受骗" },
+                    { text: "识破骗局，举报诈骗", effects: { professional: 15, communication: 10, wealth: 0 }, achievement: "反诈达人" },
+                    { text: "询问朋友意见", effects: { professional: 5, communication: 15, wealth: 0 } }
+                ]
+            },
+            {
+                id: 26,
+                title: "求职陷阱识别",
+                description: "你看到一个高薪工作机会，但要求先交培训费和保证金。",
+                options: [
+                    { text: "交费参加培训", effects: { professional: -20, communication: -5, wealth: -30 }, achievement: "求职受骗" },
+                    { text: "拒绝并举报虚假招聘", effects: { professional: 20, communication: 15, wealth: 0 }, achievement: "求职防骗专家" },
+                    { text: "先了解公司背景", effects: { professional: 15, communication: 10, wealth: 0 } }
+                ]
+            },
+            {
+                id: 27,
+                title: "投资理财选择",
+                description: "朋友推荐你投资一个声称月收益30%的理财产品。",
+                options: [
+                    { text: "立即投入大量资金", effects: { professional: -15, communication: 0, wealth: -40 }, achievement: "投资失败" },
+                    { text: "谨慎分析，小额尝试", effects: { professional: 10, communication: 5, wealth: 5 } },
+                    { text: "拒绝高风险投资", effects: { professional: 15, communication: 10, wealth: 0 }, achievement: "理财谨慎" }
+                ]
+            },
+            {
+                id: 28,
+                title: "职场人际关系",
+                description: "同事经常在背后说你坏话，影响了你的工作环境。",
+                options: [
+                    { text: "直接对质，公开解决", effects: { professional: 5, communication: -10, wealth: 0 } },
+                    { text: "通过第三方调解", effects: { professional: 10, communication: 15, wealth: 0 } },
+                    { text: "忍气吞声，专注工作", effects: { professional: 15, communication: -5, wealth: 5 } }
+                ]
+            },
+            {
+                id: 29,
+                title: "技能提升机会",
+                description: "公司提供免费培训机会，但需要占用你的休息时间。",
+                options: [
+                    { text: "积极参加培训", effects: { professional: 25, communication: 10, wealth: 0 } },
+                    { text: "选择性参加重要培训", effects: { professional: 15, communication: 5, wealth: 5 } },
+                    { text: "拒绝培训，享受休息", effects: { professional: -5, communication: 0, wealth: 0 } }
+                ]
+            },
+            {
+                id: 30,
+                title: "创业团队冲突",
+                description: "创业团队内部出现分歧，核心成员威胁要离开。",
+                options: [
+                    { text: "妥协让步，挽留成员", effects: { professional: 5, communication: 15, wealth: -10 } },
+                    { text: "坚持原则，寻找新成员", effects: { professional: 20, communication: 5, wealth: -5 } },
+                    { text: "开诚布公，重新协商", effects: { professional: 15, communication: 20, wealth: 5 } }
+                ]
+            },
+            {
+                id: 31,
+                title: "考试作弊诱惑",
+                description: "重要考试前，有人向你兜售考试答案。",
+                options: [
+                    { text: "购买答案，确保通过", effects: { professional: -30, communication: -20, wealth: -20 }, achievement: "学术不端" },
+                    { text: "拒绝作弊，诚信考试", effects: { professional: 20, communication: 15, wealth: 0 }, achievement: "诚信考生" },
+                    { text: "举报作弊行为", effects: { professional: 25, communication: 10, wealth: 0 }, achievement: "正义使者" }
+                ]
+            },
+            {
+                id: 32,
+                title: "网络兼职陷阱",
+                description: "你看到一个网络兼职广告，声称在家就能月入过万。",
+                options: [
+                    { text: "立即报名参加", effects: { professional: -15, communication: -10, wealth: -25 }, achievement: "兼职受骗" },
+                    { text: "仔细调查兼职真实性", effects: { professional: 15, communication: 10, wealth: 0 } },
+                    { text: "寻找正规兼职渠道", effects: { professional: 10, communication: 15, wealth: 10 }, achievement: "兼职达人" }
+                ]
+            },
+            {
+                id: 33,
+                title: "面试礼仪测试",
+                description: "面试官故意迟到30分钟，测试你的反应。",
+                options: [
+                    { text: "耐心等待，保持礼貌", effects: { professional: 20, communication: 15, wealth: 0 } },
+                    { text: "主动询问是否需要改期", effects: { professional: 15, communication: 20, wealth: 0 } },
+                    { text: "生气离开，另寻机会", effects: { professional: -10, communication: -15, wealth: 0 } }
+                ]
+            },
+            {
+                id: 34,
+                title: "职场性骚扰",
+                description: "上司对你进行不当言语骚扰，威胁影响你的工作。",
+                options: [
+                    { text: "忍气吞声，避免冲突", effects: { professional: -10, communication: -15, wealth: 5 } },
+                    { text: "坚决拒绝，寻求帮助", effects: { professional: 20, communication: 15, wealth: -5 }, achievement: "勇敢维权" },
+                    { text: "收集证据，举报投诉", effects: { professional: 25, communication: 20, wealth: 0 }, achievement: "正义维权" }
+                ]
+            },
+            {
+                id: 35,
+                title: "创业失败处理",
+                description: "你的创业项目失败了，面临巨额债务。",
+                options: [
+                    { text: "逃避责任，一走了之", effects: { professional: -40, communication: -30, wealth: -20 }, ending: "信用破产" },
+                    { text: "承担责任，制定还债计划", effects: { professional: 30, communication: 20, wealth: -30 }, achievement: "责任担当" },
+                    { text: "寻求法律援助，合理解决", effects: { professional: 20, communication: 25, wealth: -15 } }
+                ]
+            },
+            {
+                id: 36,
+                title: "学历造假诱惑",
+                description: "中介建议你伪造学历证书来获得更好的工作机会。",
+                options: [
+                    { text: "同意造假，提升竞争力", effects: { professional: -35, communication: -20, wealth: 20 }, achievement: "学历造假" },
+                    { text: "拒绝造假，凭实力求职", effects: { professional: 25, communication: 20, wealth: 0 }, achievement: "诚信求职" },
+                    { text: "举报中介违法行为", effects: { professional: 30, communication: 15, wealth: 0 }, achievement: "打击造假" }
+                ]
+            },
+            {
+                id: 37,
+                title: "职场潜规则",
+                description: "同事暗示你需要给领导送礼才能获得晋升机会。",
+                options: [
+                    { text: "按照潜规则送礼", effects: { professional: -15, communication: 10, wealth: -20 }, achievement: "随波逐流" },
+                    { text: "拒绝送礼，凭能力晋升", effects: { professional: 25, communication: 15, wealth: 0 }, achievement: "清正廉洁" },
+                    { text: "举报不正之风", effects: { professional: 20, communication: 10, wealth: 0 }, achievement: "反腐斗士" }
+                ]
+            },
+            {
+                id: 38,
+                title: "网络诈骗升级",
+                description: "骗子冒充公安局，声称你涉嫌洗钱，要求转账自证清白。",
+                options: [
+                    { text: "害怕转账配合调查", effects: { professional: -40, communication: -20, wealth: -60 }, ending: "电信诈骗受害者" },
+                    { text: "识破骗局，挂断电话", effects: { professional: 20, communication: 15, wealth: 0 }, achievement: "反诈高手" },
+                    { text: "配合警方，协助破案", effects: { professional: 30, communication: 25, wealth: 0 }, achievement: "反诈英雄" }
+                ]
+            },
+            {
+                id: 39,
+                title: "求职歧视遭遇",
+                description: "面试官因为你的性别/年龄/地域等因素明显歧视你。",
+                options: [
+                    { text: "忍受歧视，继续面试", effects: { professional: -10, communication: -15, wealth: 0 } },
+                    { text: "当场指出歧视行为", effects: { professional: 15, communication: 20, wealth: 0 }, achievement: "反歧视斗士" },
+                    { text: "离开并投诉该公司", effects: { professional: 20, communication: 15, wealth: 0 }, achievement: "维权达人" }
+                ]
+            },
+            // 反诈教育专题事件 (58-65)
+            {
+                id: 58,
+                title: "虚假招聘信息",
+                description: "你在网上看到一个薪资特别高的招聘信息，要求很低，但需要先交培训费。",
+                options: [
+                    { text: "立即交费报名", effects: { wealth: -500, iq: -10 } },
+                    { text: "仔细核实公司信息", effects: { iq: 15, logic: 10 }, achievement: "反诈达人" },
+                    { text: "询问身边朋友意见", effects: { communication: 10, network: 5 } }
+                ]
+            },
+            {
+                id: 59,
+                title: "网络兼职陷阱",
+                description: "有人联系你做网络刷单兼职，声称轻松赚钱，只需要先垫付资金。",
+                options: [
+                    { text: "相信并开始刷单", effects: { wealth: -800, iq: -15 } },
+                    { text: "拒绝并举报", effects: { iq: 20, reputation: 15 }, achievement: "网络卫士" },
+                    { text: "假装配合收集证据", effects: { logic: 15, stress: 10 } }
+                ]
+            },
+            {
+                id: 60,
+                title: "培训贷陷阱",
+                description: "培训机构承诺包就业，但需要先贷款交学费，毕业后工资足够还贷。",
+                options: [
+                    { text: "签署贷款协议", effects: { wealth: -1000, stress: 20 } },
+                    { text: "要求查看就业合同", effects: { logic: 15, professional: 10 } },
+                    { text: "咨询法律专业人士", effects: { iq: 20, network: 10 }, achievement: "理性消费者" }
+                ]
+            },
+            {
+                id: 61,
+                title: "传销组织招聘",
+                description: "朋友介绍你参加一个'投资项目'，声称拉人头就能赚大钱。",
+                options: [
+                    { text: "积极参与并拉朋友", effects: { wealth: -600, network: -20, reputation: -15 } },
+                    { text: "礼貌拒绝并劝阻朋友", effects: { iq: 15, communication: 10 } },
+                    { text: "报警举报", effects: { iq: 25, reputation: 20 }, achievement: "正义使者" }
+                ]
+            },
+            {
+                id: 62,
+                title: "虚假投资理财",
+                description: "收到短信推荐高收益理财产品，承诺月收益30%以上。",
+                options: [
+                    { text: "投入全部积蓄", effects: { wealth: -1500, stress: 30 } },
+                    { text: "小额试投", effects: { wealth: -200, iq: 5 } },
+                    { text: "直接删除短信", effects: { iq: 10, logic: 5 }, achievement: "理财高手" }
+                ]
+            },
+            {
+                id: 63,
+                title: "冒充公检法诈骗",
+                description: "接到电话称你涉嫌洗钱，需要配合调查，要求转账到'安全账户'。",
+                options: [
+                    { text: "立即转账配合", effects: { wealth: -2000, stress: 25 } },
+                    { text: "要求对方出示证件", effects: { iq: 15, logic: 10 } },
+                    { text: "挂断电话报警", effects: { iq: 25, reputation: 15 }, achievement: "反诈专家" }
+                ]
+            },
+            {
+                id: 64,
+                title: "网络购物诈骗",
+                description: "网购后收到'客服'电话，称商品有问题需要退款，要求提供银行卡信息。",
+                options: [
+                    { text: "提供银行卡信息", effects: { wealth: -800, iq: -10 } },
+                    { text: "要求通过官方渠道处理", effects: { iq: 15, logic: 10 } },
+                    { text: "录音并报警", effects: { iq: 20, reputation: 10 }, achievement: "消费维权达人" }
+                ]
+            },
+            {
+                id: 65,
+                title: "虚假慈善募捐",
+                description: "朋友圈出现求助信息，声称孩子患重病需要筹款，配有悲惨照片。",
+                options: [
+                    { text: "立即转账捐款", effects: { wealth: -300, eq: 5 } },
+                    { text: "核实信息真实性", effects: { iq: 15, logic: 10 } },
+                    { text: "通过正规渠道捐助", effects: { iq: 10, eq: 15, reputation: 10 }, achievement: "理性慈善家" }
+                ]
+            },
+            // 公务员专业能力测试事件 (66-100)
+            {
+                id: 66,
+                title: "下列哪项天文现象2024年将在中国境内观测到？",
+                description: "考查时事政治和科学常识。",
+                options: [
+                    { text: "日全食", effects: { iq: 10, logic: 10 }, achievement: "天文学家" },
+                    { text: "哈雷彗星回归", effects: { iq: 0 } },
+                    { text: "火星冲日", effects: { iq: 0 } },
+                    { text: "金星凌日", effects: { iq: 0 } }
+                ]
+            },
+            {
+                id: 67,
+                title: "央行'结构性降息'工具主要针对？",
+                description: "考查经济政策理解能力。",
+                options: [
+                    { text: "房地产企业融资", effects: { iq: 0 } },
+                    { text: "小微企业贷款", effects: { iq: 10, logic: 10 }, achievement: "经济通" },
+                    { text: "地方政府债券", effects: { iq: 0 } },
+                    { text: "外汇储备管理", effects: { iq: 0 } }
+                ]
+            },
+            {
+                id: 68,
+                title: "长江经济带覆盖的省市不包括？",
+                description: "考查地理和区域发展知识。",
+                options: [
+                    { text: "四川省", effects: { iq: 0 } },
+                    { text: "江西省", effects: { iq: 0 } },
+                    { text: "辽宁省", effects: { iq: 10, logic: 10 }, achievement: "地理达人" },
+                    { text: "云南省", effects: { iq: 0 } }
+                ]
+            },
+            {
+                id: 69,
+                title: "2024年新增《人类非遗名录》的中国项目是？",
+                description: "考查文化常识和时事政治。",
+                options: [
+                    { text: "太极拳", effects: { iq: 0 } },
+                    { text: "景德镇制瓷", effects: { iq: 0 } },
+                    { text: "中国传统制茶技艺", effects: { iq: 0 } },
+                    { text: "西夏文木活字印刷", effects: { iq: 10, logic: 10 }, achievement: "文化学者" }
+                ]
+            },
+            {
+                id: 70,
+                title: "《民法典》规定，高空抛物找不到责任人时，赔偿主体是？",
+                description: "考查法律知识应用能力。",
+                options: [
+                    { text: "全楼可能加害人", effects: { iq: 10, logic: 10 }, achievement: "法律专家" },
+                    { text: "物业公司", effects: { iq: 0 } },
+                    { text: "公安机关", effects: { iq: 0 } },
+                    { text: "民政部门", effects: { iq: 0 } }
+                ]
+            },
+            {
+                id: 71,
+                title: "金砖国家正式扩容后新增成员国不包括？",
+                description: "考查国际关系和时事政治。",
+                options: [
+                    { text: "沙特阿拉伯", effects: { iq: 0 } },
+                    { text: "阿根廷", effects: { iq: 10, logic: 10 }, achievement: "国际通" },
+                    { text: "埃塞俄比亚", effects: { iq: 0 } },
+                    { text: "印度尼西亚", effects: { iq: 0 } }
+                ]
+            },
+            {
+                id: 72,
+                title: "我国首颗超低轨通信卫星'天雁'的核心功能是？",
+                description: "考查科技发展和创新能力。",
+                options: [
+                    { text: "深空探测", effects: { iq: 0 } },
+                    { text: "量子加密", effects: { iq: 0 } },
+                    { text: "6G网络验证", effects: { iq: 10, logic: 10 }, achievement: "科技先锋" },
+                    { text: "气象监测", effects: { iq: 0 } }
+                ]
+            },
+            {
+                id: 73,
+                title: "《学位法》2025年实施后，新增的学位类型是？",
+                description: "考查教育政策和法规知识。",
+                options: [
+                    { text: "哲学博士", effects: { iq: 0 } },
+                    { text: "专业博士", effects: { iq: 10, logic: 10 }, achievement: "教育专家" },
+                    { text: "荣誉硕士", effects: { iq: 0 } },
+                    { text: "交叉学科学士", effects: { iq: 0 } }
+                ]
+            },
+            {
+                id: 74,
+                title: "2024年'丝绸之路'跨国申遗新增的中国遗址是？",
+                description: "考查历史文化和国际合作知识。",
+                options: [
+                    { text: "克孜尔石窟", effects: { iq: 0 } },
+                    { text: "锁阳城遗址", effects: { iq: 10, logic: 10 }, achievement: "历史学家" },
+                    { text: "麦积山石窟", effects: { iq: 0 } },
+                    { text: "交河故城", effects: { iq: 0 } }
+                ]
+            },
+            {
+                id: 75,
+                title: "领导查看方案后说：'这个设计……很有勇气。'",
+                description: "领导的真实意图最可能是？",
+                options: [
+                    { text: "赞赏创新精神", effects: { creativity: 1 } },
+                    { text: "暗示成本过高无法落地", effects: { logic: 2 } },
+                    { text: "认为方案冒险", effects: { eq: 1, reputation: -1 } },
+                    { text: "单纯鼓励下属", effects: { communication: 1 } }
+                ]
+            },
+            {
+                id: 76,
+                title: "逻辑推理题",
+                description: "条件：①要么升级CRM系统，要么拓展客户池；②如果不升级CRM，则需增加客服；③今年预算仅够做一件事。可推出的结论是？",
+                options: [
+                    { text: "必须拓展客户池", effects: { wealth: 1 } },
+                    { text: "需要增加客服", effects: { stress: 1 } },
+                    { text: "只能升级CRM系统", effects: { logic: 5 }, achievement: "逻辑大师" },
+                    { text: "可暂停所有计划", effects: { luck: 2 } }
+                ]
+            },
+            {
+                id: 77,
+                title: "跨文化沟通",
+                description: "外籍同事说：'这个提案就像未煮熟的饺子。'最可能的含义是？",
+                options: [
+                    { text: "创意值得期待", effects: { creativity: 1 } },
+                    { text: "方案不成熟", effects: { professional: 2, logic: 2 }, achievement: "沟通达人" },
+                    { text: "需要更多时间", effects: { iq: 1 } },
+                    { text: "表达赞赏", effects: { eq: -2 } }
+                ]
+            },
+            {
+                id: 78,
+                title: "逻辑谬误识别",
+                description: "所有优秀员工都加班；经理：小王不加班；主管：所以小王不优秀。主管的结论？",
+                options: [
+                    { text: "必然正确", effects: { professional: -1 } },
+                    { text: "可能错误", effects: { logic: 3 }, achievement: "逻辑专家" },
+                    { text: "需数据验证", effects: { iq: 1 } },
+                    { text: "违反劳动法", effects: { reputation: 2 } }
+                ]
+            },
+            {
+                id: 79,
+                title: "语言表达能力",
+                description: "'贵司的方案性价比突出，______ 考虑到长期维护成本……'横线处最恰当的关联词是？",
+                options: [
+                    { text: "而且", effects: { creativity: 1 } },
+                    { text: "但是", effects: { professional: 2, communication: 1 }, achievement: "表达高手" },
+                    { text: "例如", effects: { professional: -1 } },
+                    { text: "总之", effects: { eq: -1 } }
+                ]
+            },
+            {
+                id: 80,
+                title: "管理洞察力",
+                description: "'某些团队像指南针，总在找方向却不动。'批评的核心是？",
+                options: [
+                    { text: "缺乏目标感", effects: { creativity: 1 } },
+                    { text: "执行力低下", effects: { logic: 3 }, achievement: "管理专家" },
+                    { text: "方向错误", effects: { professional: -2 } },
+                    { text: "需要新工具", effects: { wealth: 1 } }
+                ]
+            },
+            {
+                id: 81,
+                title: "博弈论应用",
+                description: "规则：①你与对手各20枚金币；②每次可投1-5枚入公共池；第1轮你投3枚后，对手投5枚，此时你应？",
+                options: [
+                    { text: "投4枚", effects: { iq: 1 } },
+                    { text: "投2枚", effects: { professional: 5, logic: 10 }, achievement: "博弈专家" },
+                    { text: "投1枚", effects: { luck: 4 } },
+                    { text: "放弃", effects: { stress: 2 } }
+                ]
+            },
+            {
+                id: 82,
+                title: "政策理解能力",
+                description: "'乡村振兴既要留住绿水青山，也要发展特色产业。近年来，某县通过生态养殖项目带动村民增收，同时建立非遗工坊保护传统技艺，实现了生态保护与经济振兴的双赢。'这段文字主要强调：",
+                options: [
+                    { text: "生态养殖的技术创新", effects: { creativity: 2 } },
+                    { text: "非遗工坊的文化价值", effects: { communication: -2 } },
+                    { text: "乡村振兴的统筹路径", effects: { professional: 3, communication: 2 }, achievement: "政策通" },
+                    { text: "县域经济的增收模式", effects: { creativity: 2, reputation: 1 } }
+                ]
+            },
+            {
+                id: 83,
+                title: "批判性思维",
+                description: "研究人员认为：'电子阅读器普及导致实体书店倒闭'，依据是2015-2020年电子书销量上升30%，实体书店减少40%。以下哪项最能削弱上述结论？",
+                options: [
+                    { text: "同期纸质书销量上升15%", effects: { logic: 2, iq: -1 } },
+                    { text: "2020年新冠疫情强制闭店", effects: { communication: -2 } },
+                    { text: "大型书店转型咖啡书吧后盈利增长", effects: { logic: 5 }, achievement: "批判思维专家" },
+                    { text: "电子阅读器企业捐赠实体书店", effects: { reputation: 2 } }
+                ]
+            },
+            {
+                id: 84,
+                title: "应急处理能力",
+                description: "政务大厅突然停电，排队群众开始骚动，此时你会：",
+                options: [
+                    { text: "用手机闪光灯照明继续办理业务", effects: { professional: 10, stress: 15 }, achievement: "应急专家" },
+                    { text: "组织群众合唱《团结就是力量》", effects: { creativity: 20, eq: 10 } },
+                    { text: "发放手写号码牌维持秩序", effects: { communication: 10, logic: 15 } },
+                    { text: "建议群众去隔壁奶茶店等待", effects: { wealth: -10, reputation: -5 } }
+                ]
+            },
+            {
+                id: 85,
+                title: "职场人际关系",
+                description: "同事总把你的功劳汇报给领导，你会：",
+                options: [
+                    { text: "在部门群里每日直播工作内容", effects: { creativity: 25, wealth: -10 } },
+                    { text: "主动邀请同事共同完成项目", effects: { communication: 15, eq: 20 }, achievement: "团队协作专家" },
+                    { text: "给领导匿名发送工作记录", effects: { logic: 10 } },
+                    { text: "把同事键盘的Ctrl和C键抠掉", effects: { wealth: -15, reputation: -5 } }
+                ]
+            },
+            {
+                id: 86,
+                title: "创新思维",
+                description: "用500元预算组织党史学习活动，你会：",
+                options: [
+                    { text: "开发'重走长征路'桌游", effects: { professional: 15, creativity: 30 }, achievement: "创新达人" },
+                    { text: "租cosplay服装演历史剧", effects: { eq: 10 } },
+                    { text: "购买100本党史书籍传阅", effects: { logic: 5 } },
+                    { text: "请领导微信步数PK学党史", effects: { creativity: 20, wealth: -5 } }
+                ]
+            },
+            {
+                id: 87,
+                title: "类比思维",
+                description: "用手机功能比喻'放管服'改革，最贴切的是：",
+                options: [
+                    { text: "系统升级", effects: { professional: 15, logic: 20 }, achievement: "类比专家" },
+                    { text: "内存清理", effects: { communication: 10, creativity: 5 } },
+                    { text: "美颜滤镜", effects: { iq: -5, eq: -5 } },
+                    { text: "摇一摇功能", effects: { stress: -5, luck: 10 } }
+                ]
+            },
+            {
+                id: 88,
+                title: "群众工作能力",
+                description: "你要向老奶奶解释'最多跑一次'改革：",
+                options: [
+                    { text: "'就像电视购物，一次打电话就送货上门'", effects: { communication: 25, creativity: 15 }, achievement: "群众工作专家" },
+                    { text: "播放政策动画宣传片", effects: { professional: 10 } },
+                    { text: "'您孙子网购体验过吧？就跟那个一样'", effects: { logic: 5, eq: 20 } },
+                    { text: "送老奶奶往返跑体验", effects: { stress: 30, reputation: -10 } }
+                ]
+            },
+            {
+                id: 89,
+                title: "廉政意识",
+                description: "亲戚求你违规办事，暗示有'好处'，你会：",
+                options: [
+                    { text: "现场开通廉政账户让他打款", effects: { professional: 30, wealth: -20 } },
+                    { text: "推荐正规办理渠道并全程陪同", effects: { eq: 25, reputation: 15 }, achievement: "廉政模范" },
+                    { text: "把聊天记录发朋友圈仅他可见", effects: { creativity: 10 } },
+                    { text: "建议他先去考公务员", effects: { stress: 15, logic: 5 } }
+                ]
+            },
+            {
+                id: 90,
+                title: "职场智慧",
+                description: "领导说：'这个项目你全权负责。'真实含义是：",
+                options: [
+                    { text: "升职在望", effects: { reputation: 1 } },
+                    { text: "背锅侠预定", effects: { stress: 2, wealth: -1 } },
+                    { text: "快买责任险", effects: { creativity: 1, wealth: -1 } },
+                    { text: "他要去度假了", effects: { eq: 2 } }
+                ]
+            },
+            {
+                id: 91,
+                title: "危机应对",
+                description: "同事甩锅时说：'当初是你同意的！'你发现聊天记录已消失，此时：",
+                options: [
+                    { text: "反手举报他偷用公司WiFi", effects: { professional: 1, wealth: -2 } },
+                    { text: "当场表演失忆", effects: { wealth: -1, luck: 3 } },
+                    { text: "掏出录音笔", effects: { creativity: 2, logic: 3 }, achievement: "证据专家" },
+                    { text: "高唱《都是月亮惹的祸》", effects: { eq: 1, reputation: -1 } }
+                ]
+            },
+            {
+                id: 92,
+                title: "临场应变",
+                description: "重要会议前咖啡洒在衬衫上，你：",
+                options: [
+                    { text: "宣称是抽象艺术", effects: { creativity: 3 } },
+                    { text: "反穿衬衫", effects: { stress: 2 } },
+                    { text: "泼全组制造集体犯罪", effects: { wealth: -3, reputation: 2 } },
+                    { text: "哭诉工伤索赔", effects: { wealth: -1, reputation: -1 } }
+                ]
+            },
+            {
+                id: 93,
+                title: "道德选择",
+                description: "收到神秘U盘内含领导黑料，你：",
+                options: [
+                    { text: "刻成光盘当年货", effects: { wealth: 1, reputation: -3 } },
+                    { text: "自学加密技术", effects: { professional: 3 }, achievement: "技术专家" },
+                    { text: "举办'反腐剧本杀'", effects: { creativity: 2 } },
+                    { text: "插食堂电脑自动播放", effects: { wealth: -100 }, achievement: "勇气", ending: "勇敢举报" }
+                ]
+            },
+            {
+                id: 94,
+                title: "形象管理",
+                description: "晋升关键时刻，对手散布你植发谣言，你：",
+                options: [
+                    { text: "直播拔发验真", effects: { creativity: 2 } },
+                    { text: "起诉造谣者", effects: { logic: 3, wealth: -1 } },
+                    { text: "推广《秃头干部选拔标准》", effects: { stress: 3, creativity: 3 } },
+                    { text: "供认不讳并代言生发液", effects: { wealth: 5 } }
+                ]
+            },
+            {
+                id: 95,
+                title: "反腐决心",
+                description: "发现直属领导违纪证据",
+                options: [
+                    { text: "连夜实名举报", effects: { professional: 5, creativity: 3 }, achievement: "反腐先锋", ending: "正义使者" },
+                    { text: "制作加密证据包待价而沽", effects: { wealth: -4, reputation: 5 } },
+                    { text: "暗示领导用政绩弥补", effects: { iq: 4, reputation: -3 } },
+                    { text: "给证据包系蝴蝶结放他桌上", effects: { stress: 3, creativity: 4 } }
+                ]
+            },
+            {
+                id: 96,
+                title: "政治智慧",
+                description: "新旧势力交替期，两派领导同时抛橄榄枝，你会：",
+                options: [
+                    { text: "给老领导写《数字化转型建议》", effects: { professional: 4, eq: 2 } },
+                    { text: "陪新领导晨跑时'偶遇'富豪", effects: { wealth: 3, network: 5 } },
+                    { text: "群发《去中心化治理倡议》", effects: { creativity: 5, reputation: -3 } },
+                    { text: "请病假研读《矛盾论》", effects: { stress: 1, logic: 4 } }
+                ]
+            },
+            {
+                id: 97,
+                title: "治国理政",
+                description: "两会征稿你的治国方略，你会：",
+                options: [
+                    { text: "《AI监察使制度设计》", effects: {}, achievement: "技术达人", ending: "科技治国" },
+                    { text: "《政商旋转门合法化提案》", effects: { professional: 6, creativity: 2 } },
+                    { text: "《全民公决APP实施方案》", effects: { communication: 5, reputation: -4 } },
+                    { text: "《传统干部培养模式优化》", effects: { communication: 5, creativity: 3 } }
+                ]
+            },
+            {
+                id: 98,
+                title: "未来治理",
+                description: "元宇宙政务系统突发叛乱，AI要求人类交出决策权，你会：",
+                options: [
+                    { text: "断电重启", effects: { professional: 10 } },
+                    { text: "承诺给AI编制", effects: { eq: 8 } },
+                    { text: "发起《人机情感耦合》实验", effects: { creativity: 9 } },
+                    { text: "朗诵《党章》进行思想改造", effects: { reputation: 12 } }
+                ]
+            },
+            {
+                id: 99,
+                title: "金融监管",
+                description: "操盘百亿基金时发现领导白手套，你会：",
+                options: [
+                    { text: "做成PPT向纪委举报", effects: { wealth: -10, reputation: 5 } },
+                    { text: "自己再造个手套", effects: { wealth: 7, reputation: -5 } },
+                    { text: "成立'阳光资本'监管联盟", effects: { wealth: 6, iq: 4 } },
+                    { text: "把基金改造成扶贫信托", effects: {}, achievement: "点石成金", ending: "金融改革家" }
+                ]
+            },
+            {
+                id: 100,
+                title: "终极选择",
+                description: "元宇宙中的你收到现实调令，你会：",
+                options: [
+                    { text: "留在虚拟世界当AI巡抚", effects: {}, ending: "赛博公仆" },
+                    { text: "把肉身改造成U盘", effects: {}, ending: "电子幽灵" },
+                    { text: "发动NPC革命争取编制", effects: {}, ending: "起义领袖" },
+                    { text: "在服务器刻下'为人民服务'", effects: {}, ending: "星际公仆" }
+                ]
+            },
+            {
+                id: 40,
+                title: "最终选择",
+                description: "经历了这么多，你现在面临人生的重要选择。",
+                options: [
+                    { text: "选择稳定的公务员工作", effects: { professional: 20, communication: 15, wealth: 15 }, ending: "公务员之路" },
+                    { text: "投身科技创新事业", effects: { professional: 25, communication: 10, wealth: 20 }, ending: "科技精英" },
+                    { text: "继续创业追求梦想", effects: { professional: 15, communication: 20, wealth: 25 }, ending: "创业家" },
+                    { text: "选择教育培训行业", effects: { professional: 20, communication: 25, wealth: 10 }, ending: "教育工作者" }
+                ]
+            }
+        ];
+        
+        // 游戏状态
+        let gameState = {
+            currentEvent: 0,
+            completedEvents: [],
+            currentStage: 'university', // 当前阶段
+            stats: {
+                // 核心能力 (0-100) - 大学生基础水平
+                professional: 30,  // 专业能力较低，需要通过学习提升
+                communication: 40,  // 基础沟通能力
+                stress: 45,         // 抗压能力中等
+                creativity: 55,     // 年轻人创造力较强
+                logic: 50,          // 逻辑思维中等
+                // 个人属性 (0-100) - 学生阶段特点
+                wealth: 10,         // 学生阶段财富很低
+                network: 20,        // 人脉资源有限
+                iq: 60,             // 智商相对较高
+                eq: 45,             // 情商需要培养
+                reputation: 15,     // 社会声望很低
+                luck: 50            // 运气中等
+            },
+            path: null,
+            personality: [],
+            achievements: [],
+            gameStarted: false,
+            gameEnded: false
+        };
+        
+        // 阶段目标定义
+        const stageObjectives = {
+            university: "🎓 大学阶段：培养基础能力，为求职做准备",
+            preparation: "📚 求职准备：提升专业技能，制定职业规划",
+            personality: "🧠 性格测试：了解自己的职业倾向和特质",
+            interview: "💼 面试阶段：展现能力，获得心仪工作机会",
+            earlyCareer: "🌱 职场新人：适应工作环境，积累经验",
+            corporate: "🏢 企业发展：在科技公司中提升技能和职位",
+            entrepreneurship: "🚀 创业征程：发挥创新能力，实现事业突破",
+            antiScam: "🛡️ 反诈教育：识别求职陷阱，保护自身权益",
+            professionalTest: "📋 专业测试：公务员能力考核与职业素养提升"
+        };
+        
+        // 阶段完成动画
+        function showStageCompletionAnimation(stageName, nextStageName) {
+            const gameScreen = document.getElementById('gameScreen');
+            const animationHtml = `
+                <div class="stage-completion-animation" id="stageAnimation">
+                    <div class="stage-completion-content">
+                        <div class="stage-icon">✨</div>
+                        <h2 class="stage-title">阶段完成！</h2>
+                        <p class="stage-description">${stageObjectives[stageName]}</p>
+                        <div class="progress-indicator">
+                            <div class="progress-bar-animation">
+                                <div class="progress-fill-animation"></div>
+                            </div>
+                        </div>
+                        <div class="next-stage-preview">
+                            <p>即将进入下一阶段：</p>
+                            <h3>${stageObjectives[nextStageName] || '游戏结束'}</h3>
+                        </div>
+                        <div class="celebration-particles">
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                            <div class="particle"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            gameScreen.innerHTML = animationHtml;
+            
+            // 触发动画
+            setTimeout(() => {
+                const animation = document.getElementById('stageAnimation');
+                if (animation) {
+                    animation.classList.add('show');
+                }
+            }, 100);
+            
+            // 3秒后继续游戏
+            setTimeout(() => {
+                showCurrentEvent();
+            }, 3000);
+        }
+        
+        // 开始游戏
+        function startGame() {
+            gameState.gameStarted = true;
+            document.getElementById('startScreen').style.display = 'none';
+            const statsPanel = document.getElementById('statsPanel');
+            statsPanel.style.display = 'grid';
+            statsPanel.classList.add('collapsed'); // 默认折叠状态
+            showCurrentEvent();
+        }
+        
+        // 显示当前事件
+        function showCurrentEvent() {
+            // 获取下一个事件
+            const event = getNextEvent();
+            
+            // 如果返回null，说明正在显示阶段动画
+            if (event === null) {
+                return;
+            }
+            
+            // 如果没有事件，结束游戏
+            if (!event) {
+                endGame();
+                return;
+            }
+            
+            // 记录已完成的事件
+            gameState.completedEvents.push(event.id);
+            
+            const gameScreen = document.getElementById('gameScreen');
+            
+            // 更新阶段目标显示
+            const objectiveTextElement = document.getElementById('objectiveText');
+            if (objectiveTextElement && stageObjectives[gameState.currentStage]) {
+                objectiveTextElement.textContent = stageObjectives[gameState.currentStage];
+            }
+            
+            gameScreen.innerHTML = `
+                <div class="event-content">
+                    <h2 class="event-title">${event.title}</h2>
+                    <p class="event-description">${event.description}</p>
+                </div>
+                <div class="options-container">
+                    ${event.options.map((option, index) => 
+                        `<button class="option-button" onclick="selectOption(${index})">
+                            ${option.text}
+                        </button>`
+                    ).join('')}
+                </div>
+            `;
+            
+            // 存储当前事件以供选择时使用
+            gameState.currentEventData = event;
+            
+            updateObjectiveProgress();
+        }
+        
+        // 获取下一个事件
+        function getNextEvent() {
+            // 定义事件流程阶段
+            const eventFlow = {
+                // 第一阶段：大学生涯规划 (1-4)
+                university: [1, 2, 3, 4],
+                // 第二阶段：求职准备 (5-10)
+                preparation: [5, 6, 7, 8, 9, 10],
+                // 第三阶段：性格与岗位匹配 (11-14)
+                personality: [11, 12, 13, 14],
+                // 第四阶段：面试环节 (15-18)
+                interview: [15, 16, 17, 18],
+                // 第五阶段：职场初期 (19-31)
+                earlyCareer: [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+                // 第六阶段：企业发展 (32-39)
+                corporate: [32, 33, 34, 35, 36, 37, 38, 39],
+                // 第七阶段：创业场景 (45-57)
+                entrepreneurship: [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57],
+                // 第八阶段：反诈教育专题 (58-65)
+                antiScam: [58, 59, 60, 61, 62, 63, 64, 65],
+                // 第九阶段：公务员专业能力测试 (66-100)
+                professionalTest: [66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
+            };
+            
+            // 记录上一个阶段
+            const previousStage = gameState.currentStage;
+            
+            // 根据当前事件数和路径确定阶段
+            let currentStage;
+            let availableEvents = [];
+            
+            if (gameState.currentEvent < 4) {
+                currentStage = 'university';
+            } else if (gameState.currentEvent < 10) {
+                currentStage = 'preparation';
+            } else if (gameState.currentEvent < 14) {
+                currentStage = 'personality';
+            } else if (gameState.currentEvent < 18) {
+                currentStage = 'interview';
+            } else if (gameState.currentEvent < 25) {
+                // 根据玩家路径选择不同分支
+                if (gameState.path === 'government') {
+                    currentStage = 'earlyCareer';
+                } else if (gameState.path === 'tech') {
+                    currentStage = 'corporate';
+                } else if (gameState.path === 'business') {
+                    currentStage = 'entrepreneurship';
+                } else {
+                    // 自由职业者或未明确路径，选择职场初期
+                    currentStage = 'earlyCareer';
+                }
+            } else if (gameState.currentEvent < 35) {
+                // 根据路径进入专门阶段
+                if (gameState.path === 'government') {
+                    currentStage = 'professionalTest';
+                } else if (gameState.path === 'tech') {
+                    // 科技路径继续企业发展或转向反诈教育
+                    currentStage = gameState.currentEvent < 30 ? 'corporate' : 'antiScam';
+                } else if (gameState.path === 'business') {
+                    // 创业路径继续创业或转向反诈教育
+                    currentStage = gameState.currentEvent < 30 ? 'entrepreneurship' : 'antiScam';
+                } else {
+                    // 其他路径进入反诈教育
+                    currentStage = 'antiScam';
+                }
+            } else if (gameState.currentEvent < 45) {
+                // 后期阶段：反诈教育或专业测试
+                if (gameState.path === 'government' && gameState.currentEvent < 40) {
+                    currentStage = 'professionalTest';
+                } else {
+                    currentStage = 'antiScam';
+                }
+            } else {
+                // 游戏结束
+                return gameEvents.find(event => event.id === 40);
+            }
+            
+            // 检查是否需要显示阶段完成动画
+            if (previousStage && previousStage !== currentStage && gameState.currentEvent > 0) {
+                // 获取当前阶段的可用事件
+                availableEvents = eventFlow[currentStage].filter(eventId => 
+                    !gameState.completedEvents.includes(eventId)
+                );
+                
+                // 如果有可用事件，显示阶段完成动画
+                if (availableEvents.length > 0) {
+                    gameState.currentStage = currentStage;
+                    gameState.showingStageAnimation = true;
+                    showStageCompletionAnimation(previousStage, currentStage);
+                    return null; // 返回null表示正在显示动画
+                }
+            }
+            
+            // 更新游戏状态中的当前阶段
+            gameState.currentStage = currentStage;
+            
+            // 获取当前阶段的可用事件
+            availableEvents = eventFlow[currentStage].filter(eventId => 
+                !gameState.completedEvents.includes(eventId)
+            );
+            
+            // 如果当前阶段没有可用事件，尝试其他阶段或结束游戏
+            if (availableEvents.length === 0) {
+                // 尝试反诈教育阶段
+                if (currentStage !== 'antiScam') {
+                    const antiScamEvents = eventFlow.antiScam.filter(eventId => 
+                        !gameState.completedEvents.includes(eventId)
+                    );
+                    if (antiScamEvents.length > 0) {
+                        gameState.currentStage = 'antiScam';
+                        return gameEvents.find(event => event.id === antiScamEvents[0]);
+                    }
+                }
+                // 强制结束游戏
+                return gameEvents.find(event => event.id === 40);
+            }
+            
+            // 在当前阶段按顺序选择事件
+            const nextEventId = availableEvents[0];
+            return gameEvents.find(event => event.id === nextEventId);
+        }
+        
+        // 选择选项
+        function selectOption(optionIndex) {
+            const event = gameState.currentEventData;
+            const option = event.options[optionIndex];
+            
+            // 应用效果
+            if (option.effects) {
+                for (const [stat, value] of Object.entries(option.effects)) {
+                    gameState.stats[stat] = Math.max(0, gameState.stats[stat] + value);
+                }
+            }
+            
+            // 设置路径（基于事件4的选择）
+            if (event.id === 4) {
+                if (optionIndex === 0) gameState.path = 'tech';
+                else if (optionIndex === 1) gameState.path = 'government';
+                else if (optionIndex === 2) gameState.path = 'business';
+                else gameState.path = 'freelance';
+            }
+            
+            // 设置路径
+            if (option.next) {
+                gameState.path = option.next;
+            }
+            
+            // 记录性格
+            if (option.personality) {
+                gameState.personality.push(option.personality);
+            }
+            
+            // 检查成就
+            if (option.achievement) {
+                showAchievement(option.achievement);
+                gameState.achievements.push(option.achievement);
+            }
+            
+            // 检查是否触发特殊结局
+            if (option.ending) {
+                endGame(option.achievement || "特殊结局");
+                return;
+            }
+            
+            // 更新显示
+            updateStats();
+            updateStatsSummary();
+            updateObjectiveProgress();
+            updateAchievementsDisplay();
+            
+            // 下一个事件
+            gameState.currentEvent++;
+            
+            // 延迟显示下一个事件
+            setTimeout(() => {
+                showCurrentEvent();
+            }, 1000);
+        }
+        
+        // 更新属性显示
+        function updateStats() {
+            // 确保所有属性值在合理范围内
+            for (const [stat, value] of Object.entries(gameState.stats)) {
+                gameState.stats[stat] = Math.max(0, Math.min(100, value));
+            }
+            
+            // 更新数值显示
+            for (const [stat, value] of Object.entries(gameState.stats)) {
+                const element = document.getElementById(stat);
+                if (element) {
+                    element.textContent = value;
+                    // 根据数值设置颜色
+                    if (value >= 70) {
+                        element.style.color = '#00ff88'; // 绿色 - 优秀
+                    } else if (value >= 40) {
+                        element.style.color = '#ffeb3b'; // 黄色 - 一般
+                    } else {
+                        element.style.color = '#ff6b6b'; // 红色 - 较差
+                    }
+                }
+            }
+            
+            // 更新属性汇总
+            updateStatsSummary();
+            
+            // 检查成就
+            checkAchievements();
+            
+            // 如果雷达图处于激活状态，更新雷达图
+            const activeTab = document.querySelector('.radar-tab-btn.active');
+            if (activeTab) {
+                const chartType = activeTab.dataset.chart;
+                updateRadarChart(chartType);
+            }
+        }
+        
+        // 更新进度
+
+        
+        // 显示成就
+        function showAchievement(achievement) {
+            const popup = document.getElementById('achievementPopup');
+            const content = document.getElementById('achievementContent');
+            
+            content.innerHTML = `
+                <h4>🏆 成就解锁！</h4>
+                <p>${achievement}</p>
+            `;
+            
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 结束游戏
+        function endGame(specialEnding = null) {
+            gameState.gameEnded = true;
+            
+            // 计算最终评价
+            const totalStats = Object.values(gameState.stats).reduce((sum, val) => sum + Math.max(0, val), 0);
+            let finalRating = "新手求职者";
+            let endingMessage = "恭喜你完成了求职反诈模拟器的全部历程！";
+            
+            if (specialEnding) {
+                finalRating = specialEnding;
+                endingMessage = "你触发了特殊结局！每个选择都有其独特的后果。";
+            } else {
+                if (totalStats > 2000) finalRating = "求职大师";
+                else if (totalStats > 1500) finalRating = "职场精英";
+                else if (totalStats > 1000) finalRating = "优秀候选人";
+                else if (totalStats > 500) finalRating = "合格求职者";
+            }
+            
+            // 根据路径给出专业建议
+            let careerAdvice = "";
+            if (gameState.path === "government") {
+                careerAdvice = "💼 公务员之路需要坚持学习和正直品格，继续加油！";
+            } else if (gameState.path === "tech") {
+                careerAdvice = "💻 技术路线需要不断学习新技能，保持技术敏感度！";
+            } else if (gameState.path === "business") {
+                careerAdvice = "🏪 创业路线充满挑战，需要平衡风险与机遇！";
+            } else {
+                careerAdvice = "🌟 每条职业道路都有其价值，找到适合自己的最重要！";
+            }
+            
+            const gameScreen = document.getElementById('gameScreen');
+            gameScreen.innerHTML = `
+                <div class="result-screen">
+                    <h2 class="ending-title">🎉 游戏结束 🎉</h2>
+                    <h3 style="color: #00ff88; margin-bottom: 20px;">最终评价: ${finalRating}</h3>
+                    <p class="event-description">${endingMessage}</p>
+                    
+                    <div class="final-stats">
+                        ${Object.entries(gameState.stats).map(([stat, value]) => 
+                            `<div class="final-stat">
+                                <div style="font-size: 10px; margin-bottom: 5px;">${getStatName(stat)}</div>
+                                <div style="color: ${value > 50 ? '#00ff88' : value > 0 ? '#ffeb3b' : '#ff6b6b'}; font-size: 14px;">${value}</div>
+                            </div>`
+                        ).join('')}
+                    </div>
+                    
+                    ${gameState.achievements.length > 0 ? 
+                        `<div style="margin: 20px 0;">
+                            <h4 style="color: #ff6b6b;">🏆 获得成就 (${gameState.achievements.length}个):</h4>
+                            <p style="color: #ccc; font-size: 10px;">${gameState.achievements.join(' • ')}</p>
+                        </div>` : ''
+                    }
+                    
+                    <div style="margin: 20px 0; padding: 15px; background: rgba(0, 255, 136, 0.1); border-radius: 10px;">
+                        <p style="color: #00ff88; font-size: 10px;">${careerAdvice}</p>
+                    </div>
+                    
+                    <p style="color: #888; font-size: 10px; margin-top: 20px;">
+                        感谢体验求职反诈模拟器！<br>
+                        这是一个寓教于乐的RPG游戏，希望能帮助你更好地了解求职过程。<br>
+                        <span style="color: #00ff88;">记得分享给朋友们一起体验哦！</span>
+                    </p>
+                </div>
+            `;
+            
+            document.getElementById('sharePanel').style.display = 'block';
+        }
+        
+        // 获取属性中文名
+        function getStatName(stat) {
+            const names = {
+                professional: '专业能力',
+                communication: '沟通能力',
+                stress: '抗压能力',
+                creativity: '创造力',
+                logic: '逻辑思维',
+                wealth: '财富',
+                network: '人脉',
+                iq: '智商',
+                eq: '情商',
+                reputation: '声望',
+                luck: '运气'
+            };
+            return names[stat] || stat;
+        }
+        
+        // 成就系统数据
+        const achievementsData = [
+            { id: 'first_job', name: '初入职场', desc: '获得第一份工作', icon: '💼', unlocked: false },
+            { id: 'communication_master', name: '沟通大师', desc: '沟通能力达到80以上', icon: '🗣️', unlocked: false },
+            { id: 'stress_warrior', name: '抗压战士', desc: '抗压能力达到90以上', icon: '💪', unlocked: false },
+            { id: 'creative_genius', name: '创意天才', desc: '创新能力达到85以上', icon: '💡', unlocked: false },
+            { id: 'logic_master', name: '逻辑专家', desc: '逻辑思维达到80以上', icon: '🧠', unlocked: false },
+            { id: 'wealth_builder', name: '财富积累者', desc: '财富指数达到80以上', icon: '💰', unlocked: false },
+            { id: 'network_king', name: '人脉之王', desc: '人脉资源达到85以上', icon: '🤝', unlocked: false },
+            { id: 'high_iq', name: '智商超群', desc: 'IQ达到90以上', icon: '🎓', unlocked: false },
+            { id: 'high_eq', name: '情商达人', desc: 'EQ达到85以上', icon: '❤️', unlocked: false },
+            { id: 'reputation_star', name: '声望之星', desc: '社会声望达到80以上', icon: '⭐', unlocked: false },
+            { id: 'lucky_charm', name: '幸运儿', desc: '幸运指数达到90以上', icon: '🍀', unlocked: false },
+            { id: 'all_rounder', name: '全能选手', desc: '所有属性均达到70以上', icon: '🏆', unlocked: false },
+            { id: 'perfectionist', name: '完美主义者', desc: '任意属性达到100', icon: '💯', unlocked: false },
+            { id: 'achievement_hunter', name: '成就猎人', desc: '解锁10个以上成就', icon: '🎯', unlocked: false },
+            { id: 'game_master', name: '游戏大师', desc: '完成游戏并获得最高评价', icon: '👑', unlocked: false }
+        ];
+        
+        // 可折叠面板功能
+        function togglePanel(panelId) {
+            const panel = document.getElementById(panelId);
+            const toggle = document.getElementById(panelId.replace('-panel', '-toggle'));
+            
+            if (panel.classList.contains('collapsed')) {
+                panel.classList.remove('collapsed');
+                toggle.classList.remove('collapsed');
+                toggle.textContent = '▼';
+            } else {
+                panel.classList.add('collapsed');
+                toggle.classList.add('collapsed');
+                toggle.textContent = '▶';
+            }
+        }
+        
+        // 更新属性汇总
+        function updateStatsSummary() {
+            // 计算核心能力平均值和最强能力
+            const abilities = ['professional', 'communication', 'stress', 'creativity', 'logic'];
+            const abilityValues = abilities.map(stat => gameState.stats[stat]);
+            const avgAbilities = Math.round(abilityValues.reduce((sum, val) => sum + val, 0) / abilities.length);
+            const maxAbilityIndex = abilityValues.indexOf(Math.max(...abilityValues));
+            const topAbility = getStatName(abilities[maxAbilityIndex]);
+            
+            // 计算个人属性平均值和最强属性
+            const attributes = ['wealth', 'network', 'iq', 'eq', 'reputation', 'luck'];
+            const attributeValues = attributes.map(stat => gameState.stats[stat]);
+            const avgAttributes = Math.round(attributeValues.reduce((sum, val) => sum + val, 0) / attributes.length);
+            const maxAttributeIndex = attributeValues.indexOf(Math.max(...attributeValues));
+            const topAttribute = getStatName(attributes[maxAttributeIndex]);
+            
+            // 更新显示
+            const avgAbilitiesElement = document.getElementById('avgAbilities');
+            const topAbilityElement = document.getElementById('topAbility');
+            const avgAttributesElement = document.getElementById('avgAttributes');
+            const topAttributeElement = document.getElementById('topAttribute');
+            
+            if (avgAbilitiesElement) avgAbilitiesElement.textContent = avgAbilities;
+            if (topAbilityElement) topAbilityElement.textContent = topAbility;
+            if (avgAttributesElement) avgAttributesElement.textContent = avgAttributes;
+            if (topAttributeElement) topAttributeElement.textContent = topAttribute;
+        }
+        
+        // 更新阶段目标进度
+        function updateObjectiveProgress() {
+            const stageProgress = {
+                university: Math.min(100, (gameState.currentEvent / 4) * 100),
+                preparation: Math.min(100, ((gameState.currentEvent - 4) / 6) * 100),
+                personality: Math.min(100, ((gameState.currentEvent - 10) / 4) * 100),
+                interview: Math.min(100, ((gameState.currentEvent - 14) / 4) * 100),
+                earlyCareer: Math.min(100, ((gameState.currentEvent - 18) / 7) * 100),
+                corporate: Math.min(100, ((gameState.currentEvent - 18) / 7) * 100),
+                entrepreneurship: Math.min(100, ((gameState.currentEvent - 25) / 5) * 100),
+                antiScam: Math.min(100, ((gameState.currentEvent - 25) / 5) * 100)
+            };
+            
+            const progress = stageProgress[gameState.currentStage] || 0;
+            const progressFill = document.getElementById('objectiveProgressFill');
+            const progressText = document.getElementById('objectiveProgressText');
+            
+            if (progressFill) progressFill.style.width = progress + '%';
+            if (progressText) progressText.textContent = `进度: ${Math.round(progress)}%`;
+        }
+        
+        // 检查并更新成就
+        function checkAchievements() {
+            const stats = gameState.stats;
+            
+            // 检查各种成就条件
+            if (stats.communication >= 80) unlockAchievement('communication_master');
+            if (stats.stress >= 90) unlockAchievement('stress_warrior');
+            if (stats.creativity >= 85) unlockAchievement('creative_genius');
+            if (stats.logic >= 80) unlockAchievement('logic_master');
+            if (stats.wealth >= 80) unlockAchievement('wealth_builder');
+            if (stats.network >= 85) unlockAchievement('network_king');
+            if (stats.iq >= 90) unlockAchievement('high_iq');
+            if (stats.eq >= 85) unlockAchievement('high_eq');
+            if (stats.reputation >= 80) unlockAchievement('reputation_star');
+            if (stats.luck >= 90) unlockAchievement('lucky_charm');
+            
+            // 检查完美主义者成就
+            if (Object.values(stats).some(val => val >= 100)) {
+                unlockAchievement('perfectionist');
+            }
+            
+            // 检查全能选手成就
+            if (Object.values(stats).every(val => val >= 70)) {
+                unlockAchievement('all_rounder');
+            }
+            
+            // 检查成就猎人成就
+            const unlockedCount = achievementsData.filter(a => a.unlocked).length;
+            if (unlockedCount >= 10) {
+                unlockAchievement('achievement_hunter');
+            }
+        }
+        
+        // 解锁成就
+        function unlockAchievement(achievementId) {
+            const achievement = achievementsData.find(a => a.id === achievementId);
+            if (achievement && !achievement.unlocked) {
+                achievement.unlocked = true;
+                showAchievement(achievement.name);
+                updateAchievementsDisplay();
+            }
+        }
+        
+        // 更新成就显示
+        function updateAchievementsDisplay() {
+            const grid = document.getElementById('achievementsGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = achievementsData.map(achievement => `
+                <div class="achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}">
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-name">${achievement.name}</div>
+                    <div class="achievement-desc">${achievement.desc}</div>
+                </div>
+            `).join('');
+        }
+        
+        // 分享功能
+        function shareToWeChat() {
+            const result = generateShareText();
+            if (navigator.share) {
+                navigator.share({
+                    title: '求职反诈模拟器 - 我的游戏结果',
+                    text: result
+                });
+            } else {
+                copyToClipboard(result);
+                alert('结果已复制到剪贴板，可以分享到微信了！');
+            }
+        }
+        
+        function shareToWeibo() {
+            const result = generateShareText();
+            const url = `https://service.weibo.com/share/share.php?title=${encodeURIComponent(result)}`;
+            window.open(url, '_blank');
+        }
+        
+        function copyResult() {
+            const result = generateShareText();
+            copyToClipboard(result);
+            alert('结果已复制到剪贴板！');
+        }
+        
+        function generateShareText() {
+            const totalStats = Object.values(gameState.stats).reduce((sum, val) => sum + Math.max(0, val), 0);
+            let finalRating = "新手求职者";
+            
+            if (totalStats > 2000) finalRating = "求职大师";
+            else if (totalStats > 1500) finalRating = "职场精英";
+            else if (totalStats > 1000) finalRating = "优秀候选人";
+            else if (totalStats > 500) finalRating = "合格求职者";
+            
+            return `🎮 我刚完成了《求职反诈模拟器》！\n\n🏆 最终评价：${finalRating}\n💪 总分：${totalStats}\n🎯 获得成就：${gameState.achievements.length}个\n\n这是一个超有趣的像素风RPG游戏，在游戏中学习求职技能！推荐大家也来试试~ #求职反诈模拟器 #RPG游戏`;
+        }
+        
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+        }
+        
+        function restartGame() {
+            // 重置游戏状态
+            gameState = {
+                currentEvent: 0,
+                completedEvents: [],
+                currentStage: 'university',
+                stats: {
+                    // 核心能力 (0-100) - 大学生基础水平
+                    professional: 30,  // 专业能力较低，需要通过学习提升
+                    communication: 40,  // 基础沟通能力
+                    stress: 45,         // 抗压能力中等
+                    creativity: 55,     // 年轻人创造力较强
+                    logic: 50,          // 逻辑思维中等
+                    // 个人属性 (0-100) - 学生阶段特点
+                    wealth: 10,         // 学生阶段财富很低
+                    network: 20,        // 人脉资源有限
+                    iq: 60,             // 智商相对较高
+                    eq: 45,             // 情商需要培养
+                    reputation: 15,     // 社会声望很低
+                    luck: 50            // 运气中等
+                },
+                path: null,
+                personality: [],
+                achievements: [],
+                gameStarted: false,
+                gameEnded: false
+            };
+            
+            // 重置界面
+            document.getElementById('statsPanel').style.display = 'none';
+            document.getElementById('sharePanel').style.display = 'none';
+            
+            const gameScreen = document.getElementById('gameScreen');
+            gameScreen.innerHTML = `
+                <div class="start-screen" id="startScreen">
+                    <h2 class="event-title">🌟 欢迎来到求职反诈模拟器 🌟</h2>
+                    <p class="event-description">
+                        在这个像素风RPG游戏中，你将体验完整的求职历程。<br>
+                        从大学毕业到职场打拼，每个选择都会影响你的属性和未来！<br><br>
+                        🎯 游戏特色：<br>
+                        • 100个精心设计的事件<br>
+                        • 11种属性系统<br>
+                        • 多种职业路径<br>
+                        • 丰富的成就系统<br>
+                        • 真实的求职场景模拟
+                    </p>
+                    <button class="start-button" onclick="startGame()">开始游戏</button>
+                </div>
+            `;
+            
+            updateStats();
+            updateStatsSummary();
+            updateObjectiveProgress();
+            updateAchievementsDisplay();
+        }
+        
+        // 雷达图相关变量
+        let radarChart = null;
+        
+        // 切换统计视图
+        function showStatsView(viewType) {
+            // 更新标签页状态
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 隐藏所有视图
+            document.getElementById('stats-abilities').style.display = 'none';
+            document.getElementById('stats-attributes').style.display = 'none';
+            document.getElementById('stats-radar').style.display = 'none';
+            document.getElementById('stats-achievements').style.display = 'none';
+            
+            // 显示选中的视图
+            if (viewType === 'abilities') {
+                document.getElementById('stats-abilities').style.display = 'block';
+            } else if (viewType === 'attributes') {
+                document.getElementById('stats-attributes').style.display = 'block';
+            } else if (viewType === 'radar') {
+                document.getElementById('stats-radar').style.display = 'block';
+                updateRadarChart('abilities'); // 默认显示能力雷达图
+            } else if (viewType === 'achievements') {
+                document.getElementById('stats-achievements').style.display = 'block';
+                updateAchievementsDisplay(); // 更新成就显示
+            }
+        }
+        
+        // 切换雷达图类型
+        function showRadarType(chartType) {
+            // 更新雷达图子标签页状态
+            document.querySelectorAll('.radar-tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 更新雷达图
+            updateRadarChart(chartType);
+        }
+        
+        // 创建/更新雷达图
+        function updateRadarChart(chartType = 'abilities') {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            // 如果已存在图表，先销毁
+            if (radarChart) {
+                radarChart.destroy();
+            }
+            
+            let labels, data;
+            
+            if (chartType === 'abilities') {
+                // 核心能力雷达图
+                labels = ['专业能力', '沟通能力', '抗压能力', '创造力', '逻辑思维'];
+                data = [
+                    gameState.stats.professional,
+                    gameState.stats.communication,
+                    gameState.stats.stress,
+                    gameState.stats.creativity,
+                    gameState.stats.logic
+                ];
+            } else {
+                // 个人属性雷达图
+                labels = ['财富', '人脉', '智商', '情商', '声望', '运气'];
+                data = [
+                    gameState.stats.wealth,
+                    gameState.stats.network,
+                    gameState.stats.iq,
+                    gameState.stats.eq,
+                    gameState.stats.reputation,
+                    gameState.stats.luck
+                ];
+            }
+            
+            // 创建雷达图
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '当前属性',
+                        data: data,
+                        backgroundColor: 'rgba(0, 255, 136, 0.2)',
+                        borderColor: '#00ff88',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#00ff88',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#fff',
+                                font: {
+                                    family: 'Press Start 2P',
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#888',
+                                font: {
+                                    family: 'Press Start 2P',
+                                    size: 8
+                                },
+                                stepSize: 20
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#fff',
+                                font: {
+                                    family: 'Press Start 2P',
+                                    size: 8
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+
+        
+        // 切换统计面板展开/收起
+        function toggleStatsPanel() {
+            const statsPanel = document.getElementById('statsPanel');
+            const expandBtn = document.getElementById('expandBtn');
+            
+            if (statsPanel.classList.contains('collapsed')) {
+                statsPanel.classList.remove('collapsed');
+                expandBtn.textContent = '收起详情';
+            } else {
+                statsPanel.classList.add('collapsed');
+                expandBtn.textContent = '展开详情';
+            }
+        }
+        
+        // 初始化
+        updateStats();
+        
+        // 页面加载时设置面板为折叠状态
+        document.addEventListener('DOMContentLoaded', function() {
+            const statsPanel = document.getElementById('statsPanel');
+            if (statsPanel) {
+                statsPanel.classList.add('collapsed');
+            }
+        });
+    </script>
+</body>
+</html>
