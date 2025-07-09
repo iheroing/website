@@ -1057,7 +1057,7 @@
             <div class="stats-tabs">
                 <button class="tab-btn active" onclick="showStatsView('abilities')">核心能力</button>
                 <button class="tab-btn" onclick="showStatsView('attributes')">个人属性</button>
-                <button class="tab-btn" onclick="showStatsView('radar')">雷达图</button>
+                <button class="tab-btn" onclick="showStatsView('radar')">能力属性</button>
                 <button class="tab-btn" onclick="showStatsView('achievements')">成就收集</button>
             </div>
             
@@ -1161,10 +1161,6 @@
             
             <!-- 雷达图视图 -->
             <div id="stats-radar" class="stats-view" style="display: none;">
-                <div class="radar-tabs">
-                    <button class="radar-tab-btn active" onclick="showRadarType('abilities')">能力雷达</button>
-                    <button class="radar-tab-btn" onclick="showRadarType('attributes')">属性雷达</button>
-                </div>
                 <canvas id="radarChart" width="400" height="400"></canvas>
             </div>
             
@@ -1219,7 +1215,7 @@
                     { text: "A. 疯狂投实习", effects: { professional: 2, stress: -1 } },
                     { text: "B. 考专业证书", effects: { professional: 3, wealth: -20 } },
                     { text: "C. 社交活动", effects: { communication: 2, network: 1 } },
-                    { text: "D. 兼职攒钱", effects: { stress: 1, wealth: 300 } }
+                    { text: "D. 兼职攒钱", effects: { stress: 1, wealth: 25 } }
                 ]
             },
             {
@@ -1249,7 +1245,7 @@
                 options: [
                     { text: "A. 互联网大厂", effects: { professional: 2 }, next: "tech" },
                     { text: "B. 从政走仕途", effects: { wealth: -20, network: 10 }, next: "government" },
-                    { text: "C. 从商发家致富", effects: { wealth: 300 }, next: "business" },
+                    { text: "C. 从商发家致富", effects: { wealth: 25 }, next: "business" },
                     { text: "D. 自由职业", effects: { communication: 2 }, next: "freelance" }
                 ]
             },
@@ -1377,9 +1373,9 @@
                 description: "经过考察你准备开一家《烤了个寂寞淀粉肠店》，对于创业选址，你会？",
                 condition: "business",
                 options: [
-                    { text: "A. 高端商场美食区（租金高但客流优质）", effects: { wealth: -500, reputation: 15 } },
-                    { text: "B. 大学城小吃街（学生客群稳定）", effects: { professional: 2, wealth: -200, network: 10 } },
-                    { text: "C. 社区菜市场门口（成本最低）", effects: { wealth: -100, reputation: 5 } },
+                    { text: "A. 高端商场美食区（租金高但客流优质）", effects: { wealth: -30, reputation: 15 } },
+                    { text: "B. 大学城小吃街（学生客群稳定）", effects: { professional: 2, wealth: -15, network: 10 } },
+                    { text: "C. 社区菜市场门口（成本最低）", effects: { wealth: -10, reputation: 5 } },
                     { text: "D. 地铁口流动摊位（城管风险）", effects: { wealth: 0, reputation: -5 } }
                 ]
             },
@@ -1614,7 +1610,7 @@
                 title: "网络诈骗升级",
                 description: "骗子冒充公安局，声称你涉嫌洗钱，要求转账自证清白。",
                 options: [
-                    { text: "害怕转账配合调查", effects: { professional: -40, communication: -20, wealth: -60 }, ending: "电信诈骗受害者" },
+                    { text: "害怕转账配合调查", effects: { professional: -40, communication: -20, wealth: -50 }, ending: "电信诈骗受害者" },
                     { text: "识破骗局，挂断电话", effects: { professional: 20, communication: 15, wealth: 0 }, achievement: "反诈高手" },
                     { text: "配合警方，协助破案", effects: { professional: 30, communication: 25, wealth: 0 }, achievement: "反诈英雄" }
                 ]
@@ -1635,7 +1631,7 @@
                 title: "虚假招聘信息",
                 description: "你在网上看到一个薪资特别高的招聘信息，要求很低，但需要先交培训费。",
                 options: [
-                    { text: "立即交费报名", effects: { wealth: -500, iq: -10 } },
+                    { text: "立即交费报名", effects: { wealth: -25, iq: -10 } },
                     { text: "仔细核实公司信息", effects: { iq: 15, logic: 10 }, achievement: "反诈达人" },
                     { text: "询问身边朋友意见", effects: { communication: 10, network: 5 } }
                 ]
@@ -1645,7 +1641,7 @@
                 title: "网络兼职陷阱",
                 description: "有人联系你做网络刷单兼职，声称轻松赚钱，只需要先垫付资金。",
                 options: [
-                    { text: "相信并开始刷单", effects: { wealth: -800, iq: -15 } },
+                    { text: "相信并开始刷单", effects: { wealth: -35, iq: -15 } },
                     { text: "拒绝并举报", effects: { iq: 20, reputation: 15 }, achievement: "网络卫士" },
                     { text: "假装配合收集证据", effects: { logic: 15, stress: 10 } }
                 ]
@@ -1655,7 +1651,7 @@
                 title: "培训贷陷阱",
                 description: "培训机构承诺包就业，但需要先贷款交学费，毕业后工资足够还贷。",
                 options: [
-                    { text: "签署贷款协议", effects: { wealth: -1000, stress: 20 } },
+                    { text: "签署贷款协议", effects: { wealth: -40, stress: 20 } },
                     { text: "要求查看就业合同", effects: { logic: 15, professional: 10 } },
                     { text: "咨询法律专业人士", effects: { iq: 20, network: 10 }, achievement: "理性消费者" }
                 ]
@@ -1665,7 +1661,7 @@
                 title: "传销组织招聘",
                 description: "朋友介绍你参加一个'投资项目'，声称拉人头就能赚大钱。",
                 options: [
-                    { text: "积极参与并拉朋友", effects: { wealth: -600, network: -20, reputation: -15 } },
+                    { text: "积极参与并拉朋友", effects: { wealth: -30, network: -20, reputation: -15 } },
                     { text: "礼貌拒绝并劝阻朋友", effects: { iq: 15, communication: 10 } },
                     { text: "报警举报", effects: { iq: 25, reputation: 20 }, achievement: "正义使者" }
                 ]
@@ -1675,8 +1671,8 @@
                 title: "虚假投资理财",
                 description: "收到短信推荐高收益理财产品，承诺月收益30%以上。",
                 options: [
-                    { text: "投入全部积蓄", effects: { wealth: -1500, stress: 30 } },
-                    { text: "小额试投", effects: { wealth: -200, iq: 5 } },
+                    { text: "投入全部积蓄", effects: { wealth: -45, stress: 30 } },
+                    { text: "小额试投", effects: { wealth: -15, iq: 5 } },
                     { text: "直接删除短信", effects: { iq: 10, logic: 5 }, achievement: "理财高手" }
                 ]
             },
@@ -1685,7 +1681,7 @@
                 title: "冒充公检法诈骗",
                 description: "接到电话称你涉嫌洗钱，需要配合调查，要求转账到'安全账户'。",
                 options: [
-                    { text: "立即转账配合", effects: { wealth: -2000, stress: 25 } },
+                    { text: "立即转账配合", effects: { wealth: -50, stress: 25 } },
                     { text: "要求对方出示证件", effects: { iq: 15, logic: 10 } },
                     { text: "挂断电话报警", effects: { iq: 25, reputation: 15 }, achievement: "反诈专家" }
                 ]
@@ -1695,7 +1691,7 @@
                 title: "网络购物诈骗",
                 description: "网购后收到'客服'电话，称商品有问题需要退款，要求提供银行卡信息。",
                 options: [
-                    { text: "提供银行卡信息", effects: { wealth: -800, iq: -10 } },
+                    { text: "提供银行卡信息", effects: { wealth: -30, iq: -10 } },
                     { text: "要求通过官方渠道处理", effects: { iq: 15, logic: 10 } },
                     { text: "录音并报警", effects: { iq: 20, reputation: 10 }, achievement: "消费维权达人" }
                 ]
@@ -1705,7 +1701,7 @@
                 title: "虚假慈善募捐",
                 description: "朋友圈出现求助信息，声称孩子患重病需要筹款，配有悲惨照片。",
                 options: [
-                    { text: "立即转账捐款", effects: { wealth: -300, eq: 5 } },
+                    { text: "立即转账捐款", effects: { wealth: -20, eq: 5 } },
                     { text: "核实信息真实性", effects: { iq: 15, logic: 10 } },
                     { text: "通过正规渠道捐助", effects: { iq: 10, eq: 15, reputation: 10 }, achievement: "理性慈善家" }
                 ]
@@ -2381,7 +2377,7 @@
             // 应用效果
             if (option.effects) {
                 for (const [stat, value] of Object.entries(option.effects)) {
-                    gameState.stats[stat] = Math.max(0, gameState.stats[stat] + value);
+                    gameState.stats[stat] = Math.max(0, Math.min(100, gameState.stats[stat] + value));
                 }
             }
             
@@ -2459,11 +2455,19 @@
             // 检查成就
             checkAchievements();
             
-            // 如果雷达图处于激活状态，更新雷达图
-            const activeTab = document.querySelector('.radar-tab-btn.active');
-            if (activeTab) {
-                const chartType = activeTab.dataset.chart;
-                updateRadarChart(chartType);
+            // 如果雷达图视图处于激活状态，更新雷达图
+            const radarView = document.getElementById('stats-radar');
+            if (radarView && radarView.style.display !== 'none') {
+                // 根据当前激活的主标签页确定雷达图类型
+                const activeMainTab = document.querySelector('.tab-btn.active');
+                if (activeMainTab) {
+                    const viewType = activeMainTab.onclick.toString().match(/showStatsView\('([^']+)'\)/)?.[1];
+                    if (viewType === 'attributes') {
+                        updateRadarChart('attributes');
+                    } else if (viewType === 'radar') {
+                        updateRadarChart('abilities');
+                    }
+                }
             }
         }
         
@@ -2841,25 +2845,18 @@
             if (viewType === 'abilities') {
                 document.getElementById('stats-abilities').style.display = 'block';
             } else if (viewType === 'attributes') {
-                document.getElementById('stats-attributes').style.display = 'block';
+                document.getElementById('stats-radar').style.display = 'block';
+                updateRadarChart('attributes'); // 个人属性按钮显示属性雷达图
             } else if (viewType === 'radar') {
                 document.getElementById('stats-radar').style.display = 'block';
-                updateRadarChart('abilities'); // 默认显示能力雷达图
+                updateRadarChart('abilities'); // 能力属性按钮显示能力雷达图
             } else if (viewType === 'achievements') {
                 document.getElementById('stats-achievements').style.display = 'block';
                 updateAchievementsDisplay(); // 更新成就显示
             }
         }
         
-        // 切换雷达图类型
-        function showRadarType(chartType) {
-            // 更新雷达图子标签页状态
-            document.querySelectorAll('.radar-tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // 更新雷达图
-            updateRadarChart(chartType);
-        }
+
         
         // 创建/更新雷达图
         function updateRadarChart(chartType = 'abilities') {
