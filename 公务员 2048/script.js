@@ -3,9 +3,13 @@ class CivilServant2048 {
         this.grid = [];
         this.score = 0;
         this.bestScore = localStorage.getItem('civilServant2048-bestScore') || 0;
+        this.highestTile = parseInt(localStorage.getItem('civilServant2048-highestTile')) || 0;
+        this.currentHighestTile = 0;
         this.size = 4;
         this.gameWon = false;
         this.gameOver = false;
+        this.isMoving = false; // 防止快速连续操作
+        this.lastMoveTime = 0;
         
         // 公务员等级映射
         this.levels = {
@@ -20,8 +24,13 @@ class CivilServant2048 {
             512: '二级调研员',
             1024: '一级调研员',
             2048: '二级巡视员',
-            4096: '一级巡视员'
+            4096: '一级巡视员',
+            8192: '二级国务员',
+            16384: '一级国务员'
         };
+        
+        // 级别顺序数组，用于比较级别高低
+        this.levelOrder = [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384];
         
         this.init();
     }
@@ -91,44 +100,82 @@ class CivilServant2048 {
         const gameContainer = document.querySelector('.game-container');
         let startX = 0;
         let startY = 0;
-        let endX = 0;
-        let endY = 0;
+        let startTime = 0;
+        let isSwiping = false;
         
+        // 触摸开始
         gameContainer.addEventListener('touchstart', (e) => {
-            if (this.gameOver) return;
+            if (this.gameOver || this.isMoving) return;
             e.preventDefault();
+            
             const touch = e.touches[0];
             startX = touch.clientX;
             startY = touch.clientY;
+            startTime = Date.now();
+            isSwiping = false;
+            
+            // 添加触摸反馈
+            gameContainer.style.transform = 'scale(0.98)';
+            gameContainer.style.transition = 'transform 0.1s ease';
         }, { passive: false });
         
+        // 触摸移动
         gameContainer.addEventListener('touchmove', (e) => {
+            if (this.gameOver || this.isMoving) return;
             e.preventDefault();
+            
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - startX;
+            const deltaY = touch.clientY - startY;
+            const minMoveDistance = 10;
+            
+            // 检测是否开始滑动
+            if (!isSwiping && (Math.abs(deltaX) > minMoveDistance || Math.abs(deltaY) > minMoveDistance)) {
+                isSwiping = true;
+            }
         }, { passive: false });
         
+        // 触摸结束
         gameContainer.addEventListener('touchend', (e) => {
-            if (this.gameOver) return;
+            if (this.gameOver || this.isMoving) return;
             e.preventDefault();
+            
+            // 恢复触摸反馈
+            gameContainer.style.transform = 'scale(1)';
+            
             const touch = e.changedTouches[0];
-            endX = touch.clientX;
-            endY = touch.clientY;
+            const endX = touch.clientX;
+            const endY = touch.clientY;
+            const endTime = Date.now();
             
             const deltaX = endX - startX;
             const deltaY = endY - startY;
-            const minSwipeDistance = 30;
+            const deltaTime = endTime - startTime;
             
-            if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) {
+            // 计算滑动距离和速度
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const velocity = distance / deltaTime;
+            
+            // 动态调整最小滑动距离（根据速度）
+            const minSwipeDistance = velocity > 0.5 ? 20 : 40;
+            const maxSwipeTime = 500; // 最大滑动时间
+            
+            // 检查是否为有效滑动
+            if (distance < minSwipeDistance || deltaTime > maxSwipeTime || !isSwiping) {
                 return;
             }
             
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // 确定滑动方向（增加角度阈值，提高识别准确性）
+            const angle = Math.atan2(Math.abs(deltaY), Math.abs(deltaX)) * 180 / Math.PI;
+            
+            if (angle < 30) {
                 // 水平滑动
                 if (deltaX > 0) {
                     this.move('right');
                 } else {
                     this.move('left');
                 }
-            } else {
+            } else if (angle > 60) {
                 // 垂直滑动
                 if (deltaY > 0) {
                     this.move('down');
@@ -136,6 +183,12 @@ class CivilServant2048 {
                     this.move('up');
                 }
             }
+            // 45度左右的滑动忽略，避免误操作
+        }, { passive: false });
+        
+        // 触摸取消
+        gameContainer.addEventListener('touchcancel', (e) => {
+            gameContainer.style.transform = 'scale(1)';
         }, { passive: false });
     }
     
@@ -156,6 +209,9 @@ class CivilServant2048 {
     }
     
     move(direction) {
+        if (this.isMoving || this.gameOver) return;
+        
+        this.isMoving = true;
         const previousGrid = this.grid.map(row => [...row]);
         let moved = false;
         
@@ -175,16 +231,31 @@ class CivilServant2048 {
         }
         
         if (moved) {
-            this.addRandomTile();
-            this.updateDisplay();
-            
-            if (this.checkWin()) {
-                this.showMessage('恭喜！您已达到一级巡视员！');
-                this.gameWon = true;
-            } else if (this.checkGameOver()) {
-                this.showMessage('游戏结束！');
-                this.gameOver = true;
-            }
+            // 添加移动动画延迟
+            setTimeout(() => {
+                this.addRandomTile();
+                this.updateDisplay();
+                
+                // 添加级别更新动画
+                this.animateScoreUpdate();
+                
+                if (this.checkWin()) {
+                    this.showMessage('恭喜！您已达到最高级别！');
+                    this.gameWon = true;
+                    this.addHapticFeedback('heavy');
+                } else if (this.checkGameOver()) {
+                    this.showMessage('游戏结束！');
+                    this.gameOver = true;
+                    this.addHapticFeedback('medium');
+                } else {
+                    // 添加触觉反馈
+                    this.addHapticFeedback('light');
+                }
+                
+                this.isMoving = false;
+            }, 150);
+        } else {
+            this.isMoving = false;
         }
     }
     
@@ -312,6 +383,9 @@ class CivilServant2048 {
         const tileSize = this.getTileSize();
         const tileSpacing = this.getTileSpacing();
         
+        // 重置当前最高方块
+        this.currentHighestTile = 0;
+        
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
                 if (this.grid[i][j] !== 0) {
@@ -320,18 +394,40 @@ class CivilServant2048 {
                     tile.style.left = `${j * (tileSize + tileSpacing)}px`;
                     tile.style.top = `${i * (tileSize + tileSpacing)}px`;
                     tile.textContent = this.levels[this.grid[i][j]] || this.grid[i][j];
+                    
+                    // 添加新方块动画类
+                    if (this.grid[i][j] === 2 || this.grid[i][j] === 4) {
+                        tile.classList.add('tile-new');
+                    }
+                    
                     container.appendChild(tile);
+                    
+                    // 更新当前最高方块
+                    if (this.grid[i][j] > this.currentHighestTile) {
+                        this.currentHighestTile = this.grid[i][j];
+                    }
                 }
             }
         }
         
-        document.getElementById('score').textContent = this.score;
+        // 更新当前级别显示
+        const currentLevel = this.levels[this.currentHighestTile] || '无';
+        document.getElementById('score').textContent = currentLevel;
         
+        // 更新历史最高级别
+        if (this.currentHighestTile > this.highestTile) {
+            this.highestTile = this.currentHighestTile;
+            localStorage.setItem('civilServant2048-highestTile', this.highestTile);
+        }
+        
+        const bestLevel = this.levels[this.highestTile] || '无';
+        document.getElementById('best-score').textContent = bestLevel;
+        
+        // 更新传统分数（保留在localStorage中）
         if (this.score > this.bestScore) {
             this.bestScore = this.score;
             localStorage.setItem('civilServant2048-bestScore', this.bestScore);
         }
-        document.getElementById('best-score').textContent = this.bestScore;
     }
     
     getTileSize() {
@@ -354,7 +450,7 @@ class CivilServant2048 {
         if (this.gameWon) return false;
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
-                if (this.grid[i][j] === 4096) {
+                if (this.grid[i][j] >= 4096) {
                     return true;
                 }
             }
@@ -398,10 +494,85 @@ class CivilServant2048 {
     restart() {
         this.grid = [];
         this.score = 0;
+        this.currentHighestTile = 0;
         this.gameWon = false;
         this.gameOver = false;
+        this.isMoving = false;
         this.hideMessage();
         this.init();
+    }
+    
+    // 获取级别名称
+    getLevelName(value) {
+        return this.levels[value] || `等级${value}`;
+    }
+    
+    // 比较两个级别的高低
+    compareLevels(level1, level2) {
+        const index1 = this.levelOrder.indexOf(level1);
+        const index2 = this.levelOrder.indexOf(level2);
+        return index1 - index2;
+    }
+    
+    // 添加震动反馈
+    addHapticFeedback(type = 'light') {
+        if (navigator.vibrate) {
+            switch(type) {
+                case 'light':
+                    navigator.vibrate(50);
+                    break;
+                case 'medium':
+                    navigator.vibrate(100);
+                    break;
+                case 'heavy':
+                    navigator.vibrate([100, 50, 100]);
+                    break;
+            }
+        }
+    }
+    
+    // 添加分数更新动画
+    animateScoreUpdate() {
+        const scoreElement = document.getElementById('score');
+        const bestScoreElement = document.getElementById('best-score');
+        
+        scoreElement.classList.add('updated');
+        if (this.currentHighestTile > this.highestTile) {
+            bestScoreElement.classList.add('updated');
+        }
+        
+        setTimeout(() => {
+            scoreElement.classList.remove('updated');
+            bestScoreElement.classList.remove('updated');
+        }, 500);
+    }
+    
+    // 优化方块移动动画
+    animateTileMovement(fromPos, toPos, value) {
+        const tileSize = this.getTileSize();
+        const tileSpacing = this.getTileSpacing();
+        
+        const tile = document.createElement('div');
+        tile.className = `tile tile-${value}`;
+        tile.style.left = `${fromPos.y * (tileSize + tileSpacing)}px`;
+        tile.style.top = `${fromPos.x * (tileSize + tileSpacing)}px`;
+        tile.style.transition = 'all 0.15s ease-in-out';
+        tile.textContent = this.levels[value] || value;
+        
+        document.getElementById('tile-container').appendChild(tile);
+        
+        // 触发动画
+        requestAnimationFrame(() => {
+            tile.style.left = `${toPos.y * (tileSize + tileSpacing)}px`;
+            tile.style.top = `${toPos.x * (tileSize + tileSpacing)}px`;
+        });
+        
+        // 清理动画元素
+        setTimeout(() => {
+            if (tile.parentNode) {
+                tile.parentNode.removeChild(tile);
+            }
+        }, 150);
     }
 }
 
