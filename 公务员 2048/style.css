@@ -1,0 +1,412 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #776e65;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #fff;
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.score-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.score-box {
+    background: rgba(255,255,255,0.9);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.score-label {
+    font-size: 0.9em;
+    color: #776e65;
+    margin-bottom: 5px;
+}
+
+.score {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #f9f6f2;
+    background: #bbada0;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.game-intro {
+    background: rgba(255,255,255,0.9);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.game-intro p {
+    margin-bottom: 10px;
+    color: #776e65;
+}
+
+.restart-button, .try-again-button {
+    background: #8f7a66;
+    color: #f9f6f2;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.restart-button:hover, .try-again-button:hover {
+    background: #9f8a76;
+}
+
+.game-container {
+    position: relative;
+    background: #bbada0;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.grid-container {
+    position: relative;
+    z-index: 1;
+}
+
+.grid-row {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.grid-row:last-child {
+    margin-bottom: 0;
+}
+
+.grid-cell {
+    width: 100px;
+    height: 100px;
+    background: rgba(238, 228, 218, 0.35);
+    border-radius: 6px;
+    margin-right: 15px;
+}
+
+.grid-cell:last-child {
+    margin-right: 0;
+}
+
+.tile-container {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 2;
+}
+
+.tile {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: #eee4da;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-align: center;
+    line-height: 1.2;
+    transition: all 0.15s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 公务员等级样式 */
+.tile-2 { background: #eee4da; color: #776e65; } /* 二级科员 */
+.tile-4 { background: #ede0c8; color: #776e65; } /* 一级科员 */
+.tile-8 { background: #f2b179; color: #f9f6f2; } /* 四级主任科员 */
+.tile-16 { background: #f59563; color: #f9f6f2; } /* 三级主任科员 */
+.tile-32 { background: #f67c5f; color: #f9f6f2; } /* 二级主任科员 */
+.tile-64 { background: #f65e3b; color: #f9f6f2; } /* 一级主任科员 */
+.tile-128 { background: #edcf72; color: #f9f6f2; font-size: 0.7em; } /* 四级调研员 */
+.tile-256 { background: #edcc61; color: #f9f6f2; font-size: 0.7em; } /* 三级调研员 */
+.tile-512 { background: #edc850; color: #f9f6f2; font-size: 0.7em; } /* 二级调研员 */
+.tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 0.6em; } /* 一级调研员 */
+.tile-2048 { background: #edc22e; color: #f9f6f2; font-size: 0.6em; } /* 二级巡视员 */
+.tile-4096 { background: #3c3a32; color: #f9f6f2; font-size: 0.6em; } /* 一级巡视员 */
+
+.tile-new {
+    animation: appear 0.2s ease-in-out;
+}
+
+.tile-merged {
+    animation: pop 0.2s ease-in-out;
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.game-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.message-content {
+    text-align: center;
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.message-text {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #776e65;
+}
+
+.game-message.show {
+    display: flex;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 5px;
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 10px;
+    }
+    
+    .score-container {
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .score-box {
+        padding: 8px 15px;
+    }
+    
+    .game-intro {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .grid-cell, .tile {
+        width: 80px;
+        height: 80px;
+        font-size: 0.75em;
+    }
+    
+    .grid-cell {
+        margin-right: 12px;
+    }
+    
+    .grid-row {
+        margin-bottom: 12px;
+    }
+    
+    .game-container {
+        padding: 12px;
+    }
+    
+    .tile-container {
+        top: 12px;
+        left: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+        min-height: 100vh;
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+    
+    .container {
+        padding: 0;
+        width: 100%;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 8px;
+    }
+    
+    .score-container {
+        gap: 10px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+    
+    .score-box {
+        padding: 6px 12px;
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .score-label {
+        font-size: 0.8em;
+    }
+    
+    .score {
+        font-size: 1.2em;
+        padding: 3px 8px;
+    }
+    
+    .game-intro {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .game-intro p {
+        font-size: 0.9em;
+        margin-bottom: 8px;
+    }
+    
+    .restart-button, .try-again-button {
+        padding: 8px 16px;
+        font-size: 0.9em;
+    }
+    
+    .grid-cell, .tile {
+        width: 65px;
+        height: 65px;
+        font-size: 0.65em;
+    }
+    
+    .grid-cell {
+        margin-right: 8px;
+    }
+    
+    .grid-row {
+        margin-bottom: 8px;
+    }
+    
+    .game-container {
+        padding: 8px;
+        border-radius: 8px;
+    }
+    
+    .tile-container {
+        top: 8px;
+        left: 8px;
+    }
+    
+    .tile-128, .tile-256, .tile-512 {
+        font-size: 0.55em;
+    }
+    
+    .tile-1024, .tile-2048, .tile-4096 {
+        font-size: 0.45em;
+    }
+    
+    .message-content {
+        padding: 30px 20px;
+        margin: 0 20px;
+    }
+    
+    .message-text {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 360px) {
+    h1 {
+        font-size: 1.6em;
+    }
+    
+    .grid-cell, .tile {
+        width: 55px;
+        height: 55px;
+        font-size: 0.6em;
+    }
+    
+    .grid-cell {
+        margin-right: 6px;
+    }
+    
+    .grid-row {
+        margin-bottom: 6px;
+    }
+    
+    .game-container {
+        padding: 6px;
+    }
+    
+    .tile-container {
+        top: 6px;
+        left: 6px;
+    }
+    
+    .tile-128, .tile-256, .tile-512 {
+        font-size: 0.5em;
+    }
+    
+    .tile-1024, .tile-2048, .tile-4096 {
+        font-size: 0.4em;
+    }
+}
